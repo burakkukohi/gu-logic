@@ -1,0 +1,144 @@
+\documentclass[a4paper]{article}
+
+\usepackage{preamble}
+\addbibresource{references/refs.bib}
+
+\title{LOG 111 Hand-in 1}
+\author{Frank Tsai (gustsafe)}
+
+\begin{document}
+
+\maketitle
+
+\section{Prop 1.6}
+\begin{proof}
+  Let us proceed by induction.
+  \begin{itemize}
+  \item Case $p$: In this case, $p$ is a propositional variable.
+    Its only proper initial segment is the empty string $\varepsilon$, which is not a formula.
+
+  \item Case $\lnot\varphi$: Let $\sigma$ be a proper initial segment of $\lnot\varphi$.
+    The $\varepsilon$ case is immediate.
+    In the non-$\varepsilon$ case, suppose that $\sigma \equiv \lnot\xi$ and that it is a formula.
+    Then it follows that $\xi$ is a formula by inverting the inductive definition.
+    Since $\xi$ is a proper initial segment of $\varphi$, this contradicts the induction hypothesis.
+
+  \item Case $(\varphi \star \psi)$: In this case, $\star$ denotes any binary connective.
+    The $\varepsilon$ case is immediate.
+    Suppose that $\sigma$ is a proper initial segment of $(\varphi \star \psi)$ and that $\sigma$ is a formula.
+    Then by Prop 1.5, $\sigma$ is balanced.
+    This rules out $\sigma \equiv (\varphi$ and $\sigma \equiv (\varphi \star \psi$ because $\varphi$ and $\psi$ are also balanced.
+    Thus, there are only two cases to consider:
+    \begin{itemize}
+    \item Case $\sigma \equiv (\sigma'$: In this case, $\sigma'$ is a proper initial segment of $\varphi$.
+      By inversion, $\sigma' \equiv \xi \star' \zeta$, where $\star'$ is any binary connective.
+      Note that $\xi$ is a proper initial segment of $\varphi$.
+      This contradicts the induction hypothesis.
+    \item Case $\sigma \equiv (\varphi \star \sigma'$: In this case, $\sigma'$ is a proper initial segment of $\psi$.
+      By inversion, $\sigma' \equiv \xi)$.
+      The rest of the argument mirrors the previous case. \qedhere
+    \end{itemize}
+  \end{itemize}
+\end{proof}
+
+\section{Prob 1.3}
+Let $\varphi$ denote the given formula in each sub-problem.
+\begin{enumerate}
+\item \[\varphi \equiv p_{0}[\varphi/p_{0}].\]
+\item
+  \begin{align*}
+    \varphi &\equiv p_{0}[\varphi/p_{0}]\\
+    \varphi &\equiv (\lnot p_{0} \wedge p_{1})[p_{0}/p_{1}].
+  \end{align*}
+\item \[\varphi \equiv p_{0}[\varphi/p_{0}].\]
+\item \[\varphi \equiv p_{0}[\varphi/p_{0}].\]
+\item
+  \begin{align*}
+    \varphi &\equiv p_{0}[\varphi/p_{0}]\\
+    \varphi &\equiv ((\lnot p_{0} \to p_{1}) \wedge p_{2})[(p_{0} \to p_{1})/p_{0}, (p_{0} \vee p_{1})/p_{1}, \lnot(p_{0} \wedge p_{1})/p_{2}].
+  \end{align*}
+\end{enumerate}
+
+\section{Prob 1.6}
+
+\begin{tabular}[t]{ccc|c}
+  $\varphi$ & $\psi$ & $\chi$ & $\diamond(\varphi,\psi,\chi)$\\
+  T & T & T & T\\
+  T & T & F & T\\
+  T & F & T & F\\
+  T & F & F & F\\
+  F & T & T & T\\
+  F & T & F & F\\
+  F & F & T & T\\
+  F & F & F & F\\
+\end{tabular}
+
+\section{Prob 1.13}
+\begin{itemize}
+\item[] DNF: $p_{0} \wedge \lnot p_{1} \wedge p_{2}$
+\item[] CNF:
+  \begin{align*}
+    (p_{0} \vee p_{1} \vee p_{2}) &\wedge\\
+    (p_{0} \vee p_{1} \vee \lnot p_{2}) &\wedge\\
+    (p_{0} \vee \lnot p_{1} \vee \lnot p_{2}) &\wedge\\
+    (p_{0} \vee \lnot p_{1} \vee p_{2}) &\wedge\\
+    (\lnot p_{0} \vee p_{1} \vee p_{2}) &\wedge\\
+    (\lnot p_{0} \vee \lnot p_{1} \vee p_{2}) &\wedge\\
+    (\lnot p_{0} \vee \lnot p_{1} \vee \lnot p_{2})
+  \end{align*}
+\end{itemize}
+
+\section{}
+A three-valued semantics can describe the local view of a process in a distributed system, where the valuations of some propositional variables cannot be locally determined because they relay on an external process.
+
+\begin{tabular}[t]{c|c}
+  $\varphi$ & $\lnot \varphi$\\
+  T & F\\
+  F & T\\
+  U & U\\
+\end{tabular}
+\qquad
+\begin{tabular}[t]{cc|c}
+  $\varphi$ & $\psi$ & $\varphi \vee \psi$\\
+  T & T & T\\
+  T & F & T\\
+  T & U & T\\
+  F & T & T\\
+  F & F & F\\
+  F & U & U\\
+  U & T & T\\
+  U & F & U\\
+  U & U & U\\
+\end{tabular}
+\qquad
+\begin{tabular}[t]{cc|c}
+  $\varphi$ & $\psi$ & $\varphi \wedge \psi$\\
+  T & T & T\\
+  T & F & F\\
+  T & U & U\\
+  F & T & F\\
+  F & F & F\\
+  F & U & F\\
+  U & T & U\\
+  U & F & F\\
+  U & U & U\\
+\end{tabular}
+\qquad
+\begin{tabular}[t]{cc|c}
+  $\varphi$ & $\psi$ & $\varphi \to \psi$\\
+  T & T & T\\
+  T & F & F\\
+  T & U & U\\
+  F & T & T\\
+  F & F & T\\
+  F & U & T\\
+  U & T & T\\
+  U & F & U\\
+  U & U & U\\
+\end{tabular}
+
+The Law of Excluded Middle is not a tautology in this semantics because $U \vee \lnot U = U$, but every tautology in this semantics is automatically a tautology in classical logic (by deleting rows with $U$).
+
+% \printbibliography
+
+\end{document}
