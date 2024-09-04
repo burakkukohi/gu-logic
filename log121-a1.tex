@@ -1,0 +1,49 @@
+\documentclass[a4paper]{article}
+
+\usepackage{preamble}
+\addbibresource{references/refs.bib}
+
+\title{LOG121 Exercise 1}
+\author{Frank Tsai}
+
+\begin{document}
+
+\maketitle
+
+\section{4.12}
+Let $x$, $y$, and $z$ be sets.
+\begin{enumerate}
+\item There is a unique set $(x,y,z)$.
+  \begin{proof}
+    By construction, $(x,y,z) := (x,(y,z))$.
+    By Ex. 4.10, this set is unique. \qedhere
+  \end{proof}
+\item This construction satisfies the ordered triple property.
+  \begin{proof}
+    Suppose $(x,y,z) = (u,v,w)$.
+    Then $(x,(y,z)) = (u,(v,w))$.
+    By the ordered pair property, $x = u$ and $(y,z) = (v,w)$.
+    By the ordered pair property again, $y = v$ and $z = w$.
+  \end{proof}
+\item $((x,y),z)$ does not use the same set as $(x,(y,z))$ to represent ordered triples.
+  \begin{proof}
+    Suppose that $((x,y),z) = (x,(y,z))$.
+    Then $x = (x,y)$ and $z = (y,z)$.
+    Now choose $x = y = z = \varnothing$.
+    Then $\varnothing = \{\varnothing,\{\varnothing\}\}$, which is a contradiction.
+  \end{proof}
+\end{enumerate}
+
+\section{4.14}
+\begin{enumerate}
+\item Yes.
+\item No. Choose $x = \varnothing$, $y = \{\varnothing\}$, $z = \varnothing$, $u = \{\varnothing\}$, $v = \varnothing$, and $w = \{\varnothing\}$.
+\item Ditto.
+\item Yes.
+\item No. Choose $x = \varnothing$, $y = \{\varnothing\}$, $z = \varnothing$, $u = \{\varnothing\}$, $v = \varnothing$, and $w = \{\varnothing\}$.
+\item Yes.
+\end{enumerate}
+
+% \printbibliography
+
+\end{document}
