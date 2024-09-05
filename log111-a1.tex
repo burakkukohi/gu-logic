@@ -89,6 +89,24 @@ Let $\varphi$ denote the given formula in each sub-problem.
 \end{itemize}
 
 \section{}
+\begin{enumerate}
+\item Let us define $\bigwedge\varnothing := \top$.
+  This is sensible as for any valuation $v$, $v \models \varnothing$.
+  For a given permutation $\sigma = \varphi_{1},\ldots,\varphi_{n}$, let us write $\bigwedge\sigma$ for the formula $\varphi_{1} \wedge \cdots \wedge \varphi_{n}$.
+\item
+  \begin{proof}
+    It suffices to show that for any valuation $v$, $v \models \varphi_{i}$ for all $i$ iff $v \models \psi_{j}$ for all $j$.
+    Let us proceed by induction on the length of $\Gamma$.
+    When $\Gamma = \varnothing$, $\top \approx \top$ is trivial.
+    When $\Gamma$ has length $n+1$, let $\varphi_{1},\ldots,\varphi_{n+1}$ and $\psi_{1},\ldots,\psi_{n+1}$ be two permutations of $\Gamma$ and $v$ be a valuation.
+    Suppose that $\varphi_{n+1} \equiv \psi_{j}$.
+    Then clearly $v \models \varphi_{n+1}$ iff $v \models \psi_{j}$.
+    Excluding these formulas from their respective permutation yields two permutations of the same context of length $n$.
+    The result now follows from the induction hypothesis.
+  \end{proof}
+\end{enumerate}
+
+\section{}
 A three-valued semantics can describe the local view of a process in a distributed system, where the valuations of some propositional variables cannot be locally determined because they rely on an external process.
 
 \begin{tabular}[t]{c|c}
