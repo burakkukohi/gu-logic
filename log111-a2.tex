@@ -24,6 +24,23 @@
   \end{center}
 \end{proof}
 
+\section{Problem 2.2(13)}
+\[
+  \begin{prooftree}
+    \hypo{[\varphi \wedge \psi]^{1}}
+    \infer1[$\wedge$E$_{2}$]{\psi}
+    \hypo{\chi \to \varphi \to \psi}
+    \hypo{[\chi]^{2}}
+    \infer2[$\to$E]{\varphi \to \lnot \psi}
+    \hypo{[\varphi \wedge \psi]^{1}}
+    \infer1[$\wedge$E$_{1}$]{\varphi}
+    \infer2[$\to$E]{\lnot \psi}
+    \infer2[$\lnot$E]{\bot}
+    \infer1[$\lnot$I$^{2}$]{\lnot \chi}
+    \infer1[$\to$I$^{1}$]{\varphi \wedge \psi \to \lnot \chi}
+  \end{prooftree}
+\]
+
 % \printbibliography
 
 \end{document}
