@@ -1,0 +1,38 @@
+\DeclareFontFamily{U}{min}{}
+\DeclareFontShape{U}{min}{m}{n}{<-> udmj30}{}
+\newcommand{\yon}{\!\text{\usefont{U}{min}{m}{n}\symbol{'210}}\!}
+\newcommand{\blank}{\mathord{\hspace{1pt}\text{--}\hspace{1pt}}}
+
+% Arrows
+\newcommand{\To}[3]{#1\colon#2\to#3}
+\newcommand{\MapsTo}[3]{#1\colon#2\mapsto#3}
+
+% Superscripts & Subscripts
+\newcommand{\orth}{{^\bot}}
+\newcommand{\inv}{{^{-1}}}
+\newcommand{\dirimg}{{_!}}
+\newcommand{\starred}{{^*}}
+\newcommand{\op}{{^\circ}}
+
+% Abstract categories
+\newcommand{\newcategory}[1]{{\mathcal{#1}}}
+\newcommand{\C}{\newcategory{C}}
+\newcommand{\D}{\newcategory{D}}
+
+% "Concrete" categories
+\newcommand{\newconcretecategory}[1]{{\mathsf{#1}}}
+\newcommand{\Set}{{\newconcretecategory{Set}}}
+\newcommand{\Class}{{\newconcretecategory{Class}}}
+\newcommand{\CAT}{{\newconcretecategory{CAT}}}
+\newcommand{\Cat}{{\newconcretecategory{Cat}}}
+\newcommand{\cat}{{\newconcretecategory{cat}}}
+\newcommand{\Ob}{{\newconcretecategory{Ob}}}
+\newcommand{\dfib}{{\newconcretecategory{dfib}}}
+\newcommand{\dofib}{{\newconcretecategory{dofib}}}
+
+% Operators
+\newcommand{\newoperator}[1]{{\mathsf{#1}}}
+\newcommand{\Idl}{\newoperator{Idl}}
+
+% Special functors
+\newcommand{\Powset}{{\mathcal{P}}}

@@ -3,14 +3,27 @@
 \usepackage{preamble}
 \addbibresource{references/refs.bib}
 
-\title{Article title}
+\title{LOG111 Hand-in 2}
 \author{Frank Tsai}
 
 \begin{document}
 
 \maketitle
 
+\section{Problem 1.15(2)}
+\begin{proof}
+  Since $\uparrow$ is expressively adequate, it suffices to show that $\circ_{7}$ and $\to$ can express $\uparrow$.
+  \begin{center}
+    \begin{tabular}[h]{cc|c}
+      $\varphi$ & $\psi$ & $\psi \to (\varphi \circ_{7} \psi)$\\
+      T & T & F\\
+      T & F & T\\
+      F & T & T\\
+      F & F & T\\
+    \end{tabular}
+  \end{center}
+\end{proof}
 
-\printbibliography
+% \printbibliography
 
 \end{document}
