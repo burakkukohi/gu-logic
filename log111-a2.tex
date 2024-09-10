@@ -90,6 +90,58 @@
   Then $\mathscr{M}',s' \nvDash \exists x.\,A(f(z),c) \to \forall y.\,A(y,x) \vee A(f(y),x)$.
 \end{enumerate}
 
+\section{}
+\begin{itemize}
+\item Rules:
+  \[
+    \begin{prooftree}
+      \hypo{[\varphi]^{1}}
+      \ellipsis{}{\psi}
+      \hypo{[\lnot\varphi]^{1}}
+      \ellipsis{}{\chi}
+      \infer2[$\diamond$I$^1$]{\diamond(\varphi,\psi,\chi)}
+    \end{prooftree}
+    \qquad
+    \begin{prooftree}
+      \hypo{\diamond(\varphi,\psi,\chi)}
+      \hypo{\varphi}
+      \infer2[$\diamond$E$_{1}$]{\psi}
+    \end{prooftree}
+    \qquad
+    \begin{prooftree}
+      \hypo{\diamond(\varphi,\psi,\chi)}
+      \hypo{\lnot\varphi}
+      \infer2[$\diamond$E$_{2}$]{\chi}
+    \end{prooftree}
+  \]
+\item Soundness: It suffices to add three additional cases to Theorem 2.22.
+
+  When the last rule is $\diamond\text{I}$, the induction hypothesis yields $\Gamma,\varphi \models \psi$ and $\Gamma,\lnot\varphi \models \chi$.
+  Let $v$ be any valuation such that $v \models \Gamma$.
+  If $v \models \varphi$, then $v \models \psi$.
+  On the other hand, if $v \models \lnot\varphi$, then $v \models \chi$.
+  Thus, $v \models \diamond(\varphi,\psi,\chi)$ by definition.
+
+  When the last rule is $\diamond\text{E}_{1}$, the induction hypothesis yields $\Gamma \models \diamond(\varphi,\psi,\chi)$ and $\Gamma \models \varphi$.
+  Then by definition $\Gamma,\varphi \models \psi$.
+  Thus, transitivity yields $\Gamma \models \psi$.
+
+  The last case ($\diamond\text{E}_{2}$) is completely analogous to the previous case.
+\item Completeness: Note that every lemma that the Completeness Theorem (Corollary 3.7) relies on can be repaired.
+  The only one that requires additional work is Proposition 3.2.
+  We need to show that if $\Gamma$ is complete and consistent, then $\diamond(\varphi,\psi,\chi) \in \Gamma$ iff either $\psi \in \Gamma$ whenever $\varphi \in \Gamma$ or $\chi \in \Gamma$ whenever $\lnot \varphi \in \Gamma$.
+  \begin{proof}
+    Suppose that $\diamond(\varphi,\psi,\chi) \in \Gamma$.
+    If $\varphi \in \Gamma$ and $\lnot\psi \in \Gamma$ then clearly $\Gamma \vdash \psi$, but this implies that $\Gamma$ is inconsistent, contradicting the hypothesis.
+    Similarly, if $\lnot \in \Gamma$ and $\lnot \chi \in \Gamma$ then $\Gamma$ is inconsistent.
+
+    Assume the converse.
+    If $\varphi \in \Gamma$ and $\psi \in \Gamma$, then $\Gamma \vdash \diamond(\varphi,\psi,\chi)$.
+    Similarly, if $\lnot\varphi \in \Gamma$ and $\chi \in \Gamma$, then $\Gamma \vdash \diamond(\varphi,\psi,\chi)$.
+    Thus, it follows that $\diamond(\varphi,\psi,\chi) \in \Gamma$.
+  \end{proof}
+\end{itemize}
+
 % \printbibliography
 
 \end{document}
