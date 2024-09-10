@@ -41,6 +41,48 @@
   \end{prooftree}
 \]
 
+\section{Problem 3.4}
+\begin{proof}
+  The if direction is an immediate consequence of monotonicity (Prop 1.19(4)).
+  It remains to prove the only if direction.
+  
+  Suppose that $\Gamma \models \varphi$.
+  Then by completeness, $\Gamma \vdash \varphi$.
+  Then it follows from compactness (of $\vdash$) and soundness that there is a finite subset $\Gamma_{0} \subseteq \Gamma$ such that $\Gamma_{0} \models \varphi$.
+\end{proof}
+
+\section{Problem 3.5}
+\begin{enumerate}
+\item
+  \begin{proof}
+    Suppose that $\varphi \vee \psi \in \Gamma$.
+    Then since $\Gamma$ is complete, either $\varphi \in \Gamma$ or $\lnot \varphi \in \Gamma$.
+    The former case proves the thesis.
+    In the latter case, we have either $\psi \in \Gamma$ or $\lnot \psi \in \Gamma$.
+    Again, the former case proves the thesis.
+    In the latter case, consider the unsatisfiable subset $\varphi \vee \psi, \lnot \varphi, \lnot \psi$.
+    This contradicts finite satisfiability.
+
+    Conversely, suppose that either $\varphi \in \Gamma$ or $\psi \in \Gamma$.
+    Completeness demands that either $\varphi \vee \psi \in \Gamma$ or $\lnot(\varphi \vee \psi) \in \Gamma$.
+    The latter case is impossible because neither $\lnot(\varphi \vee \psi), \varphi$ nor $\lnot(\varphi \vee \psi), \psi$ is satisfiable.
+  \end{proof}
+\item
+  \begin{proof}
+    Suppose that $\varphi \to \psi \in \Gamma$.
+    If $\varphi \in \Gamma$ then it must be the case that $\psi \in \Gamma$ because $\varphi \to \psi, \varphi, \lnot\psi$ is not satisfiable.
+    If $\varphi \notin \Gamma$ then the thesis follows immediately.
+
+    Conversely, suppose that either $\varphi \notin \Gamma$ or $\psi \in \Gamma$.
+    It suffices to show that $\lnot(\varphi \to \psi) \notin \Gamma$.
+    To this end, we show that we can always construct an unsatisfiable subset.
+    Note that neither $\lnot(\varphi \to \psi), \lnot \varphi$ nor $\lnot(\varphi \to \psi), \varphi, \psi$ is satisfiable.
+
+    If $\varphi \notin \Gamma$ then $\lnot\varphi \in \Gamma$, so we can choose the first set.
+    If $\psi \in \Gamma$ then we choose the first set if $\varphi \in \Gamma$, otherwise we choose the second set.
+  \end{proof}
+\end{enumerate}
+
 % \printbibliography
 
 \end{document}
