@@ -24,7 +24,7 @@
   \end{center}
 \end{proof}
 
-\section{Problem 2.2(13)}
+\section{Problem 2.2(13)}\label{sec:problem2}
 \[
   \begin{prooftree}
     \hypo{[\varphi \wedge \psi]^{1}}
@@ -138,9 +138,32 @@
     Assume the converse.
     If $\varphi \in \Gamma$ and $\psi \in \Gamma$, then $\Gamma \vdash \diamond(\varphi,\psi,\chi)$.
     Similarly, if $\lnot\varphi \in \Gamma$ and $\chi \in \Gamma$, then $\Gamma \vdash \diamond(\varphi,\psi,\chi)$.
-    Thus, it follows that $\diamond(\varphi,\psi,\chi) \in \Gamma$.
+    Thus, it follows that $\diamond(\varphi,\psi,\chi) \in \Gamma$ because $\Gamma$ is complete and consistent.
+    \[
+      \begin{prooftree}
+        \hypo{\psi}
+        \hypo{\varphi}
+        \hypo{[\lnot\varphi]}
+        \infer2{\chi}
+        \infer2{\diamond(\varphi,\psi,\chi)}
+      \end{prooftree}
+      \qquad
+      \begin{prooftree}
+        \hypo{[\varphi]}
+        \hypo{\lnot \varphi}
+        \infer2{\psi}
+        \hypo{\chi}
+        \infer2{\diamond(\varphi,\psi,\chi)}
+      \end{prooftree}
+    \]
   \end{proof}
 \end{itemize}
+
+\section{}
+This would reduce the number of provable formulas.
+For example, \cref{sec:problem2} requires two discharges because we need to eliminate the same conjunction twice to obtain enough information for the negation elimination.
+A simpler example is $\vdash \varphi \wedge \psi \to \psi \wedge \varphi$.
+This requires two eliminations on $\varphi \wedge \psi$.
 
 % \printbibliography
 
