@@ -3,47 +3,60 @@
 \usepackage{preamble}
 \addbibresource{references/refs.bib}
 
-\title{LOG121 Exercise 1}
+\title{LOG121 Hand-in 1}
 \author{Frank Tsai}
+
+\newcommand{\N}{\mathbb{N}}
+\let\P\relax
+\newcommand{\P}{\mathcal{P}}
+\newcommand{\U}{\mathcal{U}}
+\newcommand{\impl}{\Rightarrow}
 
 \begin{document}
 
 \maketitle
 
-\section{4.12}
-Let $x$, $y$, and $z$ be sets.
+\section*{Problem 1}
 \begin{enumerate}
-\item There is a unique set $(x,y,z)$.
+\item\label{prob:1-1}
   \begin{proof}
-    By construction, $(x,y,z) := (x,(y,z))$.
-    By Ex. 4.10, this set is unique. \qedhere
+    Let us proceed by induction on $i$.
+    \begin{itemize}
+    \item When $i = 0$, we need to show that $\N \subseteq \P(\N)$, i.e., $n \in \N \impl n \in \P(\N)$ for all $n \in \N$.
+      Again, let us proceed by induction on $n$.
+      \begin{itemize}
+      \item When $n = 0$, we clearly have $\varnothing \in \P(\N)$.
+      \item When $n = s(k)$, note that $s(k) = k \cup \{k\}$ by definition.
+        By the induction hypothesis, $k \subseteq \N$.
+        And clearly, $\{k\} \subseteq \N$.
+        Thus, it follows that $k \cup \{k\} \subseteq \N$, i.e., $k \cup \{k\} \in \P(\N)$.
+      \end{itemize}
+    \item When $i = s(k)$, we need to show that $\U_{s(k)} \subseteq \U_{s(s(k))}$.
+      Suppose that $x \in \U_{s(k)} = \P(\U_{k})$, or equivalently, that $x \subseteq \U_{k}$.
+      By the induction hypothesis, $\U_{k} \subseteq \U_{s(k)}$, so $x \subseteq \U_{s(k)}$.
+      But this means that $x \in \P(\U_{s(k)}) = \U_{s(s(k))}$.
+    \end{itemize}
   \end{proof}
-\item This construction satisfies the ordered triple property.
+\item\label{prob:1-2}
   \begin{proof}
-    Suppose $(x,y,z) = (u,v,w)$.
-    Then $(x,(y,z)) = (u,(v,w))$.
-    By the ordered pair property, $x = u$ and $(y,z) = (v,w)$.
-    By the ordered pair property again, $y = v$ and $z = w$.
-  \end{proof}
-\item $((x,y),z)$ does not use the same set as $(x,(y,z))$ to represent ordered triples.
-  \begin{proof}
-    Suppose that $((x,y),z) = (x,(y,z))$.
-    Then $x = (x,y)$ and $z = (y,z)$.
-    Now choose $x = y = z = \varnothing$.
-    Then $\varnothing = \{\{\varnothing\}\}$, which is a contradiction.
+    Proceed by case analysis on $i$.
+    \begin{itemize}
+    \item When $i = 0$, we need to show that if $x \in y$ and $y \in \N$ then $x \in \N$.
+      Let us proceed by induction on $y$.
+      \begin{itemize}
+      \item When $y = 0$, the thesis holds vacuously as $x \notin \varnothing$ for any $x$.
+      \item When $y = s(k)$, suppose that $x \in k \cup \{k\}$.
+        If $x \in k$, then $x \in \N$ by the induction hypothesis.
+        If $x \in \{k\}$ (i.e., $x = k$ by the axiom of pairing), then we are done as $k \in \N$.
+      \end{itemize}
+    \item When $i = s(k)$, suppose that $x \in y$ and $y \in \U_{s(k)} = \P(\U_{k})$.
+      Then since $y \subseteq \U_{k}$, $x \in \U_{k}$.
+      By \ref{prob:1-1}, $\U_{k} \subseteq \U_{s(k)}$, so $x \in \U_{s(k)}$.
+    \end{itemize}
+    From \ref{prob:1-1} and \ref{prob:1-2}, we can deduce that for any $y \in \U_{i}$, we have that $y \in \U_{s(k)} = \P(\U_{k})$, or equivalently, $y \subseteq \U_{k}$.
   \end{proof}
 \end{enumerate}
 
-\section{4.14}
-\begin{enumerate}
-\item No. Choose $x = \varnothing$, $y = \{\varnothing\}$, $z = \{\varnothing\}$, $u = \varnothing$, $v = \varnothing$, and $w = \{\varnothing\}$.
-\item No. Choose $x = \varnothing$, $y = \{\varnothing\}$, $z = \varnothing$, $u = \{\varnothing\}$, $v = \varnothing$, and $w = \{\varnothing\}$.
-\item Ditto.
-\item Yes.
-\item No. Choose $x = \varnothing$, $y = \{\varnothing\}$, $z = \varnothing$, $u = \{\varnothing\}$, $v = \varnothing$, and $w = \{\varnothing\}$.
-\item Yes.
-\end{enumerate}
-
-% \printbibliography
+%\printbibliography
 
 \end{document}
