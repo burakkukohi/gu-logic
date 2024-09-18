@@ -11,6 +11,8 @@
 \newcommand{\P}{\mathcal{P}}
 \newcommand{\U}{\mathcal{U}}
 \newcommand{\impl}{\Rightarrow}
+\let\iff\relax
+\newcommand{\iff}{\Leftrightarrow}
 
 \begin{document}
 
@@ -55,6 +57,74 @@
     \end{itemize}
     From \ref{prob:1-1} and \ref{prob:1-2}, we can deduce that for any $y \in \U_{i}$, we have that $y \in \U_{s(i)} = \P(\U_{i})$, or equivalently, $y \subseteq \U_{i}$.
   \end{proof}
+\end{enumerate}
+
+\section*{Problem 2}
+\begin{enumerate}
+\item
+  \begin{itemize}
+  \item Axiom of extensionality.
+    \begin{proof}
+      Let $x,y \in \U$.
+      The only if direction is trivial.
+      For the if direction, suppose that $z \in x \iff z \in y$ for all $z \in \U$.
+      To show $x = y$, we appeal to the ``external'' axiom of extensionality and show that the assumed hypothesis is sufficiently strong.
+
+      Let $z'$ be an arbitrary set (not necessarily a priori in $\U$).
+      We need to show that $z' \in x \iff z' \in y$.
+      If $z' \in x$, then since $x \in \U_{i}$ for some $i$, $z' \in \U_{i}$ by transitivity, but this implies that $z' \in \U$.
+      Thus, $z' \in y$ follows from the assumed hypothesis.
+      The converse is completely analogous.
+    \end{proof}
+    In the proofs that follow, we follow the same strategy: we show that the universe $\U$ is closed under a given construction; then we can appeal to the external version of the relevant axiom to conclude the proof.
+  \item Axiom of empty set.
+    \begin{proof}
+      Note that $\varnothing \in \U_{1} = \P(\N)$.
+    \end{proof}
+  \item Axiom of pairing.
+    \begin{proof}
+      Let $x,y \in \U$.
+      Since $\U_{i} \subseteq \U_{s(i)}$ for all $i$, it is legitimate to assume that $x,y \in \U_{i}$ for some $i$.
+      Then it follows that $\{x,y\} \subseteq \U_{i}$, i.e., $\{x,y\} \in \U_{s(i)}$.
+      The rest of the statement follows from the external axiom of pairing.
+    \end{proof}
+  \item Axiom schema of separation.
+    \begin{proof}
+      Let $\varphi$ be any $\U$-bounded formula with free variables among $x,p_{1},\ldots,p_{n},z$ in the language of ZF set theory and $x,p_{1},\ldots,p_{n} \in \U$.
+      It suffices to show that $y := \{z \in x \mid \varphi(x,p_{1},\ldots,p_{n},z)\} \in \U$.
+      Since $x \in \U_{i}$ for some $i$, $x \subseteq \U_{i}$ by Problem 1.
+      Then since $y \subseteq x$, $y \subseteq \U_{i}$, i.e., $y \in \U_{s(i)}$.
+    \end{proof}
+  \item Axiom of powerset.
+    \begin{proof}
+      It suffices to show that the universe $\U$ is closed under the powerset construction.
+      The rest of the argument follows from the external axiom of powerset.
+
+      Let $x \in \U$.
+      Then $x \in \U_{i}$ for some $i$, so $x \subseteq \U_{i}$ by Problem 1.
+      Then it follows that $y \subseteq \U_{i}$ for each subset of $x$.
+      In other words, each subset of $x$ lives in $\U_{s(i)}$.
+      Thus, the set containing exactly these sets, i.e., $\P(x)$, is a subset of $\U_{s(i)}$, so the powerset lives in $\U_{s(s(i))}$.
+    \end{proof}
+  \item Axiom of union.
+    \begin{proof}
+      It suffices to show that the universe $\U$ is closed under union.
+      Let $x \in \U$, then $x \in \U_{i}$ for some $i$.
+      For any arbitrary $y \in \bigcup x$, the external axiom of union implies that there is a set $v$ such that $y \in v$ and $v \in x$.
+      Thus, by transitivity, $v \in \U_{i}$ and (by transitivity again) $y \in \U_{i}$.
+      In other words, $\bigcup x \subseteq \U_{i}$, so $\bigcup x \in \U_{s(i)}$.
+    \end{proof}
+  \item Axiom of infinity.
+    \begin{proof}
+      Note that $\N \in \P(\N) = V_{1}$.
+    \end{proof}
+  \item Axiom of foundation.
+    \begin{proof}
+      Let $x \in \U$ be a nonempty set.
+      By the external axiom of foundation, there is a set $z \in x$ such that $x \cap z = \varnothing$, so it suffices to show that $z$ lives in the universe $\U$.
+      This follows immediately from transitivity: since $x \in \U_{i}$ for some $i$ and $z \in x$ by assumption, we have that $z \in \U_{i}$.
+    \end{proof}
+  \end{itemize}
 \end{enumerate}
 
 %\printbibliography
