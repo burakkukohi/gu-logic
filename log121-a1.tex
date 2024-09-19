@@ -10,6 +10,7 @@
 \let\P\relax
 \newcommand{\P}{\mathcal{P}}
 \newcommand{\U}{\mathcal{U}}
+\newcommand{\B}{\mathcal{B}}
 \newcommand{\impl}{\Rightarrow}
 \let\iff\relax
 \newcommand{\iff}{\Leftrightarrow}
@@ -90,8 +91,8 @@
     \end{proof}
   \item Axiom schema of separation.
     \begin{proof}
-      Let $\varphi$ be any $\U$-bounded formula with free variables among $x,p_{1},\ldots,p_{n},z$ in the language of ZF set theory and $x,p_{1},\ldots,p_{n} \in \U$.
-      It suffices to show that $y := \{z \in x \mid \varphi(x,p_{1},\ldots,p_{n},z)\} \in \U$.
+      Let $\varphi$ be any formula in the language of ZF set theory with free variables among $z,p_{1},\ldots,p_{n}$ and let $x \in \U$.
+      It suffices to show that $y := \{z \in x \mid \varphi(z,p_{1},\ldots,p_{n})\} \in \U$.
       Since $x \in \U_{i}$ for some $i$, $x \subseteq \U_{i}$ by Problem 1.
       Then since $y \subseteq x$, $y \subseteq \U_{i}$, i.e., $y \in \U_{s(i)}$.
     \end{proof}
@@ -125,7 +126,37 @@
       This follows immediately from transitivity: since $x \in \U_{i}$ for some $i$ and $z \in x$ by assumption, we have that $z \in \U_{i}$.
     \end{proof}
   \end{itemize}
+\item
+  \begin{proof}
+    Consider $\varphi(x,y) := y = \P(x)$, or more concretely,
+    \[
+      \varphi(x,y) := \forall z.\,%
+      z \in y \iff%
+      (\forall a.\, a \in z \iff (\forall b.\, b \in a \impl b \in x)).
+    \]
+    The recursion scheme then yields the definable function $n \mapsto \U_{n}$.
+    The image of this function under $\N$ is $\U$, which is too large to live in $\U$ by the axiom of foundation.
+  \end{proof}
 \end{enumerate}
+
+\section*{Problem 3}
+To model the axioms of extensionality, empty set, and foundation, it suffices to choose $\B = \{\varnothing\}$.
+
+To model the axiom of pairing, we need to extend this universe.
+Let us construct a universe as follows:
+\begin{align*}
+  \B := \bigcup\{\B_{i} \mid i \in \N\} && \text{with} && \B_{0} := \{\varnothing\} && \B_{s(n)} := \P(\B_{n}).
+\end{align*}
+
+This is (probably) more than enough to model the axiom of pairing.
+
+Using the same argument in Problems 1 and 2, we can show that this universe is (1) transitive and (2) closed under pairing.
+Thus, $\B$ provides a model for ZF3 without losing $\B$-bounded extensionality and foundation.
+
+In fact, $\B$ is closed under all constructions guaranteed by ZF3-6, so $\B$ actually provides a model for ZF1-6,9.
+
+Now, observe that the powerset of a finite set is finite, so every set in $\B$ is finite.
+Thus, ZF1-6,9 cannot guarantee the existence of infinite sets.
 
 %\printbibliography
 
