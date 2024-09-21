@@ -11,6 +11,7 @@
 \newcommand{\P}{\mathcal{P}}
 \newcommand{\U}{\mathcal{U}}
 \newcommand{\B}{\mathcal{B}}
+\newcommand{\C}{\mathcal{C}}
 \newcommand{\impl}{\Rightarrow}
 \let\iff\relax
 \newcommand{\iff}{\Leftrightarrow}
@@ -91,7 +92,7 @@
     \end{proof}
   \item Axiom schema of separation.
     \begin{proof}
-      Let $\varphi$ be any formula in the language of ZF set theory with free variables among $z,p_{1},\ldots,p_{n}$ and let $x \in \U$.
+      Let $\varphi$ be any formula in the language of ZF set theory with free variables among $z,p_{1},\ldots,p_{n}$ and let $x,p_{1},\ldots,p_{n} \in \U$.
       It suffices to show that $y := \{z \in x \mid \varphi(z,p_{1},\ldots,p_{n})\} \in \U$.
       Since $x \in \U_{i}$ for some $i$, $x \subseteq \U_{i}$ by Problem 1.
       Then since $y \subseteq x$, $y \subseteq \U_{i}$, i.e., $y \in \U_{s(i)}$.
@@ -168,11 +169,33 @@ To model the axioms of extensionality, empty set, and foundation, it suffices to
 To model the axiom of pairing, we need to extend this universe.
 Let us construct a universe as follows:
 \begin{align*}
-  \B := \bigcup\{\B_{i} \mid i \in \N\} && \text{with} && \B_{0} := \{\varnothing\} && \B_{s(n)} := \P(\B_{n}).
+  \B := \bigcup\{\B_{i} \mid i \in \N\} && \text{with} && \B_{0} := \{\varnothing\} && \B_{s(n)} := \{\{x,y\} \mid x,y \in \B_{n}\} \cup \B_{n}.
+\end{align*}
+This universe is not replete (consider any 3 element subset of $\B_{2}$; it cannot live in $\B_{3}$), but it is monotone (by construction) and transitive (by simple induction).
+Additionally, it contains the empty set and every set in $\B$ contains at most 2 elements.
+
+Note that the proof for the axiom of pairing above does not work out of the box because it relies on repleteness, but it can be easily repaired because $\B$ is closed under pairing.
+
+Repairing the proof for the axiom schema of separation requires more work.
+To make it work, we make the observation that every set in the universe $\B$ is either the empty set or a pair of sets from $\B$.
+\begin{proof}
+  Let $\varphi$ be any formula in the language of ZF set theory with free variables among $z,p_{1},\ldots,p_{n}$ and let $x,p_{1},\ldots,p_{n} \in \B$.
+  It suffices to show that $y := \{z \in x \mid \varphi(z,p_{1},\ldots,p_{n})\} \in \B$.
+
+  Note that $x$ is either the empty set or a pair of sets $\{a,b\}$, where $a,b \in \B_{i}$ for some $i$.
+  In the former case, we have $y = \varnothing \in \B_{0}$.
+  In the latter case, we have $y = \varnothing, \{a\}, \{b\}, \text{ or }\{a,b\}$.
+  Thus, it follows that $y \in \B_{s(i)}$.
+\end{proof}
+Thus, $\B$ provides a model for ZF1-4,9.
+
+Now, consider the following universe.
+\begin{align*}
+  \C := \bigcup\{\C_{i} \mid i \in \N\} && \text{with} && \C_{0} := \{\varnothing\} && \C_{s(n)} := \P(\C_{n}).
 \end{align*}
 
 Note that this universe is replete by construction.
-We can use the same argument in Problem 1 to prove that $\B$ is transitive.
+We can use the same argument in Problem 1 to prove that $\C$ is transitive.
 Thus, it provides a model for ZF1-6,9.
 
 Now, observe that the powerset of a finite set is finite, so every set in $\B$ is finite.
