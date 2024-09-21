@@ -3,7 +3,7 @@
 \usepackage{preamble}
 \addbibresource{references/refs.bib}
 
-\title{LOG121 Hand-in 1}
+\title{Internal models of ZF}
 \author{Frank Tsai}
 
 \newcommand{\N}{\mathbb{N}}
@@ -56,7 +56,7 @@
       Then since $y \subseteq \U_{k}$, $x \in \U_{k}$.
       By \ref{prob:1-1}, $\U_{k} \subseteq \U_{s(k)}$, so $x \in \U_{s(k)}$.
     \end{itemize}
-    From \ref{prob:1-1} and \ref{prob:1-2}, we can deduce that for any $y \in \U_{i}$, we have that $y \in \U_{s(i)} = \P(\U_{i})$, or equivalently, $y \subseteq \U_{i}$.
+    From \ref{prob:1-2}, we can deduce that for any $y \in \U_{i}$ and any $x \in y$, we have $x \in \U_{i}$, i.e., $y \subseteq \U_{i}$.
   \end{proof}
 \end{enumerate}
 
@@ -85,7 +85,7 @@
   \item Axiom of pairing.
     \begin{proof}
       Let $x,y \in \U$.
-      Since $\U_{i} \subseteq \U_{s(i)}$ for all $i$, it is legitimate to assume that $x,y \in \U_{i}$ for some $i$.
+      Since $\U_{i} \subseteq \U_{s(i)}$ for all $i$, it is legitimate to assume that $x,y \in \U_{i}$ for the same $i$.
       Then it follows that $\{x,y\} \subseteq \U_{i}$, i.e., $\{x,y\} \in \U_{s(i)}$.
       The rest of the statement follows from the external axiom of pairing.
     \end{proof}
@@ -128,16 +128,39 @@
   \end{itemize}
 \item
   \begin{proof}
-    Consider $\varphi(x,y) := y = \P(x)$, or more concretely,
+    Consider $\varphi(x,y) := y = \P(x)$, or more precisely,
     \[
       \varphi(x,y) := \forall z.\,%
       z \in y \iff%
       (\forall a.\, a \in z \iff (\forall b.\, b \in a \impl b \in x)).
     \]
-    The recursion scheme then yields the definable function $n \mapsto \U_{n}$.
-    The image of this function under $\N$ is $\U$, which is too large to live in $\U$ by the axiom of foundation.
+    It is a definable function because (1) the axiom of powerset guarantees existence and (2) the axiom of extensionality guarantees uniqueness.
+    
+    Applying the recursion scheme with $\N$ yields the definable function $n \mapsto \U_{n}$.
+    The image of this function under $\N$ is the entire universe $\U$, which is too large to live in $\U$ by the axiom of foundation.
   \end{proof}
 \end{enumerate}
+
+\begin{remark}
+  Let us pause and reflect on the proofs we have written so far.
+  Ignoring the axiom schema of replacement, every axiom except the axioms of empty set and infinity relies purely on 3 properties of the universe $\U$:
+  \begin{enumerate}
+  \item Every level of the hierarchy is monotone, i.e., $\U_{i} \subseteq \U_{s(i)}$ for all $i$.
+  \item Every level of the hierarchy is transitive.
+  \item Every level of the hierarchy is replete, i.e., $x \subseteq \U_{i}$ implies that $x \in \U_{s(i)}$ for all $i$.
+  \end{enumerate}
+  This observation can be sharpened in two directions.
+  First, monotonicity is in fact a consequence of transitivity and repleteness.
+  To see this, observe that, for any $x \in \U_{i}$, we can build the following chain using repleteness.
+  \[
+    x \in \{x\} \in \U_{s(i)}
+  \]
+  Then transitivity yields the thesis.
+
+  Second, a replete universe cannot be empty since $\varnothing \subseteq \U_{i}$.
+  In fact, this implies that the empty set must be in the universe $\U$.
+  This provides a model for the axiom of empty set.
+\end{remark}
 
 \section*{Problem 3}
 To model the axioms of extensionality, empty set, and foundation, it suffices to choose $\B = \{\varnothing\}$.
@@ -148,15 +171,14 @@ Let us construct a universe as follows:
   \B := \bigcup\{\B_{i} \mid i \in \N\} && \text{with} && \B_{0} := \{\varnothing\} && \B_{s(n)} := \P(\B_{n}).
 \end{align*}
 
-This is (probably) more than enough to model the axiom of pairing.
-
-Using the same argument in Problems 1 and 2, we can show that this universe is (1) transitive and (2) closed under pairing.
-Thus, $\B$ provides a model for ZF3 without losing $\B$-bounded extensionality and foundation.
-
-In fact, $\B$ is closed under all constructions guaranteed by ZF3-6, so $\B$ actually provides a model for ZF1-6,9.
+Note that this universe is replete by construction.
+We can use the same argument in Problem 1 to prove that $\B$ is transitive.
+Thus, it provides a model for ZF1-6,9.
 
 Now, observe that the powerset of a finite set is finite, so every set in $\B$ is finite.
 Thus, ZF1-6,9 cannot guarantee the existence of infinite sets.
+
+
 
 %\printbibliography
 
