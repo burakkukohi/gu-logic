@@ -1,0 +1,52 @@
+\documentclass[a4paper]{article}
+
+\usepackage{preamble}
+\addbibresource{references/refs.bib}
+
+\newcommand{\Th}{{\mathsf{Th}}}
+
+\title{LOG111 Hand-in 3}
+\author{Frank Tsai}
+
+\begin{document}
+
+\maketitle
+
+\section{}
+\begin{proof}
+  By construction, the set $\Gamma_{1} \cup \Gamma_{2}$ is unsatisfiable, so by compactness, there is a finite unsatisfiable subset $\Delta \subseteq \Gamma_{1} \cup \Gamma_{2}$.
+  
+  Consider
+  \begin{align*}
+    \Delta_{1} := \Delta \setminus \Gamma_{2} && \Delta_{2} := \Delta \setminus \Gamma_{1}.
+  \end{align*}
+  We claim that $\Delta_{1}$ and $\Delta_{2}$ respectively axiomatize $\Th(\Gamma_{1})$ and $\Th(\Gamma_{2})$.
+  We prove that this is the case for $\Delta_{1}$; the argument for $\Delta_{2}$ is completely analogous.
+
+  We need to prove that for any formula $\varphi$, $\Gamma_{1} \vdash \varphi$ iff $\Delta_{1} \vdash \varphi$.
+  To this end, it suffices to prove their semantic counterpart by soundness and completeness.
+  
+  The if direction is an immediate consequence of monotonicity.
+  In the other direction, suppose that $\Gamma_{1} \vDash \varphi$ and let $M \vDash \Delta_{1}$.
+  If $M \vDash \Gamma_{1}$ then we are done.
+  On the other hand, if $M \nvDash \Gamma_{1}$ then it follows that $M \vDash \Delta_{2}$, but this means that $M \vDash \Delta_{1} \cup \Delta_{2}$ contradicting the fact that $\Delta = \Delta_{1} \cup \Delta_{2}$ is unsatisfiable.
+\end{proof}
+
+\section{}
+\begin{enumerate}
+\item
+  \[\begin{prooftree}
+      \hypo{[c_{x} < c_{y}]^2}
+      \hypo{[c_{y} < c_{x}]^1}
+      \infer2[T]{c_{x} < c_{x}}
+      \infer1[R]{\bot}
+      \infer1[RAA$_{2}^2$]{c_{x} \nless c_{y}}
+      \hypo{c_{x} < c_{y}}
+      \infer2[$\bot$]{\bot}
+      \infer1[RAA$_{2}^1$]{c_{y} \nless c_{x}}
+    \end{prooftree}\]
+\end{enumerate}
+
+%\printbibliography
+
+\end{document}
