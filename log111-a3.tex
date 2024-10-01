@@ -36,15 +36,26 @@
 \begin{enumerate}
 \item
   \[\begin{prooftree}
-      \hypo{[c_{x} < c_{y}]^2}
+      \hypo{c_{x} < c_{y}}
       \hypo{[c_{y} < c_{x}]^1}
       \infer2[T]{c_{x} < c_{x}}
       \infer1[R]{\bot}
-      \infer1[RAA$_{2}^2$]{c_{x} \nless c_{y}}
-      \hypo{c_{x} < c_{y}}
-      \infer2[$\bot$]{\bot}
       \infer1[RAA$_{2}^1$]{c_{y} \nless c_{x}}
     \end{prooftree}\]
+\item
+  \begin{mathpar}
+    (X,R) \nvDash \bot\and
+    (X,R) \vDash c_{x} < c_{y}~\text{iff $(x,y) \in R$}\and
+    (X,R) \vDash c_{x} \nless c_{y}~\text{iff $(x,y) \notin R$}
+  \end{mathpar}
+  $\Gamma \vDash \varphi$ iff for every $(X,R)$, if $(X,R)$ satisfies every formula in $\Gamma$ then $(X,R)$ satisfies $\varphi$.
+\item To prove soundness, we can do an induction on the height of the derivation tree.
+  
+  The base case is immediate.
+  In the induction case, we do a case analysis on the last applied rule.
+  When the last applied rule is $\text{RAA}_{1}$, the induction hypothesis yields $\Gamma,c_{x} \nless c_{y} \vDash \bot$.
+  Thus, for any $(X,R)$ satisfying $\Gamma$, $(X,R)$ must satisfy $c_{x} < c_{y}$, i.e., $\Gamma \vDash c_{x} < c_{y}$.
+\item We show that if $\Gamma$ is consistent then $\Gamma$ is satisfiable.
 \end{enumerate}
 
 %\printbibliography
