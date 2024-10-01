@@ -4,6 +4,7 @@
 \addbibresource{references/refs.bib}
 
 \newcommand{\Th}{{\mathsf{Th}}}
+\newcommand{\N}{\mathbb{N}}
 
 \title{LOG111 Hand-in 3}
 \author{Frank Tsai}
@@ -55,7 +56,36 @@
   In the induction case, we do a case analysis on the last applied rule.
   When the last applied rule is $\text{RAA}_{1}$, the induction hypothesis yields $\Gamma,c_{x} \nless c_{y} \vDash \bot$.
   Thus, for any $(X,R)$ satisfying $\Gamma$, $(X,R)$ must satisfy $c_{x} < c_{y}$, i.e., $\Gamma \vDash c_{x} < c_{y}$.
-\item We show that if $\Gamma$ is consistent then $\Gamma$ is satisfiable.
+\item 
+  \begin{proof}
+    We show that if $\Gamma$ is consistent then $\Gamma$ is satisfiable.
+    First, $X \times X$ is countable because $X$ is, so the set of formulas is enumerable.
+    It is sufficient to enumerate formulas of the form $c_{x} < c_{y}$ and their negation as we have no use for $\bot$.
+    We write $c_{n_1} < c_{n_2}$ or $c_{n_1} \nless c_{n_2}$ for the $n$-th enumeration.
+
+    Let $\Gamma$ be a consistent set of formulas.
+    We extend $\Gamma$ as follows:
+    \begin{mathpar}
+      \Gamma^{*} = \bigcup\{\Gamma_{n} \mid n \in \N\}\and
+      \Gamma_{0} = \Gamma\and
+      \Gamma_{n+1} =
+      \begin{cases}
+        \Gamma_{n},c_{n_1} < c_{n_2} & \text{if the resulting set is consistent,}\\
+        \Gamma_{n},c_{n_1} \nless c_{n_2} & \text{otherwise.}
+      \end{cases}
+    \end{mathpar}
+    Show that it is consistent...
+
+    We include $c_x \nless c_y$ because we want this example to work in the next sub-question.
+
+    We are now ready to define a partial order:
+    \[
+      R = \{(x,y) \mid c_{x} < c_{y} \in \Gamma^{*}\}
+    \]
+    If $(x,x) \in R$, then by definition $c_{x} < c_{x} \in \Gamma^{*}$.
+    But this means that $\Gamma^{*}$ is inconsistent as $\Gamma^* \vdash \bot$ using R.
+    Thus, $R$ is irreflexive.
+  \end{proof}
 \end{enumerate}
 
 %\printbibliography
