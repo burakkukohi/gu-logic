@@ -60,8 +60,8 @@
   \begin{proof}
     We show that if $\Gamma$ is consistent then $\Gamma$ is satisfiable.
     First, $X \times X$ is countable because $X$ is, so the set of formulas is enumerable.
-    It is sufficient to enumerate formulas of the form $c_{x} < c_{y}$ and their negation as we have no use for $\bot$.
-    We write $c_{n_1} < c_{n_2}$ or $c_{n_1} \nless c_{n_2}$ for the $n$-th enumeration.
+    It is sufficient to enumerate formulas of the form $c_{x} < c_{y}$ as we have no use for the other formulas.
+    We write $c_{n_1} < c_{n_2}$ for the $n$-th enumeration.
 
     Let $\Gamma$ be a consistent set of formulas.
     We extend $\Gamma$ as follows:
@@ -71,20 +71,46 @@
       \Gamma_{n+1} =
       \begin{cases}
         \Gamma_{n},c_{n_1} < c_{n_2} & \text{if the resulting set is consistent,}\\
-        \Gamma_{n},c_{n_1} \nless c_{n_2} & \text{otherwise.}
+        \Gamma_{n} & \text{otherwise.}
       \end{cases}
     \end{mathpar}
-    Show that it is consistent...
-
-    We include $c_x \nless c_y$ because we want this example to work in the next sub-question.
-
-    We are now ready to define a partial order:
+    By a simple induction on $n$, one can show that each $\Gamma_{n}$ is consistent.
+    If $\Gamma^{*} \vdash \bot$, then there is a subset $\Gamma' \subseteq \Gamma^{*}$ such that $\Gamma' \vdash \bot$.
+    Note that $\Gamma' \subseteq \Gamma_{n}$ for some $n$ (each approximation of $\Gamma^{*}$ is cumulative), but this contradicts the fact that $\Gamma_{n}$ is consistent.
+    
+    We are now ready to define a relation:
     \[
       R = \{(x,y) \mid c_{x} < c_{y} \in \Gamma^{*}\}
     \]
     If $(x,x) \in R$, then by definition $c_{x} < c_{x} \in \Gamma^{*}$.
-    But this means that $\Gamma^{*}$ is inconsistent as $\Gamma^* \vdash \bot$ using R.
+    But this means that $\Gamma^{*}$ is inconsistent as $\Gamma^* \vdash \bot$ via R.
     Thus, $R$ is irreflexive.
+
+    Let $(a,b),(b,c) \in R$.
+    We need to show that $(a,c) \in R$.
+    Suppose that $c_{a} < c_{c} \notin \Gamma^*$.
+    Then it follows by construction that $\Gamma^*,c_{a} < c_{c}$ is inconsistent.
+    But this gives a derivation $\Gamma^* \vdash \bot$ as follows.
+    \[\begin{prooftree}
+        \hypo{c_{a} < c_{b}}
+        \hypo{c_{b} < c_{c}}
+        \infer2[T]{c_{a} < c_{c}}
+        \hypo{[c_{a} < c_{c}]^*}
+        \ellipsis{}{\bot}
+        \infer1[RAA$_2^*$]{c_{a} \nless c_{c}}
+        \infer2[$\bot$]{\bot}
+      \end{prooftree}\]
+    This contradicts the fact that $\Gamma^*$ is consistent.
+    Thus, $R$ is transitive.
+
+    $R$ satisfies all the positive formulas in $\Gamma^*$ by construction.
+    It also satisfies all the negative formulas because if a negative formula $c_a \nless c_b$ is not satisfied then $(a,b) \in R$.
+    By construction, this means that $c_a < c_b \in \Gamma^*$, rendering $\Gamma^*$ inconsistent.
+
+    Now, suppose that $\Gamma \nvdash \varphi$ and that $\Gamma \vDash \varphi$.
+    Then $\Gamma$ is consistent, so we can use the construction above to extract a model.
+    Since $\Gamma,\lnot\varphi$ is also consistent, $\lnot\varphi \in \Gamma^*$ (this relies on one of the RAA rules).
+    But this means that $(X,R)$ has to satisfy both $\varphi$ and $\lnot\varphi$, which is impossible.
   \end{proof}
 \end{enumerate}
 
