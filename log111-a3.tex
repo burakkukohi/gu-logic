@@ -56,62 +56,156 @@
   In the induction case, we do a case analysis on the last applied rule.
   When the last applied rule is $\text{RAA}_{1}$, the induction hypothesis yields $\Gamma,c_{x} \nless c_{y} \vDash \bot$.
   Thus, for any $(X,R)$ satisfying $\Gamma$, $(X,R)$ must satisfy $c_{x} < c_{y}$, i.e., $\Gamma \vDash c_{x} < c_{y}$.
-\item 
-  \begin{proof}
-    We show that if $\Gamma$ is consistent then $\Gamma$ is satisfiable.
-    First, $X \times X$ is countable because $X$ is, so the set of formulas is enumerable.
-    It is sufficient to enumerate formulas of the form $c_{x} < c_{y}$ as we have no use for the other formulas.
-    We write $c_{n_1} < c_{n_2}$ for the $n$-th enumeration.
-
-    Let $\Gamma$ be a consistent set of formulas.
-    We extend $\Gamma$ as follows:
+\item Given a formula $\varphi$ that is not $\bot$, we shall use the informal notation $\lnot\varphi$ to denote the opposite of $\varphi$, e.g., if $\varphi \equiv c_{x} \nless c_{y}$ then $\lnot\varphi \equiv c_{x} < c_{y}$.
+  Note that the set of formulas is enumerable because $X \times X$ is countable.
+  We write $c_{n_1} < c_{n_2}$ or $c_{n_1} \nless c_{n_2}$ for the $n$-th enumeration.
+  \begin{construction}\label{const:context-completion}
+    Let $\Gamma$ be consistent, we extend $\Gamma$ by taking the fixed point of the following process and we name the resulting set $\Gamma^*$.
     \begin{mathpar}
       \Gamma^{*} = \bigcup\{\Gamma_{n} \mid n \in \N\}\and
       \Gamma_{0} = \Gamma\and
       \Gamma_{n+1} =
       \begin{cases}
         \Gamma_{n},c_{n_1} < c_{n_2} & \text{if the resulting set is consistent,}\\
-        \Gamma_{n} & \text{otherwise.}
+        \Gamma_{n},c_{n_1} \nless c_{n_2} & \text{otherwise.}
       \end{cases}
     \end{mathpar}
-    By a simple induction on $n$, one can show that each $\Gamma_{n}$ is consistent.
-    If $\Gamma^{*} \vdash \bot$, then there is a subset $\Gamma' \subseteq \Gamma^{*}$ such that $\Gamma' \vdash \bot$.
-    Note that $\Gamma' \subseteq \Gamma_{n}$ for some $n$ (each approximation of $\Gamma^{*}$ is cumulative), but this contradicts the fact that $\Gamma_{n}$ is consistent.
-    
-    We are now ready to define a relation:
+  \end{construction}
+  
+  \begin{lemma}\label{thm:completion-consistent}
+    If $\Gamma$ is consistent, then the set $\Gamma^*$ as in \cref{const:context-completion} is consistent and complete in the sense that for any $a,b \in X$, either $c_{a} < c_{b}$ or $c_{a} \nless c_{b}$.
+  \end{lemma}
+  \begin{proof}
+    Completeness is evident: if the pair $(n_1, n_2)$ enumerates $(a,b)$, then either $c_a < c_b$ or $c_a \nless c_b$ is added at step $n$.
+
+    Now, we show that each $\Gamma_{n}$ is consistent.
+    We proceed by induction on $n$.
+    The base case is trivial.
+    In the induction step, if $\Gamma_{n+1} = \Gamma_{n},c_{n_1} < c_{n_2}$ then there is nothing left to prove.
+
+    If $\Gamma_{n+1} = \Gamma_{n},c_{n_1} \nless c_{n_2}$, then $\Gamma_{n},c_{n_1} < c_{n_2} \vdash \bot$.
+    Suppose that $\Gamma_{n},c_{n_1} \nless c_{n_2} \vdash \bot$.
+    Then we have a derivation of $\Gamma_{n} \vdash c_{n_1} < c_{n_2}$ as follows.
+    \[
+      \begin{prooftree}
+        \hypo{[c_{n_1} \nless c_{n_2}]}
+        \ellipsis{}{\bot}
+        \infer1[ARR]{c_{n_1} < c_{n_2}}
+      \end{prooftree}
+    \]
+    But this gives a derivation of $\Gamma_{n} \vdash \bot$.
+    \[
+      \begin{prooftree}
+        \hypo{[c_{n_1} \nless c_{n_2}]}
+        \ellipsis{}{\bot}
+        \infer1[ARR]{c_{n_1} < c_{n_2}}
+        \ellipsis{}{}
+        \infer1{\bot}
+      \end{prooftree}
+    \]
+    This contradicts the induction hypothesis.
+    If $\Gamma^* \vdash \bot$ then there is an inconsistent subset $\Gamma' \subseteq \bot$.
+    This subset lies in $\Gamma_{n}$ for some $n$, rendering this set inconsistent.
+    But this is a contradiction.
+  \end{proof}
+  
+  \begin{lemma}\label{thm:model-existence}
+    If $\Gamma$ is consistent then $\Gamma$ has a model.
+    Moreover, if $\Gamma \nvdash \varphi$, then this model also satisfies $\lnot\varphi$, where $\varphi$ is not $\bot$.
+  \end{lemma}
+  \begin{proof}
+    By \cref{thm:completion-consistent}, $\Gamma^*$ is consistent and complete.
+    Consider the following relation.
     \[
       R = \{(x,y) \mid c_{x} < c_{y} \in \Gamma^{*}\}
     \]
-    If $(x,x) \in R$, then by definition $c_{x} < c_{x} \in \Gamma^{*}$.
-    But this means that $\Gamma^{*}$ is inconsistent as $\Gamma^* \vdash \bot$ via R.
-    Thus, $R$ is irreflexive.
+    We postpone the additional proof obligations for irreflexivity and transitivity.
 
-    Let $(a,b),(b,c) \in R$.
-    We need to show that $(a,c) \in R$.
-    Suppose that $c_{a} < c_{c} \notin \Gamma^*$.
-    Then it follows by construction that $\Gamma^*,c_{a} < c_{c}$ is inconsistent.
-    But this gives a derivation $\Gamma^* \vdash \bot$ as follows.
-    \[\begin{prooftree}
-        \hypo{c_{a} < c_{b}}
-        \hypo{c_{b} < c_{c}}
-        \infer2[T]{c_{a} < c_{c}}
-        \hypo{[c_{a} < c_{c}]^*}
+    To show that $(X,R) \vDash \Gamma$, it suffices to show that $(X,R) \vDash \Gamma^*$.
+    Let $\varphi \in \Gamma^*$.
+    Note that it must be either $c_x < c_y$ or $c_x \nless c_y$ because $\Gamma^*$ is consistent.
+    In the former case, there is nothing left to prove.
+    In the latter case, suppose that $(x,y) \in R$.
+    Then by definition $c_x < c_y \in \Gamma^*$.
+    This yields $\Gamma^* \vdash \bot$ as follows.
+    \[
+      \begin{prooftree}
+        \hypo{c_x < c_y}
+        \hypo{c_x \nless c_y}
+        \infer2[$\bot$]{\bot}
+      \end{prooftree}
+    \]
+    This is a contradiction.
+
+    It remains to show the second half of the statement.
+    Note that if $\Gamma \nvdash \varphi$, then $\Gamma,\lnot\varphi$ is consistent because if $\Gamma,\lnot\varphi \vdash \bot$ then we have a derivation of $\Gamma \vdash \varphi$.
+    \[
+      \begin{prooftree}
+        \hypo{[\lnot\varphi]}
         \ellipsis{}{\bot}
-        \infer1[RAA$_2^*$]{c_{a} \nless c_{c}}
+        \infer1[RAA]{\varphi}
+      \end{prooftree}
+    \]
+    Thus, $\lnot\varphi$ has to be added to $\Gamma^*$ at some point.
+    Then it follows by construction that $(X,R) \vDash \lnot\varphi$.
+  \end{proof}
+  \begin{proof}[Proof of irreflexivity]
+    If $(x,x) \in R$, then by definition $c_{x} < c_{x} \in \Gamma^{*}$.
+    But this means that there is a derivation of $\Gamma^* \vdash \bot$.
+    \[
+      \begin{prooftree}
+        \hypo{c_{x} < c_{x}}
+        \infer1[R]{\bot}
+      \end{prooftree}
+    \]
+    This contradicts the fact that $\Gamma^*$ is consistent.
+  \end{proof}
+  \begin{proof}[Proof of transitivity]
+    Let $(x,y),(y,z) \in R$.
+    We need to show that $(x,z) \in R$.
+    By completeness, either $c_{x} < c_{z} \in \Gamma^*$ or $c_{x} \nless c_{z} \in \Gamma^*$.
+    In the former case, there is nothing left to prove.
+    On the other hand, if $c_{x} \nless c_{z} \in \Gamma^*$ then we have a derivation $\Gamma^* \vdash \bot$.
+    \[\begin{prooftree}
+        \hypo{c_{x} < c_{y}}
+        \hypo{c_{y} < c_{z}}
+        \infer2[T]{c_{x} < c_{z}}
+        \hypo{c_{x} \nless c_{z}}
         \infer2[$\bot$]{\bot}
       \end{prooftree}\]
     This contradicts the fact that $\Gamma^*$ is consistent.
-    Thus, $R$ is transitive.
-
-    $R$ satisfies all the positive formulas in $\Gamma^*$ by construction.
-    It also satisfies all the negative formulas because if a negative formula $c_a \nless c_b$ is not satisfied then $(a,b) \in R$.
-    By construction, this means that $c_a < c_b \in \Gamma^*$, rendering $\Gamma^*$ inconsistent.
-
-    Now, suppose that $\Gamma \nvdash \varphi$ and that $\Gamma \vDash \varphi$.
-    Then $\Gamma$ is consistent, so we can use the construction above to extract a model.
-    Since $\Gamma,\lnot\varphi$ is also consistent, $\lnot\varphi \in \Gamma^*$ (this relies on one of the RAA rules).
-    But this means that $(X,R)$ has to satisfy both $\varphi$ and $\lnot\varphi$, which is impossible.
   \end{proof}
+  
+  \begin{theorem}[Completeness]
+    If $\Gamma \vDash \varphi$ then $\Gamma \vdash \varphi$.
+  \end{theorem}
+  \begin{proof}
+    Suppose that $\Gamma \nvdash \varphi$ and that $\Gamma \vDash \varphi$.
+    The first assumption implies that $\Gamma$ is consistent, so by \cref{thm:model-existence}, $\Gamma$ has a model $(X,R)$ which also satisfies $\lnot\varphi$.
+    But this is a contradiction because $(X,R)$ must satisfy its opposite $\varphi$ by the second assumption.
+  \end{proof}
+\item
+  \begin{proof}
+    It suffices to repair the induction step of \cref{thm:completion-consistent}.
+    The proof of the first half of \cref{thm:model-existence} goes through without any problem.
+
+    There is nothing to repair in the first case of the induction step.
+    In the second case, we know that $\Gamma_{n},c_{n_1} < c_{n_2} \vdash_i \bot$.
+    Suppose that $\Gamma_{n},c_{n_1} \nless c_{n_2} \vdash_i \bot$.
+    Let us consider the last rule of this derivation.
+    Only R and $\bot$ are immediately applicable.
+
+    The premise of R is a positive formula, so it must come from $\Gamma_{n}$.
+    But this is impossible because $\Gamma_{n}$ is consistent by the induction hypothesis.
+    Thus, we can rule out R.
+
+    The only applicable rule is $\bot$.
+    This rule demands $c_{n_1} < c_{n_2}$, so $\Gamma_{n} \vdash_{i} c_{n_1} < c_{n_2}$.
+    But this means that $\Gamma_{n}$ is not consistent after all.
+  \end{proof}
+\item Note that the intuitionistic fragment cannot derive negative formulas, so consider $c_{x} < c_{y} \vDash c_{x} \nless c_{y}$.
+  This clearly holds.
+  In fact, Problem A and soundness imply this.
 \end{enumerate}
 
 %\printbibliography
