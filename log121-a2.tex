@@ -1,0 +1,72 @@
+\documentclass[a4paper]{article}
+
+\usepackage{preamble}
+\addbibresource{references/refs.bib}
+
+\newcommand{\curry}{\mathsf{curry}}
+\newcommand{\uncurry}{\mathsf{uncurry}}
+\newcommand{\ran}{\mathsf{ran}}
+\newcommand{\N}{\mathbb{N}}
+
+\title{Assignment 2: Cardinality (Draft)}
+\author{Frank Tsai}
+
+\begin{document}
+
+\maketitle
+
+\section*{6.13}
+\begin{enumerate}
+\item
+  \begin{proof}
+    Consider the following functions
+    \begin{align*}
+      f(a,(b,c)) &= ((a,b),c)\\
+      g((a,b),c) &= (a,(b,c))
+    \end{align*}
+    This pair of functions are inverses of each other since $f(g((a,b),c)) = f(a,(b,c)) = ((a,b),c)$ and $g(f(a,(b,c))) = g((a,b),c) = (a,(b,c))$, so we have the required bijection.
+  \end{proof}
+\item
+  \begin{proof}
+    Consider the following functions
+    \begin{align*}
+      \curry(f)(a)(b) &= f(a,b)\\
+      \uncurry(g)(a,b) &= g(a)(b)
+    \end{align*}
+    This pair of functions are inverses of each other because $\curry(\uncurry(g))(a)(b) = \uncurry(g)(a,b) = g(a)(b)$.
+    Functional extensionality implies that $\curry(\uncurry(g)) = g$.
+    We also have $\uncurry(\curry(g))(a,b) = \curry(g)(a)(b) = g(a,b)$.
+    Functional extensionality implies that $\uncurry(\curry(g)) = g$.
+    We have the required bijection.
+  \end{proof}
+\end{enumerate}
+
+\section*{6.33}
+\begin{proof}
+  There is an obvious injection, namely the inclusion $A \hookrightarrow A \cup B$, so $\N \preceq A \cup B$.
+  It suffices to construct an injection $A \cup B \to \N$.
+  Consider the following function
+  \[h(c) =
+    \begin{cases}
+      2f(c) & \text{if $c \in A$,}\\
+      2g(c) + 1 & \text{o.w.}
+    \end{cases}
+  \]
+  blah blah blah so this is an injection.
+\end{proof}
+
+\section*{6.37}
+\begin{proof}
+  It suffices to rule out $X \prec \N$.
+  Suppose that $X \prec \N$.
+  Let $f\colon X \to \N$ be an injection witnessing this fact.
+  Consider $\ran(f) \subseteq \N$.
+  If $\ran(f)$ is infinite, then we have $X \approx \ran(f) \approx \N$.
+  This is a contradiction.
+
+  If $\ran(f)$ is finite, then $X$ is finite, but this contradicts the assumption that $X$ is infinite.
+\end{proof}
+
+%\printbibliography
+
+\end{document}
