@@ -7,6 +7,9 @@
 \newcommand{\uncurry}{\mathsf{uncurry}}
 \newcommand{\ran}{\mathsf{ran}}
 \newcommand{\N}{\mathbb{N}}
+\newcommand{\To}[3]{#1\colon#2\to#3}
+\let\P\relax
+\newcommand{\P}{\mathcal{P}}
 
 \title{Assignment 2: Cardinality (Draft)}
 \author{Frank Tsai}
@@ -24,7 +27,7 @@
       f(a,(b,c)) &= ((a,b),c)\\
       g((a,b),c) &= (a,(b,c))
     \end{align*}
-    This pair of functions are inverses of each other since $f(g((a,b),c)) = f(a,(b,c)) = ((a,b),c)$ and $g(f(a,(b,c))) = g((a,b),c) = (a,(b,c))$, so we have the required bijection.
+    By direct computation, we have \[f(g((a,b),c)) = f(a,(b,c)) = ((a,b),c)\] and \[g(f(a,(b,c))) = g((a,b),c) = (a,(b,c)),\] so we have the required bijection.
   \end{proof}
 \item
   \begin{proof}
@@ -33,40 +36,129 @@
       \curry(f)(a)(b) &= f(a,b)\\
       \uncurry(g)(a,b) &= g(a)(b)
     \end{align*}
-    This pair of functions are inverses of each other because $\curry(\uncurry(g))(a)(b) = \uncurry(g)(a,b) = g(a)(b)$.
-    Functional extensionality implies that $\curry(\uncurry(g)) = g$.
-    We also have $\uncurry(\curry(g))(a,b) = \curry(g)(a)(b) = g(a,b)$.
-    Functional extensionality implies that $\uncurry(\curry(g)) = g$.
-    We have the required bijection.
+    By direct computation, we have \[\curry(\uncurry(g))(a)(b) = \uncurry(g)(a,b) = g(a)(b)\] and \[\uncurry(\curry(f))(a,b) = \curry(f)(a)(b) = f(a,b).\]
+    Then functional extensionality implies that we have the required bijection.
   \end{proof}
 \end{enumerate}
 
 \section*{6.33}
 \begin{proof}
-  There is an obvious injection, namely the inclusion $A \hookrightarrow A \cup B$, so $\N \preceq A \cup B$.
-  It suffices to construct an injection $A \cup B \to \N$.
-  Consider the following function
-  \[h(c) =
+  Let $\To{i}{A}{\N}$ and $\To{j}{B}{\N}$ be two injections witnessing the fact that $A \preceq \N$ and $B \preceq \N$ respectively.
+  Consider the function $\To{f}{A \cup B}{\N}$ defined by \[
+    f(x) =
     \begin{cases}
-      2f(c) & \text{if $c \in A$,}\\
-      2g(c) + 1 & \text{o.w.}
+      2 \cdot i(x) & \text{if $x \in A$,}\\
+      2 \cdot j(x) + 1 & \text{otherwise.}
     \end{cases}
   \]
-  blah blah blah so this is an injection.
+  Suppose that $f(x) = f(x')$.
+  If both $x, x' \in A$, then $x = x'$ because $2 \cdot -$ and $i$ are injective.
+  Similarly, if $x, x' \in B \setminus A$, then $x = x'$ because $2 \cdot -$, $j$, and $- + 1$ are all injective.
+  Only the interesting cases remain.
+  Without loss of generality, assume that $x \in A$ and $x' \in B \setminus A$.
+  Then by assumption, $2 \cdot i(x) = 2 \cdot j(x') + 1$.
+  This is not possible because an even number never equals an odd number.
+  Thus, $f$ is an injection witnessing $A \cup B \preceq \N$, i.e., $A \cup B$ is countable.
 \end{proof}
 
 \section*{6.37}
 \begin{proof}
   It suffices to rule out $X \prec \N$.
-  Suppose that $X \prec \N$.
-  Let $f\colon X \to \N$ be an injection witnessing this fact.
-  Consider $\ran(f) \subseteq \N$.
-  If $\ran(f)$ is infinite, then we have $X \approx \ran(f) \approx \N$.
-  This is a contradiction.
+  Let $\To{f}{X}{\N}$ be an injection witnessing $X \prec \N$.
+  Note that $f$ restricts to a bijection $\To{f'}{X}{\ran(f)}$ because it is injective, i.e., $X \approx \ran(f)$.
 
-  If $\ran(f)$ is finite, then $X$ is finite, but this contradicts the assumption that $X$ is infinite.
+  Since $\ran(f) \subseteq \N$, it is either finite or $\ran(f) \approx \N$.
+  The former case implies that $X$ is finite, which is a contradiction.
+  The latter case implies that $X \approx \N$, which is also a contradiction.
 \end{proof}
 
-%\printbibliography
+\section*{6.55}
+\begin{lemma}\label{thm:no-fixed-points}
+  For any natural number $n \geq 2$, there is a function $\To{\overline{(-)}}{n}{n}$ with no fixed points.
+\end{lemma}
+\begin{proof}
+  By induction on $n$.
+  In the base case, consider the function defined by
+  \begin{align*}
+    \overline{0} &= 1\\
+    \overline{1} &= 0\\
+  \end{align*}
+  This is clearly a function with no fixed points.
+
+  In the induction step, we have a function $\To{\overline{(-)}}{k}{k}$ with no fixed points.
+  Consider $\To{\overline{(-)}_{k+1}}{k+1}{k+1}$ defined as follows.
+  \[
+    \overline{m}_{k+1} =
+    \begin{cases}
+      \overline{m} & \text{if $m < k$,}\\
+      0 & \text{otherwise.}
+    \end{cases}
+  \]
+  Let $m \in k + 1$.
+  If $m < k$ then it cannot be a fixed point because $\overline{(-)}$ does not have any fixed point.
+  If $m = k$ then $\overline{k}_{k+1} = 0$.
+  Since $k$ is at least $2$, it cannot be a fixed point either.
+\end{proof}
+
+\begin{enumerate}
+\item This is not true: let $X$ be any singleton set; $X \approx X \times X$ but $X$ is clearly not infinite.
+  Let us additionally assume that $X$ is not the singleton set.
+  We show that $X$ is infinite.
+  \begin{proof}
+    If $X$ is finite, then $X \approx n$ for some natural number $n$.
+    Thus, $n \times n \approx X \times X \approx X \approx n$.
+    We show that this is impossible for any $n \geq 2$.
+
+    Suppose that there is a bijection $\To{f}{n}{n \times n}$.
+    Let $\To{\hat{f}}{n}{\underbrace{n \times \cdots \times n}_{n~\text{times}}}$ be the composite of the following $n - 1$ bijections.
+    % https://q.uiver.app/#q=WzAsNSxbMCwwLCJuIl0sWzEsMCwibiBcXHRpbWVzIG4iXSxbMiwwLCJuIFxcdGltZXMgbiBcXHRpbWVzIG4iXSxbMywwLCJcXGNkb3RzIl0sWzQsMCwiXFx1bmRlcmJyYWNle24gXFx0aW1lcyBcXGNkb3RzIFxcdGltZXMgbn1fe25+XFx0ZXh0e3RpbWVzfX0iXSxbMCwxLCJmIl0sWzEsMiwiMSBcXHRpbWVzIGYiXSxbMiwzLCIxIFxcdGltZXMgKDEgXFx0aW1lcyBmKSJdLFszLDRdXQ==
+    \[\begin{tikzcd}
+	n & {n \times n} & {n \times n \times n} & \cdots & {\underbrace{n \times \cdots \times n}_{n~\text{times}}}
+	\arrow["f", from=1-1, to=1-2]
+	\arrow["{1 \times f}", from=1-2, to=1-3]
+	\arrow["{1 \times (1 \times f)}", from=1-3, to=1-4]
+	\arrow[from=1-4, to=1-5]
+      \end{tikzcd}\]
+    By \cref{thm:no-fixed-points}, there is a function $\To{\overline{(-)}}{n}{n}$ with no fixed points.
+    Consider the pair $\delta := (\overline{f(0).0},\overline{f(1).1},\ldots,\overline{f(n-1).n-1})$, where $(-).i$ is the $i$-th projection.
+
+    Suppose that $f(k) = \delta$.
+    Then $f(k).k = \delta.k = \overline{f(k).k}$, but this is a fixed point of $\overline{(-)}$ so we have a contradiction.
+  \end{proof}
+\item
+  \begin{proof}
+    If $X$ is $\varnothing$ the statement is trivial: there is a unique function from $0$ to any set.
+    This statement is not true for singleton sets since $2^{1} \approx 2$, but there is a unique function from any set to the singleton set, i.e., $1^{1} \approx 1$.
+    
+    If $X$ is infinite, there is an evident injection $2^{X} \to X^{X}$.
+    Consider the function $\To{j}{X^{X}}{\P(X \times X)}$ defined by \[j(f) = \{(x,f(x)) \mid x \in X\}.\]
+    If $j(f) = j(g)$ then for any $x \in X$, we have $(x,f(x)) = (x,g(x))$, so $f(x) = g(x)$.
+    Then functional extensionality implies that $f = g$.
+    Thus, the following composition gives the required injection.
+    % https://q.uiver.app/#q=WzAsNCxbMCwyLCJcXFAoWCBcXHRpbWVzIFgpIl0sWzEsMiwiXFxQKFgpIl0sWzIsMiwiMl57WH0iXSxbMCwwLCJYXntYfSJdLFszLDAsImoiLDIseyJzdHlsZSI6eyJ0YWlsIjp7Im5hbWUiOiJtb25vIn19fV0sWzAsMSwiXFxhcHByb3giLDEseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJub25lIn0sImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbMSwyLCJcXGFwcHJveCIsMSx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6Im5vbmUifSwiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFszLDIsIiIsMSx7InN0eWxlIjp7InRhaWwiOnsibmFtZSI6Im1vbm8ifSwiYm9keSI6eyJuYW1lIjoiZGFzaGVkIn19fV1d
+    \[\begin{tikzcd}
+	{X^{X}} \\
+	\\
+	{\P(X \times X)} & {\P(X)} & {2^{X}}
+	\arrow["j"', tail, from=1-1, to=3-1]
+	\arrow[dashed, tail, from=1-1, to=3-3]
+	\arrow["\approx"{description}, draw=none, from=3-1, to=3-2]
+	\arrow["\approx"{description}, draw=none, from=3-2, to=3-3]
+      \end{tikzcd}\]
+  \end{proof}
+\item
+  \begin{proof}
+    This is not true if $X$ is the singleton set.
+    Indeed, $1 + 1 \approx 2$.
+
+    The statement is trivial when $X = \varnothing$.
+
+    If $X$ is infinite.
+    Let $\To{i}{2}{X}$ be any injection.
+    Define $\To{j}{X + X}{X \times X}$ by $j(x,0) = (x,i(0))$ and $j(x,1) = (x,i(1))$.
+  \end{proof}
+\end{enumerate}
+
+% \printbibliography
 
 \end{document}
