@@ -11,7 +11,7 @@
 \let\P\relax
 \newcommand{\P}{\mathcal{P}}
 
-\title{Assignment 2: Cardinality (Draft)}
+\title{Assignment 2: Cardinality}
 \author{Frank Tsai}
 
 \begin{document}
@@ -57,7 +57,7 @@
   Only the interesting cases remain.
   Without loss of generality, assume that $x \in A$ and $x' \in B \setminus A$.
   Then by assumption, $2 \cdot i(x) = 2 \cdot j(x') + 1$.
-  This is not possible because an even number never equals an odd number.
+  This is not possible because the left-hand side is even while the right-hand side is odd.
   Thus, $f$ is an injection witnessing $A \cup B \preceq \N$, i.e., $A \cup B$ is countable.
 \end{proof}
 
@@ -101,7 +101,7 @@
 \end{proof}
 
 \begin{enumerate}
-\item This is not true: let $X$ be any singleton set; $X \approx X \times X$ but $X$ is clearly not infinite.
+\item This is not true: let $X$ be the singleton set $1$; $1 \approx 1 \times 1$ but $1$ is clearly not infinite.
   Let us additionally assume that $X$ is not the singleton set.
   We show that $X$ is infinite.
   \begin{proof}
@@ -120,18 +120,20 @@
 	\arrow[from=1-4, to=1-5]
       \end{tikzcd}\]
     By \cref{thm:no-fixed-points}, there is a function $\To{\overline{(-)}}{n}{n}$ with no fixed points.
-    Consider the pair $\delta := (\overline{f(0).0},\overline{f(1).1},\ldots,\overline{f(n-1).n-1})$, where $(-).i$ is the $i$-th projection.
+    Consider the pair $\delta := (\overline{\hat{f}(0).0},\overline{\hat{f}(1).1},\ldots,\overline{\hat{f}(n-1).n-1})$, where $(-).i$ is the $i$-th projection.
 
-    Suppose that $f(k) = \delta$.
-    Then $f(k).k = \delta.k = \overline{f(k).k}$, but this is a fixed point of $\overline{(-)}$ so we have a contradiction.
+    Suppose that $\hat{f}(k) = \delta$.
+    Then $\hat{f}(k).k = \delta.k = \overline{\hat{f}(k).k}$, but this is a fixed point of $\overline{(-)}$ so we have a contradiction.
   \end{proof}
 \item
   \begin{proof}
-    If $X$ is $\varnothing$ the statement is trivial: there is a unique function from $0$ to any set.
     This statement is not true for singleton sets since $2^{1} \approx 2$, but there is a unique function from any set to the singleton set, i.e., $1^{1} \approx 1$.
+    Let us additionally assume that $X$ is not the singleton set.
+    
+    If $X$ is $\varnothing$ the statement is trivial: there is a unique function from $0$ to any set, i.e., $2^{0} \approx 0^{0} \approx 1$.
     
     If $X$ is infinite, there is an evident injection $2^{X} \to X^{X}$.
-    Consider the function $\To{j}{X^{X}}{\P(X \times X)}$ defined by \[j(f) = \{(x,f(x)) \mid x \in X\}.\]
+    For the other direction, consider the function $\To{j}{X^{X}}{\P(X \times X)}$ defined by \[j(f) = \{(x,f(x)) \mid x \in X\}.\]
     If $j(f) = j(g)$ then for any $x \in X$, we have $(x,f(x)) = (x,g(x))$, so $f(x) = g(x)$.
     Then functional extensionality implies that $f = g$.
     Thus, the following composition gives the required injection.
@@ -150,12 +152,27 @@
   \begin{proof}
     This is not true if $X$ is the singleton set.
     Indeed, $1 + 1 \approx 2$.
-
-    The statement is trivial when $X = \varnothing$.
+    
+    The statement is trivial when $X = \varnothing$ since $\varnothing + \varnothing = \varnothing$.
 
     If $X$ is infinite.
-    Let $\To{i}{2}{X}$ be any injection.
-    Define $\To{j}{X + X}{X \times X}$ by $j(x,0) = (x,i(0))$ and $j(x,1) = (x,i(1))$.
+    Let $\To{m}{2}{X}$ be any injection witnessing $2 \preceq X$.
+
+    There is an evident injection $\To{i}{X}{X+X}$ defined by $i(x) = (x,0)$.
+    For the other direction, define $\To{j}{X + X}{X \times X}$ by $j(x,0) = (x,m(0))$ and $j(x,1) = (x,m(1))$.
+
+    If $j(x,0) = j(y,0)$ or $j(x,1) = j(y,1)$ then the pair property gives what we want.
+    However, if we ever have $j(x,0) = j(y,1)$ then the pair property gives $m(0) = m(1)$.
+    Since $m$ is injective, we have a contradiction.
+    Thus, the following composite gives the required injection.
+    % https://q.uiver.app/#q=WzAsMyxbMCwwLCJYICsgWCJdLFswLDEsIlggXFx0aW1lcyBYIl0sWzEsMSwiWCJdLFsxLDIsIlxcYXBwcm94IiwxLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoibm9uZSJ9LCJoZWFkIjp7Im5hbWUiOiJub25lIn19fV0sWzAsMSwiaiIsMix7InN0eWxlIjp7InRhaWwiOnsibmFtZSI6Im1vbm8ifX19XSxbMCwyLCIiLDIseyJzdHlsZSI6eyJ0YWlsIjp7Im5hbWUiOiJtb25vIn0sImJvZHkiOnsibmFtZSI6ImRhc2hlZCJ9fX1dXQ==
+    \[\begin{tikzcd}
+	{X + X} \\
+	{X \times X} & X
+	\arrow["j"', tail, from=1-1, to=2-1]
+	\arrow[dashed, tail, from=1-1, to=2-2]
+	\arrow["\approx"{description}, draw=none, from=2-1, to=2-2]
+      \end{tikzcd}\]
   \end{proof}
 \end{enumerate}
 
