@@ -60,7 +60,7 @@
   Note that the set of formulas is enumerable because $X \times X$ is countable.
   We write $c_{n_1} < c_{n_2}$ or $c_{n_1} \nless c_{n_2}$ for the $n$-th enumeration.
   \begin{construction}\label{const:context-completion}
-    Let $\Gamma$ be consistent, we extend $\Gamma$ by taking the fixed point of the following process and we name the resulting set $\Gamma^*$.
+    Let $\Gamma$ be consistent, we extend $\Gamma$ by the following process and we name the resulting set $\Gamma^*$.
     \begin{mathpar}
       \Gamma^{*} = \bigcup\{\Gamma_{n} \mid n \in \N\}\and
       \Gamma_{0} = \Gamma\and
@@ -73,17 +73,17 @@
   \end{construction}
   
   \begin{lemma}\label{thm:completion-consistent}
-    If $\Gamma$ is consistent, then the set $\Gamma^*$ as in \cref{const:context-completion} is consistent and complete in the sense that for any $a,b \in X$, either $c_{a} < c_{b}$ or $c_{a} \nless c_{b}$.
+    If $\Gamma$ is consistent, then the set $\Gamma^*$ in \cref{const:context-completion} is consistent and complete in the sense that for any $a,b \in X$, either $c_{a} < c_{b} \in \Gamma^*$ or $c_{a} \nless c_{b} \in \Gamma^*$.
   \end{lemma}
   \begin{proof}
-    Completeness is evident: if the pair $(n_1, n_2)$ enumerates $(a,b)$, then either $c_a < c_b$ or $c_a \nless c_b$ is added at step $n$.
+    Completeness is evident: if the pair $(n_1, n_2)$ names $(a,b) \in X \times X$, then either $c_a < c_b$ or $c_a \nless c_b$ is added at step $n + 1$.
 
     Now, we show that each $\Gamma_{n}$ is consistent.
     We proceed by induction on $n$.
     The base case is trivial.
     In the induction step, if $\Gamma_{n+1} = \Gamma_{n},c_{n_1} < c_{n_2}$ then there is nothing left to prove.
 
-    If $\Gamma_{n+1} = \Gamma_{n},c_{n_1} \nless c_{n_2}$, then $\Gamma_{n},c_{n_1} < c_{n_2} \vdash \bot$.
+    If $\Gamma_{n+1} = \Gamma_{n},c_{n_1} \nless c_{n_2}$, then $\Gamma_{n},c_{n_1} < c_{n_2} \vdash \bot$ by construction.
     Suppose that $\Gamma_{n},c_{n_1} \nless c_{n_2} \vdash \bot$.
     Then we have a derivation of $\Gamma_{n} \vdash c_{n_1} < c_{n_2}$ as follows.
     \[
@@ -93,20 +93,11 @@
         \infer1[ARR]{c_{n_1} < c_{n_2}}
       \end{prooftree}
     \]
-    But this gives a derivation of $\Gamma_{n} \vdash \bot$.
-    \[
-      \begin{prooftree}
-        \hypo{[c_{n_1} \nless c_{n_2}]}
-        \ellipsis{}{\bot}
-        \infer1[ARR]{c_{n_1} < c_{n_2}}
-        \ellipsis{}{}
-        \infer1{\bot}
-      \end{prooftree}
-    \]
+    Cutting the derivations of $\Gamma_{n},c_{n_1} < c_{n_{2}} \vdash \bot$ and $\Gamma_{n} \vdash c_{n_1} < c_{n_{2}}$ gives a derivation of $\Gamma_{n} \vdash \bot$.
     This contradicts the induction hypothesis.
-    If $\Gamma^* \vdash \bot$ then there is an inconsistent subset $\Gamma' \subseteq \Gamma^*$.
-    This subset lies in $\Gamma_{n}$ for some $n$, rendering this set inconsistent.
-    But this is a contradiction.
+    
+    Now suppose that $\Gamma^* \vdash \bot$ then there is an inconsistent subset $\Gamma' \subseteq \Gamma^*$, rendering $\Gamma_{n}$ for some $n$ inconsistent.
+    This gives a contradiction.
   \end{proof}
   
   \begin{lemma}\label{thm:model-existence}
@@ -138,7 +129,7 @@
     This is a contradiction.
 
     It remains to show the second half of the statement.
-    Note that if $\Gamma \nvdash \varphi$, then $\Gamma,\lnot\varphi$ is consistent because if $\Gamma,\lnot\varphi \vdash \bot$ then we have a derivation of $\Gamma \vdash \varphi$.
+    Note that if $\Gamma \nvdash \varphi$, then $\Gamma,\lnot\varphi$ is consistent because if $\Gamma,\lnot\varphi \vdash \bot$ then we would have a derivation of $\Gamma \vdash \varphi$.
     \[
       \begin{prooftree}
         \hypo{[\lnot\varphi]}
@@ -165,7 +156,7 @@
     We need to show that $(x,z) \in R$.
     By completeness, either $c_{x} < c_{z} \in \Gamma^*$ or $c_{x} \nless c_{z} \in \Gamma^*$.
     In the former case, there is nothing left to prove.
-    On the other hand, if $c_{x} \nless c_{z} \in \Gamma^*$ then we have a derivation $\Gamma^* \vdash \bot$.
+    On the other hand, if $c_{x} \nless c_{z} \in \Gamma^*$ then we have a derivation of $\Gamma^* \vdash \bot$.
     \[\begin{prooftree}
         \hypo{c_{x} < c_{y}}
         \hypo{c_{y} < c_{z}}
@@ -200,7 +191,7 @@
     Thus, we can rule out R.
 
     The only applicable rule is $\bot$.
-    This rule demands $c_{n_1} < c_{n_2}$, so $\Gamma_{n} \vdash_{i} c_{n_1} < c_{n_2}$.
+    This rule demands $c_{n_1} < c_{n_2}$, so we must have a derivation of $\Gamma_{n} \vdash_{i} c_{n_1} < c_{n_2}$.
     But this means that $\Gamma_{n}$ is not consistent after all.
   \end{proof}
 \item Note that the intuitionistic fragment cannot derive negative formulas, so consider $c_{x} < c_{y} \vDash c_{x} \nless c_{y}$.
