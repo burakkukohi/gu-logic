@@ -1,0 +1,93 @@
+\documentclass[a4paper]{article}
+
+\usepackage{preamble}
+\addbibresource{references/refs.bib}
+
+\newcommand{\M}{\mathfrak{M}}
+\let\P\relax
+\newcommand{\P}{\mathcal{P}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\set}[1]{\mathopen{}\{#1\mathclose{}\}}
+\newcommand{\modImp}[1]{{#1}_{/\to}}
+\newcommand{\modNot}[1]{{#1}_{/\lnot}}
+
+\title{LOG111 - Hand-in 4}
+\author{Frank Tsai}
+
+\begin{document}
+
+\maketitle
+
+\section{}
+\label{sec:1}
+
+\begin{enumerate}
+\item Consider a model $\M$ comprised of the following data:
+  \begin{enumerate}
+  \item the set of worlds is $W = \set{w_1,w_2,w_3}$;
+  \item the accessibility relation is the smallest partial order satisfying the following conditions:
+    \begin{enumerate}
+    \item each world is accessible from itself;
+    \item $w_2$ is accessible from $w_1$;
+    \item $w_3$ is accessible from $w_1$,
+    \end{enumerate}
+  \item the valuation function $V: \Var \to \P(W)$ is defined by $V(p) = \set{w_{2}}$, $V(q) = \set{w_{3}}$, and $V(r) = \varnothing$ for all other propositional variables.
+    Clearly, $V$ is monotone.
+  \end{enumerate}
+  Observe that $\M,w_1 \nVdash p \to q$ and $\M,w_1 \nVdash q \to p$.
+  This yields a counter-model, so by soundness and completeness, the given disjunction is not derivable, i.e., $\nvdash (p \to q) \vee (q \to p)$.
+\item Consider a model $\M$ comprised of the following data.
+  \begin{enumerate}
+  \item The set of worlds is $W = \set{w_1,w_2}$.
+  \item The accessibility relation $R$ contains all the reflexive pairs and $(w_1,w_2)$; this is clearly a partial order.
+  \item The valuation function $V$ sends $p$ to $\set{w_2}$ and $\varnothing$ for all other propositional variables.
+    Monotonicity is clear.
+  \end{enumerate}
+  Observe that $\M,w_1 \nVdash \lnot\lnot p$ since $w_2$ is a future world such that $\M,w_2~\nVdash~\lnot p$; by construction $\M,w_2 \Vdash p$ and hence $\M,w_1 \Vdash \lnot\lnot p \to p$.
+  However, $\M,w_1 \nVdash p \vee \lnot p$ because it forces neither $p$ nor $\lnot p$.
+  This concludes the construction of a counter-model.
+\end{enumerate}
+
+\section{}
+\label{sec:2}
+
+\begin{proof}
+  We proceed by induction on $\varphi$.
+  \begin{itemize}
+  \item $p$: Obviously $\nvdash_i p$: any model whose valuation sends $p$ to the empty set is a counter-model.
+  \item $\bot$: For any $\M, w$ $\M, w \nVdash \bot$ by definition.
+    Thus, $\nvdash_i \bot$.
+  \item $\varphi \wedge \psi$, where $\varphi$ and $\psi$ do not contain $\to$ (or $\lnot$): Suppose that $\vdash_i \varphi \wedge \psi$.
+    Then $\vdash_i \varphi$ and $\vdash_i \psi$ by the two conjunction elimination rules respectively, but this contradicts the induction hypothesis.
+  \item $\varphi \vee \psi$, where $\varphi$ and $\psi$ do not contain $\to$ (or $\lnot$): Suppose that $\vdash_i \varphi \vee \psi$.
+    Then $\vdash_i \varphi$ or $\vdash_i \psi$ by the disjunction property, but both cases contradict the induction hypothesis.
+  \end{itemize}
+  Suppose that $\to$ is definable in terms of other connectives.
+  Then for each formula $\varphi$, we can translate it to an equivalent formula $\modNot{\varphi}$ containing no $\lnot$, which we can then translate to an equivalent formula $\modImp{(\modNot{\varphi})}$ containing no $\to$.
+  However, this means that there is no intuitionistic tautologies, which is clearly not true: $\vdash_i p \to p$ for instance.
+\end{proof}
+
+\section{}
+\label{sec:3}
+
+\begin{proof}
+  The only nontrivial data in a relation model with exact 1 world is the valuation function.
+  In this case, the valuation function $V: \Var \to \P(\set{*})$ is simply a Boolean functional.
+  Thus, we have recovered the usual semantics for classical propositional logic.
+  Then it follows that a classical tautology is precisely a formula satisfied in all relation models with exactly 1 world, i.e., satisfied in all valuations.
+\end{proof}
+
+\section{}
+\label{sec:4}
+
+\begin{proof}
+  If $\vdash_i \lnot\lnot \varphi$ then $\vdash_c \lnot\lnot \varphi$.
+  Applying double negation elimination gives $\vdash_c \varphi$.
+  Conversely, suppose that there is a model $\M$ and a world $w$ such that $\M,w \nVdash \lnot\lnot \varphi$.
+  This is the case precisely when none of the worlds accessible from $w$ forces $\varphi$, i.e., $\M,w' \nVdash \varphi$ for all $w'$ accessible from $w$.
+  ...
+\end{proof}
+
+% \printbibliography
+
+\end{document}
