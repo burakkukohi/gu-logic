@@ -81,11 +81,12 @@
 \label{sec:4}
 
 \begin{proof}
-  If $\vdash_i \lnot\lnot \varphi$ then $\vdash_c \lnot\lnot \varphi$.
-  Applying double negation elimination gives $\vdash_c \varphi$.
-  Conversely, suppose that there is a model $\M$ and a world $w$ such that $\M,w \nVdash \lnot\lnot \varphi$.
-  This is the case precisely when none of the worlds accessible from $w$ forces $\varphi$, i.e., $\M,w' \nVdash \varphi$ for all $w'$ accessible from $w$.
-  ...
+  The implication $\vdash_i \lnot\lnot \varphi \implies \vdash_c \varphi$ is clear since every intuitionistic valid formula is a classical tautology and classical logic admits double negation elimination.
+  Conversely, suppose that $\nvdash_i \lnot\lnot \varphi$.
+  Then there is a finite model $\M$ and a world $w$ such that $\M,w \nVdash \lnot\lnot \varphi$.
+  This together with finiteness imply that there is a world whose only accessible world is $w'$ such that $\M,w' \Vdash \lnot \varphi$.
+  Then the submodel containing only $w'$ is a single-world submodel that forces $\lnot \varphi$.
+  Thus, it follows that $\nvdash_c \varphi$.
 \end{proof}
 
 % \printbibliography
