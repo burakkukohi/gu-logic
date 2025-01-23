@@ -1,0 +1,72 @@
+\documentclass[a4paper]{article}
+
+\usepackage{preamble}
+\addbibresource{references/refs.bib}
+
+\newcommand{\seqarr}{\Rightarrow}
+\newcommand{\cD}{\mathcal{D}}
+
+\title{LOG 221 - A1}
+\author{Frank Tsai}
+
+\begin{document}
+
+\maketitle
+
+\section{}
+For this question, we will consider any reasonable sequent calculus in which structural rules can be dispensed with.
+We claim that the sequent $\Gamma,A \seqarr A$ is derivable with height at most $2w(A)$.
+
+We proceed by induction on $w(A)$; when $w(A) \leq 1$ there are three possible cases: $A = \bot$; $A = p$ for some atom $p$; or $A = \bot \to \bot$.
+In the first case, $\Gamma,\bot \seqarr \bot$ is an instance of $L\bot$; in the second case, $\Gamma,p \seqarr p$ is an axiom.
+In both cases, there is a derivation with height $0$, which is clearly bounded by $2w(A) = 0$.
+If $A = \bot \to \bot$, then consider the following derivation of height 1.
+\[
+  \begin{prooftree}
+    \infer0[L$\bot$]{\Gamma,\bot \to \bot, \bot \seqarr \bot}
+    \infer1[R$\to$]{\Gamma,\bot \to \bot \seqarr \bot \to \bot}
+  \end{prooftree}
+\]
+The height of this derivation is clearly bounded by $2w(A) = 2$.
+
+Now we show that $\Gamma,A \seqarr A$ has a derivation of height at most $2w(A)$ for $w(A) \leq n + 1$.
+There are only three remaining cases to consider: $A = B \wedge C$; $A = B \vee C$; and $A = B \to C$.
+In any of these cases, $w(B) \leq n$ and $w(C) \leq n$; hence, by the induction hypothesis, for any sequence $\Delta$, $\Delta,B \seqarr B$ and $\Delta,C \seqarr C$ are derivable with height at most $2w(B)$ and $2w(C)$ respectively.
+Consider the following derivations:
+\[
+  \begin{prooftree}
+    \hypo{\cD_1}
+    \ellipsis{}{\Gamma,B,C \seqarr B}
+    \infer1[L$\wedge$]{\Gamma,B \wedge C \seqarr B}
+    \hypo{\cD_2}
+    \ellipsis{}{\Gamma,B,C \seqarr C}
+    \infer1[L$\wedge$]{\Gamma,B \wedge C \seqarr C}
+    \infer2[R$\wedge$]{\Gamma,B \wedge C \seqarr B \wedge C}
+  \end{prooftree}
+  \qquad
+  \begin{prooftree}
+    \hypo{\cD_1}
+    \ellipsis{}{\Gamma,B \seqarr B}
+    \infer1[R$\vee$]{\Gamma,B \seqarr B \vee C}
+    \hypo{\cD_2}
+    \ellipsis{}{\Gamma,C \seqarr C}
+    \infer1[R$\vee$]{\Gamma,C \seqarr B \vee C}
+    \infer2[L$\vee$]{\Gamma,B \vee C \seqarr B \vee C}
+  \end{prooftree}
+\]
+\[
+  \begin{prooftree}
+    \hypo{\cD_1}
+    \ellipsis{}{\Gamma,B \seqarr B}
+    \hypo{\cD_2}
+    \ellipsis{}{\Gamma,C \seqarr C}
+    \infer2[L$\to$]{\Gamma,B \to C, B \seqarr C}
+    \infer1[R$\to$]{\Gamma,B \to C \seqarr B \to C}
+  \end{prooftree}
+\]
+
+(small mistake here, $\to$ requires a longer proof)
+The height of these derivations is $\max(\cD_1 + 1,\cD_2 + 1) + 1$, which is bounded by $\max(2w(B) + 1, 2w(C) + 1) + 1$; this is in turn bounded by $2w(B) + 2w(C) + 2 = 2w(A)$.
+% \printbibliography
+
+\end{document}
