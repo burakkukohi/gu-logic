@@ -1,7 +1,6 @@
 \documentclass[a4paper]{article}
 
 \usepackage{preamble}
-\addbibresource{references/refs.bib}
 
 \newcommand{\seqarr}{\Rightarrow}
 \newcommand{\cD}{\mathcal{D}}
@@ -16,11 +15,12 @@
 \section{}
 For this question, we will consider any reasonable sequent calculus in which structural rules can be dispensed with.
 We claim that the sequent $\Gamma,A \seqarr A$ is derivable with height at most $2w(A)$.
+The structure of this proof is identical to that of \cite[Lemma 2.3.3]{Negri2001}.
 
-We proceed by induction on $w(A)$; when $w(A) \leq 1$ there are three possible cases: $A = \bot$; $A = p$ for some atom $p$; or $A = \bot \to \bot$.
+We proceed by (strong) induction on $w(A)$; when $w(A) \leq 1$ there are three possible cases: $A = \bot$; $A = p$ for some atom $p$; or $A = \bot \to \bot$.
 In the first case, $\Gamma,\bot \seqarr \bot$ is an instance of $L\bot$; in the second case, $\Gamma,p \seqarr p$ is an axiom.
-In both cases, there is a derivation with height $0$, which is clearly bounded by $2w(A) = 0$.
-If $A = \bot \to \bot$, then consider the following derivation of height 1.
+In both cases, the given derivations have height $0$, which is clearly bounded by $2w(A) = 0$.
+If $A = \bot \to \bot$, then consider the following derivation of height 1 (instances of L$\bot$ have height 0).
 \[
   \begin{prooftree}
     \infer0[L$\bot$]{\Gamma,\bot \to \bot, \bot \seqarr \bot}
@@ -31,7 +31,7 @@ The height of this derivation is clearly bounded by $2w(A) = 2$.
 
 Now we show that $\Gamma,A \seqarr A$ has a derivation of height at most $2w(A)$ for $w(A) \leq n + 1$.
 There are only three remaining cases to consider: $A = B \wedge C$; $A = B \vee C$; and $A = B \to C$.
-In any of these cases, $w(B) \leq n$ and $w(C) \leq n$; hence, by the induction hypothesis, for any sequence $\Delta$, $\Delta,B \seqarr B$ and $\Delta,C \seqarr C$ are derivable with height at most $2w(B)$ and $2w(C)$ respectively.
+In any of these cases, $w(B) \leq n$ and $w(C) \leq n$; hence, by the induction hypothesis, for any sequence $\Delta$, $\Delta,B \seqarr B$ and $\Delta,C \seqarr C$ or any permutation thereof are derivable with height at most $2w(B)$ and $2w(C)$ respectively.
 Consider the following derivations:
 \[
   \begin{prooftree}
@@ -64,9 +64,144 @@ Consider the following derivations:
     \infer1[R$\to$]{\Gamma,B \to C \seqarr B \to C}
   \end{prooftree}
 \]
+In any of these derivations, the height is $\max(\cD_1,\cD_2) + 2$, which is bounded by $\max(2w(B), 2w(C)) + 2$; this is in turn bounded by $2w(B) + 2w(C) + 2 = 2w(A)$.
 
-(small mistake here, $\to$ requires a longer proof)
-The height of these derivations is $\max(\cD_1 + 1,\cD_2 + 1) + 1$, which is bounded by $\max(2w(B) + 1, 2w(C) + 1) + 1$; this is in turn bounded by $2w(B) + 2w(C) + 2 = 2w(A)$.
-% \printbibliography
+\section{}
+We assume admissibility of structural rules in the sequent calculus and choose to use the elimination rules in their \emph{general} form, as they admit normalization \cite[Section 1.2]{Negri2001}.
 
+We proceed by induction on the number of inference rules in $\Gamma \vdash A$; as a result of this choice, the induction hypothesis applies to every premise of each rule being analyzed in the following case analysis.
+
+If the number of inference rules is 0, then $A \in \Gamma$; thus $\Gamma \seqarr A$ is already an initial sequent, i.e., $I \vdash \Gamma \seqarr A$ trivially.
+
+If the number of inference rules is $n+1$, we do a case analysis on the last applied rule:
+\begin{itemize}
+\item
+  $
+  \begin{prooftree}
+    \hypo{\Gamma \vdash \bot}
+    \infer1[$\bot$E]{\Gamma \vdash A}
+  \end{prooftree}
+  $:\qquad
+  $
+  \begin{prooftree}
+    \hypo{\Gamma \seqarr \bot}
+    \infer0[L$\bot$]{\Gamma,\bot \seqarr A}
+    \infer2[cut]{\Gamma \seqarr A}
+  \end{prooftree}
+  $
+\item
+  $
+  \begin{prooftree}
+    \hypo{\Gamma \vdash B}
+    \infer1[$\vee$I$_1$]{\Gamma \vdash B \vee C}
+  \end{prooftree}
+  $:\qquad
+  $
+  \begin{prooftree}
+    \hypo{\Gamma \seqarr B}
+    \infer1[R$\vee_1$]{\Gamma \seqarr B \vee C}
+  \end{prooftree}
+  $
+\item
+  $
+  \begin{prooftree}
+    \hypo{\Gamma \vdash C}
+    \infer1[$\vee$I$_2$]{\Gamma \vdash B \vee C}
+  \end{prooftree}
+  $:\qquad
+  $
+  \begin{prooftree}
+    \hypo{\Gamma \seqarr C}
+    \infer1[R$\vee_2$]{\Gamma \seqarr B \vee C}
+  \end{prooftree}
+  $
+\item
+  $
+  \begin{prooftree}
+    \hypo{\Gamma \vdash B \vee C}
+    \hypo{\Gamma,B \vdash A}
+    \hypo{\Gamma,C \vdash A}
+    \infer3[$\vee$E]{\Gamma \vdash A}
+  \end{prooftree}
+  $:\qquad
+  $
+  \begin{prooftree}
+    \hypo{\Gamma \seqarr B \vee C}
+    \hypo{\Gamma,B \seqarr A}
+    \hypo{\Gamma,C \seqarr A}
+    \infer2[L$\vee$]{\Gamma,B \vee C \seqarr A}
+    \infer2[cut]{\Gamma \seqarr A}
+  \end{prooftree}
+  $
+\item
+  $
+  \begin{prooftree}
+    \hypo{\Gamma \vdash B}
+    \hypo{\Gamma \vdash C}
+    \infer2[$\wedge$I]{\Gamma \vdash B \wedge C}
+  \end{prooftree}
+  $:\qquad
+  $
+  \begin{prooftree}
+    \hypo{\Gamma \seqarr B}
+    \hypo{\Gamma \seqarr C}
+    \infer2[R$\wedge$]{\Gamma \seqarr B \wedge C}
+  \end{prooftree}
+  $
+\item
+  $
+  \begin{prooftree}
+    \hypo{\Gamma \vdash B \wedge C}
+    \hypo{\Gamma,B,C \vdash A}
+    \infer2[$\wedge$E]{\Gamma \vdash A}
+  \end{prooftree}
+  $:\qquad
+  $
+  \begin{prooftree}
+    \hypo{\Gamma \seqarr B \wedge C}
+    \hypo{\Gamma,B,C \seqarr A}
+    \infer1[L$\wedge$]{\Gamma,B \wedge C \seqarr A}
+    \infer2[cut]{\Gamma \seqarr A}
+  \end{prooftree}
+  $
+\item
+  $
+  \begin{prooftree}
+    \hypo{\Gamma,B \vdash C}
+    \infer1[$\to$I]{\Gamma \vdash B \to C}
+  \end{prooftree}
+  $:\qquad
+  $
+  \begin{prooftree}
+    \hypo{\Gamma,B \seqarr C}
+    \infer1[R$\to$]{\Gamma \seqarr B \to C}
+  \end{prooftree}
+  $
+\item
+  $
+  \begin{prooftree}
+    \hypo{\Gamma \vdash B \to C}
+    \hypo{\Gamma \vdash B}
+    \hypo{\Gamma,C \vdash A}
+    \infer3[$\to$E]{\Gamma \vdash A}
+  \end{prooftree}
+  $:\qquad
+  $
+  \begin{prooftree}
+    \hypo{\Gamma \seqarr B \to C}
+    \hypo{\Gamma \seqarr B}
+    \hypo{\Gamma,C \seqarr A}
+    \infer2[L$\to$]{\Gamma,B \to C \seqarr A}
+    \infer2[cut]{\Gamma \seqarr A}
+  \end{prooftree}
+  $
+\end{itemize}
+
+\section{}
+Let $\cD$ be a normal derivation of $\Gamma \vdash A$; we show how to eliminate cut in the previous problem.
+By the normal form property, the major premise of each elimination rule in $\cD$ is already an assumption.
+Hence the corresponding cut formula is already in $\Gamma$, allowing us to replace every cut with a left contraction.
+
+\bibliography{bib}
+\bibliographystyle{alpha}
 \end{document}
