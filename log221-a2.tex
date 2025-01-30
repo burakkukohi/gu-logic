@@ -1,0 +1,191 @@
+\documentclass[a4paper]{article}
+
+\usepackage{preamble}
+\newcommand{\voc}{\mathrm{voc}}
+\newcommand{\id}{\mathrm{id}}
+
+\title{LOG 221 - A2}
+\author{Frank Tsai}
+
+\begin{document}
+
+\maketitle
+
+We show that if $\vdash \Gamma \Rightarrow \Delta$ then for any two splittings, $\Gamma_1, \Gamma_2$ and $\Delta_1, \Delta_2$, such that $\Gamma = \Gamma_1 \cup \Gamma_2$ and $\Delta = \Delta_1 \cup \Delta_2$, there exists a formula $I$ such that
+\begin{enumerate}
+\item $\voc(I) \subseteq \voc(\Gamma_1 \cup \Delta_1) \cap \voc(\Gamma_2 \cup \Delta_2)$;
+\item $\Gamma_1 \Rightarrow I, \Delta_1$;
+\item $\Gamma_2, I \Rightarrow \Delta_2$.
+\end{enumerate}
+
+We construct the interpolant by induction on the derivation of $\Gamma \Rightarrow \Delta$.
+\begin{itemize}
+\item \textbf{Case} $\id$: There is a propositional variable $p$ occurring in both $\Gamma$ and $\Delta$; we consider the following 4 cases:
+  \begin{enumerate}
+  \item \emph{$p \in \Gamma_1$ and $p \in \Delta_1$}: Choose $I = \bot$.
+    Clearly, $I$ satisfies Requirement 1 since $\voc(\bot) = \varnothing$.
+    Requirement 2 is satisfied by an instance of $\id$ and requirement 3 is satisfied by an instance of L$\bot$.
+  \item \emph{$p \in \Gamma_2$ and $p \in \Delta_2$}: Choose $I = \lnot\bot$.
+    Requirement 1 is satisfied since $\voc(\lnot\bot) = \varnothing$ and Requirement 3 is satisfied by an instance of $\id$.
+    Requirement 2 is satisfied by the following derivation:
+    \[
+      \begin{prooftree}
+        \infer0[L$\bot$]{\Gamma_1,\bot \Rightarrow \bot,\Delta_1}
+        \infer1[R$\to$]{\Gamma_1 \Rightarrow \lnot\bot,\Delta_1}
+      \end{prooftree}
+    \]
+  \item \emph{$p \in \Gamma_1$ and $p \in \Delta_2$}: Choose $I = p$.
+    Requirement 1 is satisfied since $p$ is common to both $\Gamma_1 \cup \Delta_1$ and $\Gamma_2 \cup \Delta_2$.
+    Requirements 2 and 3 are satisfied by instances of $\id$.
+  \item \emph{$p \in \Gamma_2$ and $p \in \Delta_1$}: Choose $I = \lnot p$.
+    Requirement 1 is satisfied since $p$ is common to both $\Gamma_1 \cup \Delta_1$ and $\Gamma_2 \cup \Delta_2$.
+    Requirements 2 and 3 are satisfied by the following derivations respectively:
+    \begin{align*}
+      \begin{prooftree}
+        \infer0[$\id$]{\Gamma_1,p \Rightarrow \bot,p,\Delta'}
+        \infer1[R$\to$]{\Gamma_1 \Rightarrow \lnot p,p,\Delta'}
+      \end{prooftree}
+      && \text{ where $\Delta_1 = \Delta' \cup \{p\}$}\\[2em]
+      \begin{prooftree}
+        \infer0[$\id$]{\Gamma',p \Rightarrow p, \Delta_2}
+        \infer0[L$\bot$]{\Gamma',p,\bot \Rightarrow \Delta_2}
+        \infer2[L$\to$]{\Gamma',p,\lnot p \Rightarrow \Delta_2}
+      \end{prooftree}
+      && \text{ where $\Gamma_2 = \Gamma' \cup \{p\}$}\\
+    \end{align*}
+  \end{enumerate}
+\item \textbf{Case} L$\bot$: $\bot \in \Gamma$; we consider the following 2 cases:
+  \begin{enumerate}
+  \item $\bot \in \Gamma_1$: Choose $I = \bot$.
+    Requirements 2 and 3 are satisfied by instances of L$\bot$.
+  \item $\bot \in \Gamma_2$: Choose $I = \lnot\bot$.
+    Requirement 3 is satisfied by an instance of L$\bot$ and Requirement 2 is satisfied by the same derivation in (Case 2) of (\textbf{Case} $\id$).
+  \end{enumerate}
+  In both cases, Requirement 1 is trivially satisfied.
+\item \textbf{Case} R$\wedge$:
+  \begin{align*}
+    \begin{prooftree}
+      \hypo{\Gamma \Rightarrow A, \Delta'}
+      \hypo{\Gamma \Rightarrow B, \Delta'}
+      \infer2[R$\wedge$]{\Gamma \Rightarrow A \wedge B, \Delta'}
+    \end{prooftree}
+    && \text{where $\Delta = \Delta' \cup \{A \wedge B\}$}
+  \end{align*}
+  Let $\Gamma = \Gamma_1 \cup \Gamma_2$ and $\Delta = \Delta_1 \cup \Delta_2$.
+  To apply the induction hypothesis, we use the same splitting for $\Gamma$ and we split $A,\Delta'$ and $B,\Delta'$ depending on where $A \wedge B$ is.
+
+  Let $\Delta_{/i} = \Delta_{i} \setminus \{A \wedge B\}$.
+  If $A \wedge B \in \Delta_1$, we split $A,\Delta'$ and $B,\Delta'$ as $(\{A\} \cup \Delta_{/1}) \cup \Delta_2$ and $(\{B\} \cup \Delta_{/1}) \cup \Delta_2$ respectively.
+  Otherwise we split them as $\Delta_1 \cup (\{A\} \cup \Delta_{/2})$ and $\Delta_1 \cup (\{B\} \cup \Delta_{/2})$ respectively.
+
+  The induction hypothesis yields two formulas $I_A$ and $I_B$ satisfying Requirements 1-3.
+  We take $I_A \wedge I_B$ as the interpolant.
+
+  It remains to verify Requirements 1-3; there are two cases:
+  \begin{enumerate}
+  \item $A \wedge B \in \Delta_1$: By the induction hypothesis, $\voc(I_A) \subseteq \voc(\Gamma_1 \cup \{A\} \cup \Delta_{/1}) \cap \voc(\Gamma_2 \cup \Delta_2)$ and $\voc(I_B) \subseteq \voc(\Gamma_1 \cup \{B\} \cup \Delta_{/1}) \cap \voc(\Gamma_2 \cup \Delta_2)$.
+    Note that $\voc(\Gamma_1 \cup \{A\} \cup \Delta_{/1}) \subseteq \voc(\Gamma_1 \cup \Delta_1)$ and $\voc(\Gamma_1 \cup \{B\} \cup \Delta_{/1}) \subseteq \voc(\Gamma_1 \cup \Delta_1)$.
+    Hence $\voc(I_A \wedge I_B) = \voc(I_A) \cup \voc(I_B) \subseteq \voc(\Gamma_1 \cup \Delta_1) \cap \voc(\Gamma_2 \cup \Delta_2)$ follows.
+
+    Let $\cD$ be the following derivation:
+    \[
+      \begin{prooftree}
+        \hypo{\Gamma_1 \Rightarrow I_A,A,\Delta_{/1}}
+        \infer1[Rw]{\Gamma_1 \Rightarrow I_A,A,B,\Delta_{/1}}
+        \hypo{\Gamma_1 \Rightarrow I_B,B,\Delta_{/1}}
+        \infer1[Rw]{\Gamma_1 \Rightarrow I_B,A,B,\Delta_{/1}}
+        \infer2[R$\wedge$]{\Gamma_1 \Rightarrow I_A \wedge I_B,A,B,\Delta_{/1}}
+      \end{prooftree}
+    \]
+    Note that the leaves are given by the induction hypothesis; then the following derivation verifies Requirement 2.
+    \begin{align*}
+      \begin{prooftree}
+        \hypo{\cD}
+        \infer1{\Gamma_1 \Rightarrow I_A \wedge I_B,A,B,\Delta_{/1}}
+        \hypo{\cD}
+        \infer1{\Gamma_1 \Rightarrow I_A \wedge I_B,A,B,\Delta_{/1}}
+        \infer2[R$\wedge$ ($\Delta_1 = \{A \wedge B\} \cup \Delta_{/1}$)]{\Gamma_1 \Rightarrow I_A \wedge I_B, A \wedge B, \Delta_{/1}}
+      \end{prooftree}
+    \end{align*}
+    Requirement 3 is verified by the following derivation:
+    \[
+      \begin{prooftree}
+        \hypo{\Gamma_2,I_A \Rightarrow \Delta_2}
+        \infer1[Lw]{\Gamma_2,I_A,I_B \Rightarrow \Delta_2}
+        \infer1[L$\wedge$]{\Gamma_2,I_A\wedge I_B \Rightarrow \Delta_2}
+      \end{prooftree}
+    \]
+    where the leaf is given by the induction hypothesis.
+  \item $A \wedge B \in \Delta_2$: Requirement 1 is verified analogously.
+    Requirement 2 is verified by a single application of R$\wedge$:
+    \[
+      \begin{prooftree}
+        \hypo{\Gamma_1 \Rightarrow I_A,\Delta_1}
+        \hypo{\Gamma_1 \Rightarrow I_B,\Delta_1}
+        \infer2[R$\wedge$]{\Gamma_1 \Rightarrow I_A \wedge I_B,\Delta_1}
+      \end{prooftree}
+    \]
+    where the leaves are given by the induction hypothesis.
+    
+    Requirement 3 is verified by the following derivation:
+    \[
+      \begin{prooftree}
+        \hypo{\Gamma_2,I_A \Rightarrow A, \Delta_{/2}}
+        \infer1[Lw]{\Gamma_2,I_A, I_B \Rightarrow A, \Delta_{/2}}
+        \infer1[L$\wedge$]{\Gamma_2,I_A \wedge I_B \Rightarrow A, \Delta_{/2}}
+        \hypo{\Gamma_2,I_B \Rightarrow B, \Delta_{/2}}
+        \infer1[Lw]{\Gamma_2,I_A, I_B \Rightarrow B, \Delta_{/2}}
+        \infer1[L$\wedge$]{\Gamma_2,I_A \wedge I_B \Rightarrow B, \Delta_{/2}}
+        \infer2[R$\wedge$ ($\Delta_2 = \{A \wedge B\} \cup \Delta_{/2}$)]{\Gamma_2,I_A \wedge I_B \Rightarrow A \wedge B, \Delta_{/2}}
+      \end{prooftree}
+    \]
+    where the leaves are given by the induction hypothesis.
+  \end{enumerate}
+\item \textbf{Case} L$\wedge$:
+  \begin{align*}
+    \begin{prooftree}
+      \hypo{\Gamma',A,B \Rightarrow \Delta}
+      \infer1[L$\wedge$]{\Gamma',A \wedge B \Rightarrow \Delta}
+    \end{prooftree}
+    && \text{where $\Gamma = \Gamma' \cup \{A \wedge B\}$}
+  \end{align*}
+\item \textbf{Case} R$\vee$:
+  \begin{align*}
+    \begin{prooftree}
+      \hypo{\Gamma \Rightarrow A, \Delta'}
+      \infer1[R$\vee$]{\Gamma \Rightarrow A \vee B, \Delta'}
+    \end{prooftree}
+    && \text{where $\Delta = \Delta' \cup \{A \vee B\}$}
+  \end{align*}
+\item \textbf{Case} L$\vee$:
+  \begin{align*}
+    \begin{prooftree}
+      \hypo{\Gamma', A \Rightarrow \Delta}
+      \hypo{\Gamma', B \Rightarrow \Delta}
+      \infer2[L$\vee$]{\Gamma', A \vee B \Rightarrow \Delta}
+    \end{prooftree}
+    && \text{where $\Gamma = \Gamma' \cup \{A \vee B\}$}
+  \end{align*}
+\item \textbf{Case} R$\to$:
+  \begin{align*}
+    \begin{prooftree}
+      \hypo{\Gamma, A \Rightarrow B, \Delta}
+      \infer1[R$\to$]{\Gamma \Rightarrow A \to B, \Delta'}
+    \end{prooftree}
+    && \text{where $\Delta = \Delta' \cup \{A \to B\}$}
+  \end{align*}
+\item \textbf{Case} L$\to$:
+  \begin{align*}
+    \begin{prooftree}
+      \hypo{\Gamma' \Rightarrow A, \Delta}
+      \hypo{\Gamma', B \Rightarrow \Delta}
+      \infer2[L$\to$]{\Gamma', A \to B \Rightarrow \Delta}
+    \end{prooftree}
+    && \text{where $\Gamma = \Gamma' \cup \{A \to B\}$}
+  \end{align*}
+\end{itemize}
+
+% \bibliography{bib}
+% \bibliographystyle{alpha}
+
+\end{document}
