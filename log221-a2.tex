@@ -24,7 +24,7 @@ We construct the interpolant by induction on the derivation of $\Gamma \Rightarr
   \begin{enumerate}
   \item \emph{$p \in \Gamma_1$ and $p \in \Delta_1$}: Choose $I = \bot$.
     Clearly, $I$ satisfies Requirement 1 since $\voc(\bot) = \varnothing$.
-    Requirement 2 is satisfied by an instance of $\id$ and requirement 3 is satisfied by an instance of L$\bot$.
+    Requirement 2 is satisfied by an instance of $\id$ and Requirement 3 is satisfied by an instance of L$\bot$.
   \item \emph{$p \in \Gamma_2$ and $p \in \Delta_2$}: Choose $I = \lnot\bot$.
     Requirement 1 is satisfied since $\voc(\lnot\bot) = \varnothing$ and Requirement 3 is satisfied by an instance of $\id$.
     Requirement 2 is satisfied by the following derivation:
@@ -73,50 +73,60 @@ We construct the interpolant by induction on the derivation of $\Gamma \Rightarr
   \end{align*}
   Let $\Gamma = \Gamma_1 \cup \Gamma_2$ and $\Delta = \Delta_1 \cup \Delta_2$.
   To apply the induction hypothesis, we use the same splitting for $\Gamma$ and we split $A,\Delta'$ and $B,\Delta'$ depending on where $A \wedge B$ is.
+  We define $\Delta_{/i} := \Delta_{i} \setminus \{A \wedge B\}$.
 
-  Let $\Delta_{/i} = \Delta_{i} \setminus \{A \wedge B\}$.
-  If $A \wedge B \in \Delta_1$, we split $A,\Delta'$ and $B,\Delta'$ as $(\{A\} \cup \Delta_{/1}) \cup \Delta_2$ and $(\{B\} \cup \Delta_{/1}) \cup \Delta_2$ respectively.
-  Otherwise we split them as $\Delta_1 \cup (\{A\} \cup \Delta_{/2})$ and $\Delta_1 \cup (\{B\} \cup \Delta_{/2})$ respectively.
-
-  The induction hypothesis yields two formulas $I_A$ and $I_B$ satisfying Requirements 1-3.
-  We take $I_A \wedge I_B$ as the interpolant.
-
-  It remains to verify Requirements 1-3; there are two cases:
+  We choose an interpolant based on the following two cases:
   \begin{enumerate}
-  \item $A \wedge B \in \Delta_1$: By the induction hypothesis, $\voc(I_A) \subseteq \voc(\Gamma_1 \cup \{A\} \cup \Delta_{/1}) \cap \voc(\Gamma_2 \cup \Delta_2)$ and $\voc(I_B) \subseteq \voc(\Gamma_1 \cup \{B\} \cup \Delta_{/1}) \cap \voc(\Gamma_2 \cup \Delta_2)$.
-    Note that $\voc(\Gamma_1 \cup \{A\} \cup \Delta_{/1}) \subseteq \voc(\Gamma_1 \cup \Delta_1)$ and $\voc(\Gamma_1 \cup \{B\} \cup \Delta_{/1}) \subseteq \voc(\Gamma_1 \cup \Delta_1)$.
-    Hence $\voc(I_A \wedge I_B) = \voc(I_A) \cup \voc(I_B) \subseteq \voc(\Gamma_1 \cup \Delta_1) \cap \voc(\Gamma_2 \cup \Delta_2)$ follows.
+  \item $A \wedge B \in \Delta_1$:
+    We split $A,\Delta'$ and $B,\Delta'$ as $(\{A\} \cup \Delta_{/1}) \cup \Delta_2$ and $(\{B\} \cup \Delta_{/1}) \cup \Delta_2$ respectively; then the induction hypothesis yields two formulas $I_A$ and $I_B$ satisfying the following properties:
+    \begin{enumerate}
+    \item $\voc(I_A) \subseteq \voc(\Gamma_1 \cup \{A\} \cup \Delta_{/1}) \cap \voc(\Gamma_2 \cup \Delta_2)$;
+    \item $\voc(I_B) \subseteq \voc(\Gamma_1 \cup \{B\} \cup \Delta_{/1}) \cap \voc(\Gamma_2 \cup \Delta_2)$;
+    \item $\Gamma_1 \Rightarrow I_A,A,\Delta_{/1}$;
+    \item $\Gamma_1 \Rightarrow I_B,B,\Delta_{/1}$;
+    \item $\Gamma_2,I_A \Rightarrow \Delta_2$;
+    \item $\Gamma_2,I_B \Rightarrow \Delta_2$.
+    \end{enumerate}
+    Take $I_A \vee I_B$ as the interpolant.
+    
+    To see that Requirement 1 is satisfied, we observe that $\voc(\Gamma_1 \cup \{A\} \cup \Delta_{/1}) \subseteq \voc(\Gamma_1 \cup \Delta_1)$ and $\voc(\Gamma_1 \cup \{B\} \cup \Delta_{/1}) \subseteq \voc(\Gamma_1 \cup \Delta_1)$.
+    Hence $\voc(I_A \vee I_B) = \voc(I_A) \cup \voc(I_B) \subseteq \voc(\Gamma_1 \cup \Delta_1) \cap \voc(\Gamma_2 \cup \Delta_2)$ follows.
 
-    Let $\cD$ be the following derivation:
+    Requirement 2 is verified by the following derivation:
     \[
       \begin{prooftree}
-        \hypo{\Gamma_1 \Rightarrow I_A,A,\Delta_{/1}}
-        \infer1[Rw]{\Gamma_1 \Rightarrow I_A,A,B,\Delta_{/1}}
-        \hypo{\Gamma_1 \Rightarrow I_B,B,\Delta_{/1}}
-        \infer1[Rw]{\Gamma_1 \Rightarrow I_B,A,B,\Delta_{/1}}
-        \infer2[R$\wedge$]{\Gamma_1 \Rightarrow I_A \wedge I_B,A,B,\Delta_{/1}}
+        \hypo{\Gamma_1 \Rightarrow I_A, A, \Delta_{/1}}
+        \infer1[R$\vee$]{\Gamma_1 \Rightarrow I_A \vee I_B, A, \Delta_{/1}}
+        \hypo{\Gamma_1 \Rightarrow I_B, B, \Delta_{/1}}
+        \infer1[R$\vee$]{\Gamma_1 \Rightarrow I_A \vee I_B, B, \Delta_{/1}}
+        \infer2[R$\wedge$ ($\Delta_1 = \Delta_{/1} \cup \{A \wedge B\}$)]{\Gamma_1 \Rightarrow I_A \vee I_B, A \wedge B, \Delta_{/1}}
       \end{prooftree}
     \]
-    Note that the leaves are given by the induction hypothesis; then the following derivation verifies Requirement 2.
-    \begin{align*}
-      \begin{prooftree}
-        \hypo{\cD}
-        \infer1{\Gamma_1 \Rightarrow I_A \wedge I_B,A,B,\Delta_{/1}}
-        \hypo{\cD}
-        \infer1{\Gamma_1 \Rightarrow I_A \wedge I_B,A,B,\Delta_{/1}}
-        \infer2[R$\wedge$ ($\Delta_1 = \{A \wedge B\} \cup \Delta_{/1}$)]{\Gamma_1 \Rightarrow I_A \wedge I_B, A \wedge B, \Delta_{/1}}
-      \end{prooftree}
-    \end{align*}
+
     Requirement 3 is verified by the following derivation:
     \[
       \begin{prooftree}
         \hypo{\Gamma_2,I_A \Rightarrow \Delta_2}
-        \infer1[Lw]{\Gamma_2,I_A,I_B \Rightarrow \Delta_2}
-        \infer1[L$\wedge$]{\Gamma_2,I_A\wedge I_B \Rightarrow \Delta_2}
+        \hypo{\Gamma_2,I_B \Rightarrow \Delta_2}
+        \infer2[L$\vee$]{\Gamma_2,I_A \vee I_B \Rightarrow \Delta_2}
       \end{prooftree}
     \]
-    where the leaf is given by the induction hypothesis.
-  \item $A \wedge B \in \Delta_2$: Requirement 1 is verified analogously.
+    
+  \item $A \wedge B \in \Delta_2$:
+    We split $A,\Delta'$ and $B,\Delta'$ as $\Delta_1 \cup (\{A\} \cup \Delta_{/2})$ and $\Delta_1 \cup (\{B\} \cup \Delta_{/2})$ respectively; then the induction hypothesis yields two formulas $I_A$ and $I_B$ satisfying the following properties:
+    \begin{enumerate}
+    \item $\voc(I_A) \subseteq \voc(\Gamma_1 \cup \Delta_{1}) \cap \voc(\Gamma_2 \cup \{A\} \cup \Delta_{/2})$;
+    \item $\voc(I_B) \subseteq \voc(\Gamma_1 \cup \Delta_{1}) \cap \voc(\Gamma_2 \cup \{B\} \cup \Delta_{/2})$;
+    \item $\Gamma_1 \Rightarrow I_A,\Delta_{1}$;
+    \item $\Gamma_1 \Rightarrow I_B,\Delta_{1}$;
+    \item $\Gamma_2,I_A \Rightarrow A,\Delta_{/2}$;
+    \item $\Gamma_2,I_B \Rightarrow B,\Delta_{/2}$.
+    \end{enumerate}
+    
+    Take $I_A \wedge I_B$ as the interpolant.
+    
+    Requirement 1 is verified analogously.
+    
     Requirement 2 is verified by a single application of R$\wedge$:
     \[
       \begin{prooftree}
@@ -125,7 +135,6 @@ We construct the interpolant by induction on the derivation of $\Gamma \Rightarr
         \infer2[R$\wedge$]{\Gamma_1 \Rightarrow I_A \wedge I_B,\Delta_1}
       \end{prooftree}
     \]
-    where the leaves are given by the induction hypothesis.
     
     Requirement 3 is verified by the following derivation:
     \[
@@ -139,7 +148,6 @@ We construct the interpolant by induction on the derivation of $\Gamma \Rightarr
         \infer2[R$\wedge$ ($\Delta_2 = \{A \wedge B\} \cup \Delta_{/2}$)]{\Gamma_2,I_A \wedge I_B \Rightarrow A \wedge B, \Delta_{/2}}
       \end{prooftree}
     \]
-    where the leaves are given by the induction hypothesis.
   \end{enumerate}
 \item \textbf{Case} L$\wedge$:
   \begin{align*}
@@ -149,7 +157,45 @@ We construct the interpolant by induction on the derivation of $\Gamma \Rightarr
     \end{prooftree}
     && \text{where $\Gamma = \Gamma' \cup \{A \wedge B\}$}
   \end{align*}
+  Let $\Gamma = \Gamma_1 \cup \Gamma_2$ and $\Delta = \Delta_1 \cup \Delta_2$; in the following 2 cases, we choose the formula, $I$, given by the induction hypothesis as the interpolant.
+  Note that these 2 cases may have different $I$'s since the sequents are split differently, but this detail does not matter.
+
+  We define $\Gamma_{/i} = \Gamma_i \setminus \{A \wedge B\}$.
+  \begin{enumerate}
+  \item $A \wedge B \in \Gamma_1$: We split $\Gamma',A,B$ as $(\{A,B\} \cup \Gamma_{/1}) \cup \Gamma_2$ and $\Delta$ as $\Delta_1 \cup \Delta_2$; then $I$ has the following properties:
+    \begin{enumerate}
+    \item $\voc(I) \subseteq \voc(\{A,B\} \cup \Gamma_{/1} \cup \Delta_1) \cap \voc(\Gamma_2 \cup \Delta_2)$;
+    \item $A,B,\Gamma_{/1} \Rightarrow I,\Delta_1$;
+    \item $\Gamma_2,I \Rightarrow \Delta_2$.
+    \end{enumerate}
+    Requirement 1 is trivially satisfied since $\voc(\{A,B\} \cup \Gamma_{/1} \cup \Delta_1) = \voc(\Gamma_1 \cup \Delta_1)$; similarly, Requirement 3 is already given by the induction hypothesis.
+
+    Requirement 2 is verified by the following derivation:
+    \[
+      \begin{prooftree}
+        \hypo{A,B,\Gamma_{/1} \Rightarrow I,\Delta_1}
+        \infer1[L$\wedge$ ($\Gamma_1 = \Gamma_{/1} \cup \{A \wedge B\}$)]{A \wedge B,\Gamma_{/1} \Rightarrow I,\Delta_1}
+      \end{prooftree}
+    \]
+  \item $A \wedge B \in \Gamma_2$: We split $\Gamma',A,B$ as $\Gamma_1 \cup (\{A,B\} \cup \Gamma_{/2})$ and $\Delta$ as $\Delta_1 \cup \Delta_2$; then $I$ has the following properties:
+    \begin{enumerate}
+    \item $\voc(I) \subseteq \voc(\Gamma_1 \cup \Delta_1) \cap \voc(\{A,B\} \cup \Gamma_{/2} \cup \Delta_2)$;
+    \item $\Gamma_1 \Rightarrow I,\Delta_1$;
+    \item $A,B,\Gamma_{/2},I \Rightarrow \Delta_2$.
+    \end{enumerate}
+    Requirement 1 is analogous, and Requirement 2 is already given by the induction hypothesis.
+
+    Requirement 3 is verified by the following derivation:
+    \[
+      \begin{prooftree}
+        \hypo{A,B,\Gamma_{/2},I \Rightarrow \Delta_2}
+        \infer1[L$\wedge$ ($\Gamma_2 = \Gamma_{/2} \cup \{A \wedge B\}$)]{A \wedge B, \Gamma_{/2}, I \Rightarrow \Delta_2}
+      \end{prooftree}
+    \]
+  \end{enumerate}
 \item \textbf{Case} R$\vee$:
+  There are two right disjunction rules; however, their proofs are completely analogous.
+  We present one of them.
   \begin{align*}
     \begin{prooftree}
       \hypo{\Gamma \Rightarrow A, \Delta'}
@@ -157,6 +203,32 @@ We construct the interpolant by induction on the derivation of $\Gamma \Rightarr
     \end{prooftree}
     && \text{where $\Delta = \Delta' \cup \{A \vee B\}$}
   \end{align*}
+  Let $\Gamma = \Gamma_1 \cup \Gamma_2$ and $\Delta = \Delta_1 \cup \Delta_2$; we define $\Delta_{/i} := \Delta_i \setminus \{A \vee B\}$.
+  In the following two cases, choose the formula, $I$, given by the induction hypothesis as the interpolant.
+  \begin{enumerate}
+  \item $A \vee B \in \Delta_1$: We use the same splitting for $\Gamma$ and we split $A,\Delta'$ as $(\{A\} \cup \Delta_{/1}) \cup \Delta_2$; then $I$ has the following properties:
+    \begin{enumerate}
+    \item $\voc(I) \subseteq \voc(\Gamma_1 \cup \{A\} \cup \Delta_{/1}) \cap \voc(\Gamma_2 \cup \Delta_2)$;
+    \item $\Gamma_1 \Rightarrow I, A, \Delta_{/1}$;
+    \item $\Gamma_2,I \Rightarrow \Delta_2$.
+    \end{enumerate}
+    Requirement 1 is immediate since $\voc(\Gamma_1 \cup \{A\} \cup \Delta_{/1}) \subseteq \voc(\Gamma_1 \cup \Delta_1)$; Requirement 3 is already given by the induction hypothesis.
+
+    Requirement 2 is verified by an application of R$\vee$:
+    \[
+      \begin{prooftree}
+        \hypo{\Gamma_1 \Rightarrow I, A, \Delta_{/1}}
+        \infer1[R$\vee$ ($\Delta_1 = \{A \vee B\} \cup \Delta_{/1}$)]{\Gamma_1 \Rightarrow I, A \vee B, \Delta_{/1}}
+      \end{prooftree}
+    \]
+  \item $A \vee B \in \Delta_2$: We use the same splitting for $\Gamma$ and we split $A,\Delta'$ as $\Delta_1 \cup (\{A\} \cup \Delta_{/2})$; then $I$ has the following properties:
+    \begin{enumerate}
+    \item $\voc(I) \subseteq \voc(\Gamma_1 \cup \Delta_1) \cap \voc(\Gamma_2 \cup \{A\} \cup \Delta_{/2})$;
+    \item $\Gamma_1 \Rightarrow I, \Delta_1$;
+    \item $\Gamma_2,I \Rightarrow A,\Delta_{/2}$.
+    \end{enumerate}
+    This case is completely analogous to the previous case.
+  \end{enumerate}
 \item \textbf{Case} L$\vee$:
   \begin{align*}
     \begin{prooftree}
@@ -166,6 +238,71 @@ We construct the interpolant by induction on the derivation of $\Gamma \Rightarr
     \end{prooftree}
     && \text{where $\Gamma = \Gamma' \cup \{A \vee B\}$}
   \end{align*}
+  This case is dual to (\textbf{Case} R$\wedge$).
+  Let $\Gamma = \Gamma_1 \cup \Gamma_2$ and $\Delta = \Delta_1 \cup \Delta_2$; we define $\Gamma_{/i} := \Gamma_i \setminus \{A \vee B\}$.
+  In the following 2 cases, $\Delta$ is split as $\Delta_1 \cup \Delta_2$.
+  \begin{enumerate}
+  \item $A \vee B \in \Gamma_1$: We split $\Gamma',A$ and $\Gamma',B$ as $(\{A\} \cup \Gamma_{/1}) \cup \Gamma_2$ and  $(\{B\} \cup \Gamma_{/1}) \cup \Gamma_2$ respectively; then by the induction hypothesis, there are two formulas $I_A$ and $I_B$ with the following properties:
+    \begin{enumerate}
+    \item $\voc(I_A) \subseteq \voc(\{A\} \cup \Gamma_{/1} \cup \Delta_1) \cap \voc(\Gamma_2 \cup \Delta_2)$;
+    \item $\voc(I_B) \subseteq \voc(\{B\} \cup \Gamma_{/1} \cup \Delta_1) \cap \voc(\Gamma_2 \cup \Delta_2)$;
+    \item $A,\Gamma_{/1} \Rightarrow I_A,\Delta_1$;
+    \item $B,\Gamma_{/1} \Rightarrow I_B,\Delta_1$;
+    \item $\Gamma_2,I_A \Rightarrow \Delta_2$;
+    \item $\Gamma_2,I_B \Rightarrow \Delta_2$.
+    \end{enumerate}
+    We take $I_A \vee I_{B}$ as the interpolant.
+    Note that $\voc(\{A\} \cup \Gamma_{/1} \cup \Delta_1) \subseteq \voc(\Gamma_1 \cup \Delta_1)$ and $\voc(\{B\} \cup \Gamma_{/1} \cup \Delta_1) \subseteq \voc(\Gamma_1 \cup \Delta_1)$.
+    Hence Requirement 1 follows.
+
+    Requirements 2 and 3 are verified by the following derivations respectively:
+    \[
+      \begin{prooftree}
+        \hypo{A,\Gamma_{/1} \Rightarrow I_A,\Delta_1}
+        \infer1[R$\vee$]{A, \Gamma_{/1} \Rightarrow I_A \vee I_B, \Delta_1}
+        \hypo{B,\Gamma_{/1} \Rightarrow I_B,\Delta_1}
+        \infer1[R$\vee$]{B, \Gamma_{/1} \Rightarrow I_A \vee I_B, \Delta_1}
+        \infer2[L$\vee$ ($\Gamma_1 = \Gamma_{/1} \cup \{A \vee B\}$)]{A \vee B, \Gamma_{/1} \Rightarrow I_A \vee I_B, \Delta_1}
+      \end{prooftree}
+    \]
+    \[
+      \begin{prooftree}
+        \hypo{\Gamma_2,I_A \Rightarrow \Delta_2}
+        \hypo{\Gamma_2,I_B \Rightarrow \Delta_2}
+        \infer2[L$\vee$]{\Gamma_2, I_A \vee I_B \Rightarrow \Delta_2}
+      \end{prooftree}
+    \]
+  \item $A \vee B \in \Gamma_2$: We split $\Gamma',A$ and $\Gamma',B$ as $\Gamma_1 \cup (\{A\} \cup \Gamma_{/2})$ and $\Gamma_1 \cup (\{B\} \cup \Gamma_{/2})$ respectively; then by the induction hypothesis, there are two formulas $I_A$ and $I_B$ with the following properties:
+    \begin{enumerate}
+    \item $\voc(I_A) \subseteq \voc(\Gamma_1 \cup \Delta_1) \cap \voc(\{A\} \cup \Gamma_{/2} \cup \Delta_2)$;
+    \item $\voc(I_B) \subseteq \voc(\Gamma_1 \cup \Delta_1) \cap \voc(\{B\} \cup \Gamma_{/2} \cup \Delta_2)$;
+    \item $\Gamma_1 \Rightarrow I_A,\Delta_1$;
+    \item $\Gamma_1 \Rightarrow I_B,\Delta_1$;
+    \item $A,\Gamma_{/2},I_A \Rightarrow \Delta_2$;
+    \item $B,\Gamma_{/2},I_B \Rightarrow \Delta_2$.
+    \end{enumerate}
+    Take $I_A \wedge I_B$ as the interpolant; Requirement 1 is verified analogously.
+
+    Requirements 2 and 3 are verified by the following derivations respectively:
+    \[
+      \begin{prooftree}
+        \hypo{\Gamma_1 \Rightarrow I_A,\Delta_1}
+        \hypo{\Gamma_1 \Rightarrow I_B,\Delta_1}
+        \infer2[R$\wedge$]{\Gamma_1 \Rightarrow I_A \wedge I_B, \Delta_1}
+      \end{prooftree}
+    \]
+    \[
+      \begin{prooftree}
+        \hypo{B, \Gamma_{/2}, I_B \Rightarrow \Delta_2}
+        \infer1[Lw]{B, \Gamma_{/2}, I_A, I_B \Rightarrow \Delta_2}
+        \infer1[L$\wedge$]{B, \Gamma_{/2}, I_A \wedge I_B \Rightarrow \Delta_2}
+        \hypo{A, \Gamma_{/2}, I_A \Rightarrow \Delta_2}
+        \infer1[Lw]{A, \Gamma_{/2}, I_A, I_B \Rightarrow \Delta_2}
+        \infer1[L$\wedge$]{A, \Gamma_{/2}, I_A \wedge I_B \Rightarrow \Delta_2}
+        \infer2[L$\vee$ ($\Gamma_2 = \Gamma_{/2} \cup \{A \vee B\}$)]{A \vee B, \Gamma_{/2}, I_A \wedge I_B \Rightarrow \Delta_2}
+      \end{prooftree}
+    \]
+  \end{enumerate}
 \item \textbf{Case} R$\to$:
   \begin{align*}
     \begin{prooftree}
