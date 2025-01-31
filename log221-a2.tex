@@ -306,11 +306,37 @@ We construct the interpolant by induction on the derivation of $\Gamma \Rightarr
 \item \textbf{Case} R$\to$:
   \begin{align*}
     \begin{prooftree}
-      \hypo{\Gamma, A \Rightarrow B, \Delta}
+      \hypo{\Gamma, A \Rightarrow B, \Delta'}
       \infer1[R$\to$]{\Gamma \Rightarrow A \to B, \Delta'}
     \end{prooftree}
     && \text{where $\Delta = \Delta' \cup \{A \to B\}$}
   \end{align*}
+  Let $\Gamma = \Gamma_1 \cup \Gamma_2$ and $\Delta = \Delta_1 \cup \Delta_2$; we define $\Delta_{/i} := \Delta_i \setminus \{A \to B\}$.
+  In the following two cases, we take the formula, $I$, given by the induction hypothesis as the interpolant.
+  \begin{enumerate}
+  \item $A \to B \in \Delta_1$: We split $\Gamma,A$ as $(\Gamma_1 \cup \{A\}) \cup \Gamma_2$ and $B,\Delta'$ as $(\{B\} \cup \Delta_{/1}) \cup \Delta_2$; then $I$ has the following properties:
+    \begin{enumerate}
+    \item $\voc(I) \subseteq \voc(\Gamma_1 \cup \{A\} \cup \{B\} \cup \Delta_{/1}) \cap \voc(\Gamma_2 \cup \Delta_2)$;
+    \item $\Gamma_1,A \Rightarrow I, B, \Delta_{/1}$;
+    \item $\Gamma_2,I \Rightarrow \Delta_2$.
+    \end{enumerate}
+    Requirement 1 is immediate since $\voc(\Gamma_1 \cup \{A\} \cup \{B\} \cup \Delta_{/1}) = \voc(\Gamma_1 \cup \Delta_1)$ and Requirement 3 is given by the induction hypothesis.
+
+    Requirement 2 is verified by an application of R$\to$:
+    \[
+      \begin{prooftree}
+        \hypo{\Gamma_1,A \Rightarrow I, B, \Delta_{/1}}
+        \infer1[R$\to$ ($\Delta_1 = \Delta_{/1} \cup \{A \to B\}$)]{\Gamma_1 \Rightarrow I, A \to B, \Delta_{/1}}
+      \end{prooftree}
+    \]
+  \item $A \to B \in \Delta_2$: We split $\Gamma,A$ as $\Gamma_1 \cup (\Gamma_2 \cup \{A\})$ and $B,\Delta'$ as $\Delta_1 \cup (\{B\} \cup \Delta_{/2})$; then $I$ has the following properties:
+    \begin{enumerate}
+    \item $\voc(I) \subseteq \voc(\Gamma_1 \cup \Delta_1) \cap \voc(\Gamma_2 \cup \{A\} \cup \{B\} \cup \Delta_{/2})$;
+    \item $\Gamma_1 \Rightarrow I, \Delta_1$;
+    \item $\Gamma_2,A,I \Rightarrow B,\Delta_{/2}$.
+    \end{enumerate}
+    This case is completely analogous to the previous case.
+  \end{enumerate}
 \item \textbf{Case} L$\to$:
   \begin{align*}
     \begin{prooftree}
@@ -320,6 +346,70 @@ We construct the interpolant by induction on the derivation of $\Gamma \Rightarr
     \end{prooftree}
     && \text{where $\Gamma = \Gamma' \cup \{A \to B\}$}
   \end{align*}
+  Let $\Gamma = \Gamma_1 \cup \Gamma_2$ and $\Delta = \Delta_1 \cup \Delta_2$; we define $\Gamma_{/i} := \Gamma_i \setminus \{A \to B\}$.
+  There are 2 cases to consider:
+  \begin{enumerate}
+  \item $A \to B \in \Gamma_1$: We split $\Gamma'$ as $\Gamma_{/1} \cup \Gamma_2$, $\Delta$ as is, $\Gamma',B$ as $(\{B\} \cup \Gamma_{/1}) \cup \Gamma_2$, and $A, \Delta$ as $(\{A\} \cup \Delta_1) \cup \Delta_2$; then by the induction hypothesis, there are two formulas $I_A$ and $I_B$ with the following properties:
+    \begin{enumerate}
+    \item $\voc(I_A) \subseteq \voc(\Gamma_{/1} \cup \{A\} \cup \Delta_1) \cap \voc(\Gamma_2 \cup \Delta_2)$;
+    \item $\voc(I_B) \subseteq \voc(\{B\} \cup \Gamma_{/1} \cup \Delta_1) \cap \voc(\Gamma_2 \cup \Delta_2)$;
+    \item $\Gamma_{/1} \Rightarrow I_A, A, \Delta_1$;
+    \item $\Gamma_2, I_A \Rightarrow \Delta_2$;
+    \item $B, \Gamma_{/1} \Rightarrow I_B, \Delta_1$;
+    \item $\Gamma_2, I_B \Rightarrow \Delta_2$.
+    \end{enumerate}
+    Take $I_A \vee I_B$ as the interpolant; Requirement 1 is immediate since $\voc(\Gamma_{/1} \cup \{A\} \cup \Delta_1)$ and $\voc(\Gamma_{/1} \cup \{B\} \cup \Delta_1)$ are contained in $\voc(\Gamma_1 \cup \Gamma_2)$.
+
+    Requirements 2 and 3 are verified by the following derivations respectively:
+    \[
+      \begin{prooftree}
+        \hypo{\Gamma_{/1} \Rightarrow I_A, A, \Delta_1}
+        \infer1[R$\vee$]{\Gamma_{/1} \Rightarrow A, I_A \vee I_B, \Delta_1}
+        \hypo{B, \Gamma_{/1} \Rightarrow I_B, \Delta_1}
+        \infer1[R$\vee$]{B,\Gamma_{/1} \Rightarrow I_A \vee I_B, \Delta_1}
+        \infer2[L$\to$ ($\Gamma_1 = \Gamma_{/1} \cup \{A \to B\}$)]{A \to B, \Gamma_{/1} \Rightarrow I_A \vee I_B, \Delta_1}
+      \end{prooftree}
+    \]
+    \[
+      \begin{prooftree}
+        \hypo{\Gamma_2, I_A \Rightarrow \Delta_2}
+        \hypo{\Gamma_2, I_B \Rightarrow \Delta_2}
+        \infer2[L$\vee$]{\Gamma_2,I_A \vee I_B \Rightarrow \Delta_2}
+      \end{prooftree}
+    \]
+  \item $A \to B \in \Gamma_2$: We split $\Gamma'$ as $\Gamma_1 \cup \Gamma_{/2}$, $A, \Delta$ as $\Delta_1 \cup (\{A\} \cup \Delta_2)$, $\Gamma',B$ as $\Gamma_1 \cup (\{B\} \cup \Gamma_{/2})$, and $\Delta$ as is; then by the induction hypothesis, there are two formulas $I_A$ and $I_B$ with the following properties:
+    \begin{enumerate}
+    \item $\voc(I_A) \subseteq \voc(\Gamma_1 \cup \Delta_1) \cap \voc(\Gamma_{/2} \cup \{A\} \cup \Delta_2)$;
+    \item $\voc(I_B) \subseteq \voc(\Gamma_1 \cup \Delta_1) \cap \voc(\{B\} \cup \Gamma_{/2} \cup \Delta_2)$;
+    \item $\Gamma_1 \Rightarrow I_A, \Delta_1$;
+    \item $\Gamma_{/2},I_A \Rightarrow A, \Delta_2$;
+    \item $\Gamma_1 \Rightarrow I_B, \Delta_1$;
+    \item $B, \Gamma_{/2}, I_B \Rightarrow \Delta_2$.
+    \end{enumerate}
+    We take $I_A \wedge I_B$ as the interpolant; Requirement 1 is analogous.
+
+    Requirements 2 and 3 are verified by the following derivations respectively:
+    \[
+      \begin{prooftree}
+        \hypo{\Gamma_1 \Rightarrow I_A, \Delta_1}
+        \hypo{\Gamma_1 \Rightarrow I_B, \Delta_1}
+        \infer2[R$\wedge$]{\Gamma_1 \Rightarrow I_A \wedge I_B, \Delta_1}
+      \end{prooftree}
+    \]
+    \[
+      \begin{prooftree}
+        \hypo{\Gamma_{/2},I_A \Rightarrow A, \Delta_2}
+        \infer1[Lw]{\Gamma_{/2}, I_A, I_B \Rightarrow A, \Delta_2}
+        \infer1[L$\wedge$]{\Gamma_{/2}, I_A \wedge I_B \Rightarrow A, \Delta_2}
+        \hypo{B, \Gamma_{/2}, I_B \Rightarrow \Delta_2}
+        \infer1[Lw]{\Gamma_{/2}, B, I_A, I_B \Rightarrow \Delta_2}
+        \infer1[L$\wedge$]{\Gamma_{/2}, B, I_A \wedge I_B \Rightarrow \Delta_2}
+        \infer2[L$\to$ ($\Gamma_2 = \Gamma_{/2} \cup \{A \to B\}$)]{\Gamma_{/2}, A \to B, I_A \wedge I_B \Rightarrow \Delta_2}
+      \end{prooftree}
+    \]
+  \end{enumerate}
+
+  Craig's interpolation theorem follows by choosing $\Gamma_1 = \Gamma$, $\Delta_1 = \varnothing$, $\Gamma_2 = \varnothing$, and $\Delta_2 = \Delta$.
 \end{itemize}
 
 % \bibliography{bib}
