@@ -16,12 +16,51 @@ Any mistake is my own.
 
 \section{Introduction}\label{sec:intro}
 
+Unlike simple types, dependent types, as the name suggests, depend on or vary with values.
+The quintessential example of a dependent type is the vector type.
+Similar to the list type, the vector type is a container of items; however, the length of the container is explicitly stored in the type.
+
+Semantics is a compositional assignment of mathematical objects to syntactic objects; for instance, types and terms may be interpreted as sets and functions respectively.
+
+The aim of \cite{Hofmann1997} is to develop an abstract notion of semantics that provides a framework upon which one can develop various interpretations of type theory: to obtain an interpretation is to check that one has an instance of the semantic notion.
+
+\section{Dependent type theory}\label{sec:dtt}
+
+A dependent type theory is presented by its \emph{judgments}; for instance, the typehood of $\sigma$ is expressed by the judgment $\typeJudg{\sigma}$ and the elementhood of $t$ in $\sigma$ is expressed by the judgment $t : \sigma$.
+The elementhood of an open term depends on the types of its open variables; for instance, we cannot make the judgment $x + y : \bN$ unless we already know that $x : \bN$ and $y : \bN$.
+Since types can depend on values, the typehood of an expression such as $\sigma(x)$ must also be made relative to a list of \emph{variable declarations}.
+Such lists of declarations are called \emph{contexts}.
+
+More complex notions of context exist in the literature, but for our purpose, a context is a list of well-formed variable declarations of the form $x_1 : \sigma_1, x_2 : \sigma_2, \ldots, x_n : \sigma_n$ where each type $\sigma_i$ is a type in the context $x_1 : \sigma_1,\ldots, x_{i-1} : \sigma_{i-1}$.
+The judgment $\ctxJudg{\Gamma}$ expresses that $\Gamma$ is a well-formed context.
+
+Finally, we have a notion of \emph{definitional equality} built into the theory; for example, we'd like to regard $0 : \bN$ and $0 + 0 : \bN$ as definitionally equal terms and $\typeJudg{\sigma(0)}$ and $\typeJudg{\sigma(0+0)}$ as definitionally equal types.
+We express these equalities via the judgments $0 = 0 + 0 : \bN$ and $\typeJudg{\sigma(0) = \sigma(0+0)}$ respectively.
+
+To summarize, there are six kinds of judgments:
+\begin{align*}
+  &\vdash \ctxJudg{\Gamma} && \text{$\Gamma$ is a well-formed context}&&\\
+  \Gamma &\vdash \typeJudg{\sigma} && \text{$\sigma$ is a type in context $\Gamma$}&&\\
+  \Gamma &\vdash t : \sigma && \text{$t$ is a term of type $\sigma$ in context $\Gamma$}&&\\
+  &\vdash \ctxJudg{\Gamma = \Delta} && \text{$\Gamma$ and $\Delta$ are definitionally equal contexts}&&\\
+  \Gamma &\vdash \typeJudg{\sigma = \tau} && \text{$\sigma$ and $\tau$ are definitionally equal types in context $\Gamma$}&&\\
+  \Gamma &\vdash t = s : \sigma && \text{$t$ and $s$ are definitionally equal terms of type $\sigma$ in context $\Gamma$}&&\\
+\end{align*}
+
+\subsection{Dependent product types}\label{sec:dpt}
+\subsection{Dependent sum types}\label{sec:dst}
+\subsection{Identity types}\label{sec:it}
+\subsection{Universes}\label{sec:u}
+\subsection{Examples of type theories}\label{sec:eott}
+
+Martin-L\"of's Logical Framework (LF) is a type theory with $\Pi$-types and a universe.
+
+The Calculus of Constructions (CoC) is a type theory with $\Pi$-types and a universe closed under impredicative quantification.
+
 \section{Pre-syntax and context morphisms}\label{sec:pscm}
-\section{Categorical semantics}\label{sec:cs}
-\subsection{Category with families}\label{sec:cwf}
+\section{Category with families}\label{sec:cwf}
 \subsubsection{Terms and sections}\label{sec:tas}
 \subsubsection{Weakening}\label{sec:w}
-\subsection{Other notions of semantics}\label{sec:onos}
 \subsection{Semantic type formers}\label{sec:stf}
 \subsubsection{The term model}\label{sec:ttm}
 \subsubsection{The set model}\label{sec:tsm}
@@ -30,6 +69,7 @@ Any mistake is my own.
 \subsubsection{The presheaf model}\label{sec:tpm}
 \subsection{Interpretation of the syntax}\label{sec:iots}
 \subsection{Conservativity of the logical framework}\label{sec:cotlf}
+\section{Other notions of semantics}\label{sec:onos}
 
 \bibliography{semdtt}
 \bibliographystyle{alpha}
