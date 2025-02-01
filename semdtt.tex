@@ -58,7 +58,87 @@ Martin-L\"of's Logical Framework (LF) is a type theory with $\Pi$-types and a un
 The Calculus of Constructions (CoC) is a type theory with $\Pi$-types and a universe closed under impredicative quantification.
 
 \section{Pre-syntax and context morphisms}\label{sec:pscm}
+
+\begin{definition}[Hofmann]
+  Let $\Gamma$ and $\Delta = x_1 : \sigma_1,\ldots,x_n : \sigma_n$ be well-formed contexts.
+  If $f = (t_1,\ldots,t_n)$ is a sequence of $n$ pre-terms we write
+  \[
+    \Gamma \vdash f \Rightarrow \Delta
+  \]
+  and say that $f$ is a \emph{context morphism} from $\Gamma$ to $\Delta$ if the following $n$ judgments hold:
+  \begin{align*}
+    \Gamma &\vdash t_1 : \sigma_1\\
+    \Gamma &\vdash t_2 : \sigma_2[t_1/x_1]\\
+    &\ldots\\
+    \Gamma &\vdash t_n : \sigma_n[t_1/x_1]\ldots[t_{n-1}/x_{n-1}]
+  \end{align*}
+\end{definition}
+
+In plain English, a context morphism $\Gamma \vdash f \Rightarrow \Delta$ is a sequence of pre-terms in context $\Gamma$ that can be substituted into terms with variables declared in $\Delta$.
+
+If $\Gamma \vdash f \Rightarrow \Delta$ and $\sigma$ is a pre-type, we write $\sigma[f]$ for the simultaneous substitution of the $\Delta$-variables in $\sigma$ by the corresponding terms in $f$.
+This operation is defined analogously for pre-terms, pre-contexts, and judgments of the form $t : \sigma$, $\typeJudg{\sigma}$, $t = s : \sigma$, and $\typeJudg{\sigma = \tau}$.
+
+\begin{example}
+  For any context $\Gamma$, there exists a unique context morphism $()$ from $\Gamma$ to the empty context $\emptyCtx$.
+\end{example}
+
+\begin{example}
+  If $\Gamma := x_1 : \sigma_1,\ldots,x_{n} : \sigma_n$ is a context and $\Gamma \vdash \typeJudg{\sigma}$ and $x$ is a fresh variable, then $(x_1,\ldots,x_n)$ is a context morphism from $\Gamma, x : \sigma$ to $\Gamma$ which we denote by $\ctxP(\Gamma,\sigma)$.
+\end{example}
+
+\begin{example}
+  For any context $\Gamma = x_1 : \sigma_1,\ldots,x_n : \sigma_n$ and any term $\Gamma \vdash t : \sigma$ we can form a context morphism $\Gamma \vdash \overline{t} \Rightarrow \Gamma, x : \sigma$ where $\overline{t} = (x_1,\ldots,x_n,t)$.
+\end{example}
+
+\begin{example}
+  For any context $\Gamma = x_1 : \sigma_1,\ldots,x_n : \sigma_n$, we have the identity context morphism $\Gamma \vdash \id{\Gamma} \Rightarrow \Gamma$ given by $\id{\Gamma} = (x_1,\ldots,x_n)$.
+\end{example}
+
+\begin{example}
+  Suppose $\Gamma \vdash f \Rightarrow \Delta$ and $\vdash \ctxJudg{\Delta,\Theta}$.
+  There is a context morphism $\ctxQ(f,\Theta)$ from $\Gamma,\Theta[f]$ to $\Delta,\Theta$ given by $q(f,\Theta) = (f, z_1,\ldots,z_k)$ for $\Theta = z_1 : \theta_1,\ldots,z_k : \theta_k$.
+\end{example}
+
+If $\Gamma \vdash f \Rightarrow \Delta$ and $\Delta \vdash g \Rightarrow \Theta$ where $g = (t_1,\ldots,t_k)$ we can form the sequence $g \circ f = (t_1[f],\ldots,t_k[f])$.
+By a straightforward induction argument, one can show the following:
+
+\begin{proposition}
+  Assume $B \vdash e \Rightarrow \Gamma$, $\Gamma \vdash f \Rightarrow \Delta$, and $\Delta \vdash g \Rightarrow \Theta$.
+  Furthermore, let $\Theta \vdash \typeJudg{\sigma}$ and $\Theta \vdash t : \sigma$; then the following equations hold (up to variable renaming).
+  \begin{align*}
+    \Gamma \vdash g &\circ f \Rightarrow \Theta\\
+    \sigma[g \circ f] &= \sigma[g][f]\\
+    t[g \circ f] &= t[g][f]\\
+    (g \circ f) \circ e &= g \circ (f \circ e)
+  \end{align*}
+\end{proposition}
+
+\begin{proposition}
+  The followings hold (up to variable renaming):
+  \begin{enumerate}
+  \item If $\Gamma \vdash f \Rightarrow \Delta$, then $\id{\Delta} \circ f = f = f \circ \id{\Gamma}$.
+  \item If $\Gamma \vdash t : \sigma$, then $\ctxP(\Gamma,\sigma) \circ \overline{t} = \id{\Gamma}$.
+  \item If $\Gamma \vdash (f,t) \Rightarrow \Delta,x : \sigma$, then $\ctxP(\Gamma,\sigma) \circ (f, t) = f$ and $x[(f,t)] = t$.
+  \item If $\Gamma \vdash f \Rightarrow \Delta$ and $\vdash \ctxJudg{\Delta,x : \sigma}$ then $\ctxP(\Delta,\sigma) \circ \ctxQ(f,x:\sigma) = f \circ \ctxP(\Gamma,\sigma[f])$.
+  \item If $\Gamma \vdash f \Rightarrow \Delta$ and $\Delta \vdash t : \sigma$, then $\overline{t} \circ f = \ctxQ(f,x : \sigma) \circ \overline{t[f]}$.
+  \item If $\Gamma \vdash \typeJudg{\sigma}$ and $x$ is fresh, then $\id{\Gamma,x:\sigma} = (\ctxP(\Gamma,\sigma),x)$.
+  \end{enumerate}
+\end{proposition}
+
 \section{Category with families}\label{sec:cwf}
+
+A category with families \emph{should} contain the following data:
+\begin{enumerate}
+\item a category $\cC$ of semantic contexts and context morphisms;
+\item for $\Gamma \in \cC$, a collection $\Ty{\cC}(\Gamma)$ of semantic types;
+\item for $\Gamma \in \cC$ and $\sigma \in \Ty{\cC}(\Gamma)$, a collection $\Tm{\cC}(\Gamma,\sigma)$ of semantic terms.
+\end{enumerate}
+
+This is the most bare-metal definition; it only accounts for the structural rules common to all systems of dependent types.
+
+
+
 \subsubsection{Terms and sections}\label{sec:tas}
 \subsubsection{Weakening}\label{sec:w}
 \subsection{Semantic type formers}\label{sec:stf}
