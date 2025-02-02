@@ -59,6 +59,8 @@ The Calculus of Constructions (CoC) is a type theory with $\Pi$-types and a univ
 
 \section{Pre-syntax and context morphisms}\label{sec:pscm}
 
+To give an abstract account of semantics, we begin by studying the structural aspect of type theory.
+
 \begin{definition}[Hofmann]
   Let $\Gamma$ and $\Delta = x_1 : \sigma_1,\ldots,x_n : \sigma_n$ be well-formed contexts.
   If $f = (t_1,\ldots,t_n)$ is a sequence of $n$ pre-terms we write
@@ -87,7 +89,7 @@ This operation is defined analogously for pre-terms, pre-contexts, and judgments
   If $\Gamma := x_1 : \sigma_1,\ldots,x_{n} : \sigma_n$ is a context and $\Gamma \vdash \typeJudg{\sigma}$ and $x$ is a fresh variable, then $(x_1,\ldots,x_n)$ is a context morphism from $\Gamma, x : \sigma$ to $\Gamma$ which we denote by $\ctxP(\Gamma,\sigma)$.
 \end{example}
 
-\begin{example}
+\begin{example}\label{eg:bar}
   For any context $\Gamma = x_1 : \sigma_1,\ldots,x_n : \sigma_n$ and any term $\Gamma \vdash t : \sigma$ we can form a context morphism $\Gamma \vdash \overline{t} \Rightarrow \Gamma, x : \sigma$ where $\overline{t} = (x_1,\ldots,x_n,t)$.
 \end{example}
 
@@ -137,11 +139,96 @@ A category with families \emph{should} contain the following data:
 
 This is the most bare-metal definition; it only accounts for the structural rules common to all systems of dependent types.
 
+\begin{definition}
+  The category $\Fam$ of families of sets has as objects pairs $(B^0,B^1)$ where $B^0$ is a set and $(B^1_b)_{b \in B^0}$ is a family of sets indexed over $B^0$; a morphism from $(B^0,B^1)$ to $(C^0,C^1)$ is a pair $(f^0,f^1)$ where $f^0 : B^0 \to C^0$ is a function and $f^1 = (f^1_b)_{b \in B^0}$ is a family of functions $f^1_b : B^1_b \to C^1_{f^0(b)}$.
+\end{definition}
 
+\begin{definition}
+  Let $\cC$ be a category and $F = (\Ty{\cC},\Tm{\cC}) : \cC\op \to \Fam$ be a functor; let $\Gamma \in \cC$ and $\sigma \in \Ty{\cC}(\Gamma)$.
+  A \emph{comprehension} of $\sigma$ is given by an object $\Gamma.\sigma \in \cC$ together with two projections $\ctxP(\sigma) : \Gamma.\sigma \to \Gamma$ and $v_{\sigma} \in \Tm{\cC}(\Gamma.\sigma, \semSubst{\sigma}{\ctxP(\sigma)})$ such that for each $f : \Delta \to \Gamma$ and $t \in \Tm{\cC}(\Delta,\semSubst{\sigma}{f})$ there exists a unique morphism $\semComp{f}{t}{\sigma} : \Delta \to \Gamma.\sigma$ satisfying $\ctxP(\sigma) \circ \semComp{f}{t}{\sigma} = f$ and $\semSubst{v_{\sigma}}{\semComp{f}{t}{\sigma}} = t$.
+  % https://q.uiver.app/#q=WzAsMyxbMSwxLCJcXEdhbW1hIl0sWzEsMCwiXFxHYW1tYS5cXHNpZ21hIl0sWzAsMSwiXFxEZWx0YSJdLFsxLDAsIlxcY3R4UChcXHNpZ21hKSJdLFsyLDAsImYiLDJdLFsyLDEsIlxcc2VtQ29tcHtmfXt0fXtcXHNpZ21hfSIsMCx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRhc2hlZCJ9fX1dXQ==
+  \[\begin{tikzcd}
+      & {\Gamma.\sigma} \\
+      \Delta & \Gamma
+      \arrow["{\ctxP(\sigma)}", from=1-2, to=2-2]
+      \arrow["{\semComp{f}{t}{\sigma}}", dashed, from=2-1, to=1-2]
+      \arrow["f"', from=2-1, to=2-2]
+    \end{tikzcd}\]
+\end{definition}
+
+\begin{definition}
+  A \emph{category with families} (CwF) is given by the following data:
+  \begin{itemize}
+  \item a category $\cC$ with terminal object;
+  \item a functor $F = (\Ty{\cC},\Tm{\cC}) : \cC\op \to \Fam$;
+  \item a comprehension for each $\Gamma \in \cC$ and $\sigma \in \Ty{\cC}(\Gamma)$.
+  \end{itemize}
+\end{definition}
 
 \subsubsection{Terms and sections}\label{sec:tas}
+
+Given a CwF $\cC$.
+If $t \in \Tm{\cC}(\Gamma,\sigma)$ then also $t \in \Tm{\cC}(\Gamma,\semSubst{\sigma}{\id{\Gamma}})$.
+Then we can define the semantic counterpart of \cref{eg:bar} as the unique section in the following configuration:
+% https://q.uiver.app/#q=WzAsMyxbMCwxLCJcXEdhbW1hIl0sWzEsMCwiXFxHYW1tYS5cXHNpZ21hIl0sWzEsMSwiXFxHYW1tYSJdLFswLDEsIlxcb3ZlcmxpbmV7dH0iXSxbMCwyLCIiLDIseyJsZXZlbCI6Miwic3R5bGUiOnsiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFsxLDIsIlxcY3R4UChcXHNpZ21hKSJdXQ==
+\[\begin{tikzcd}
+    & {\Gamma.\sigma} \\
+    \Gamma & \Gamma
+    \arrow["{\ctxP(\sigma)}", from=1-2, to=2-2]
+    \arrow["{\overline{t}}", from=2-1, to=1-2]
+    \arrow[equals, from=2-1, to=2-2]
+  \end{tikzcd}\]
+
+Conversely, if $f : \Gamma \to \Gamma.\sigma$ is a section of $\ctxP(\sigma)$ then
+\[
+  \semSubst{v_{\sigma}}{f} \in \Tm{\cC}(\Gamma,\sigma)
+\]
+Thus, there is a bijective correspondence between the set of sections of $ctxP(\sigma)$ and $\Tm{\cC}(\Gamma,\sigma)$.
+
 \subsubsection{Weakening}\label{sec:w}
+
+Suppose that $f : B \to \Gamma$ and $\sigma \in \Ty{\cC}(\Gamma)$.
+A context morphism $\ctxQ(f,\sigma) : B.\semSubst{\sigma}{f} \to \Gamma.\sigma$ called the weakening of $f$ by $\sigma$ is defined by
+\[
+  \ctxQ(f,\sigma) = \semComp{f \circ \ctxP(\semSubst{\sigma}{f})}{v_{\semSubst{\sigma}{f}}}{\sigma}
+\]
+
+\begin{proposition}
+  Let $\cC$ be a CwF, $f : B \to \Gamma$, and $\sigma \in \Ty{\cC}{\Gamma}$.
+  The following square is a pullback.
+  % https://q.uiver.app/#q=WzAsNCxbMCwxLCJCIl0sWzEsMSwiXFxHYW1tYSJdLFsxLDAsIlxcR2FtbWEuXFxzaWdtYSJdLFswLDAsIkIuXFxzZW1TdWJzdHtcXHNpZ21hfXtmfSJdLFswLDEsImYiLDJdLFszLDAsIlxcY3R4UChcXHNlbVN1YnN0e1xcc2lnbWF9e2Z9KSIsMl0sWzIsMSwiXFxjdHhQKFxcc2lnbWEpIl0sWzMsMiwiXFxjdHhRKGYsXFxzaWdtYSkiXSxbMywxLCIiLDEseyJzdHlsZSI6eyJuYW1lIjoiY29ybmVyIn19XV0=
+  \[\begin{tikzcd}
+      {B.\semSubst{\sigma}{f}} & {\Gamma.\sigma} \\
+      B & \Gamma
+      \arrow["{\ctxQ(f,\sigma)}", from=1-1, to=1-2]
+      \arrow["{\ctxP(\semSubst{\sigma}{f})}"', from=1-1, to=2-1]
+      \arrow["\lrcorner"{anchor=center, pos=0.125}, draw=none, from=1-1, to=2-2]
+      \arrow["{\ctxP(\sigma)}", from=1-2, to=2-2]
+      \arrow["f"', from=2-1, to=2-2]
+    \end{tikzcd}\]
+\end{proposition}
+
 \subsection{Semantic type formers}\label{sec:stf}
+
+\begin{definition}
+  A CwF $\cC$ supports $\Pi$-types if for any two types $\sigma \in \Ty{\cC}(\Gamma)$ and $\tau \in \Ty{\cC}(\Gamma.\sigma)$, we have the followings:
+  \begin{itemize}
+  \item \emph{(formation)}: a type $\typePi(\sigma,\tau) \in \Ty{\cC}(\Gamma)$;
+  \item \emph{(introduction)}: for each term $t \in \Tm{\cC}(\Gamma.\sigma)$, there is a term $\lam_{\sigma,\tau}(t) \in \Tm{\cC}(\Gamma,\typePi(\sigma,\tau))$;
+  \item \emph{(elimination)}: for each term $u \in \Tm{\cC}(\Gamma,\typePi(\sigma,\tau))$ and $s \in \Tm{\cC}(\Gamma,\sigma)$, there is a term $\app(u,v) \in \Tm{\cC}(\Gamma,\semSubst{\tau}{\overline{u}})$.
+  \end{itemize}
+  subject to the following equations:
+  \begin{align*}
+    \app_{\sigma,\tau}(\lam_{\sigma,\tau}(u),s) &= \semSubst{u}{\overline{s}}
+    && \beta\text{-law}\\
+    \semSubst{\typePi(\sigma,\tau)}{f} &= \typePi(\semSubst{\sigma}{f},\semSubst{\tau}{\ctxQ(f,\sigma)})
+    && \text{congruence}\\
+    \semSubst{\lam_{\sigma,\tau}(t)}{f} &= \lam_{\semSubst{\sigma}{f},\semSubst{\tau}{\ctxQ(f,\sigma)}}(\semSubst{t}{\ctxQ(f,\sigma)})
+    && \text{congruence}\\
+  \end{align*}
+\end{definition}
+
+
 \subsubsection{The term model}\label{sec:ttm}
 \subsubsection{The set model}\label{sec:tsm}
 \subsubsection{The $\omega$-set model}\label{sec:twsm}
