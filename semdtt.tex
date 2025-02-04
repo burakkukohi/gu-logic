@@ -228,12 +228,14 @@ There is a unique morphism $\ctxWkn(f,\sigma) : B.\semSubst{\sigma}{f} \to \Gamm
 
 \subsection{Semantic type formers}\label{sec:stf}
 
-\begin{definition}
+In order to interpret type formers, the given CwF must be equipped with additional structures...
+
+\begin{definition}\label{def:pi}
   A CwF $\cC$ supports $\Pi$-types if for any two types $\sigma \in \Ty{\cC}(\Gamma)$ and $\tau \in \Ty{\cC}(\Gamma.\sigma)$, we have the followings:
   \begin{itemize}
   \item \emph{(formation)}: a type $\typePi(\sigma,\tau) \in \Ty{\cC}(\Gamma)$;
   \item \emph{(introduction)}: for each term $t \in \Tm{\cC}(\Gamma.\sigma)$, there is a term $\lam_{\sigma,\tau}(t) \in \Tm{\cC}(\Gamma,\typePi(\sigma,\tau))$;
-  \item \emph{(elimination)}: for each term $u \in \Tm{\cC}(\Gamma,\typePi(\sigma,\tau))$ and $s \in \Tm{\cC}(\Gamma,\sigma)$, there is a term $\app(u,v) \in \Tm{\cC}(\Gamma,\semSubst{\tau}{\ctxSec{u}})$.
+  \item \emph{(elimination)}: for each term $u \in \Tm{\cC}(\Gamma,\typePi(\sigma,\tau))$ and $s \in \Tm{\cC}(\Gamma,\sigma)$, there is a term $\app(u,s) \in \Tm{\cC}(\Gamma,\semSubst{\tau}{\ctxSec{u}})$.
   \end{itemize}
   subject to the following equations:
   \begin{align*}
@@ -245,6 +247,36 @@ There is a unique morphism $\ctxWkn(f,\sigma) : B.\semSubst{\sigma}{f} \to \Gamm
   \end{align*}
 \end{definition}
 
+\begin{proposition}
+  A CwF $\cC$ supports dependent function spaces if and only if there are operations $\typePi$ and $\lam$ as in \cref{def:pi}; additionally, for any two types $\sigma \in \Ty{\cC}(\Gamma)$ and $\tau \in \Ty{\cC}(\Gamma.\sigma)$, there exists a morphism in the following configuration:
+  % https://q.uiver.app/#q=WzAsMyxbMCwwLCJcXEdhbW1hLlxcc2lnbWEuXFxzZW1TdWJzdHtcXHR5cGVQaShcXHNpZ21hLFxcdGF1KX17XFxjdHhFeHQoXFxzaWdtYSl9Il0sWzIsMCwiXFxHYW1tYS5cXHNpZ21hLlxcdGF1Il0sWzAsMSwiXFxHYW1tYS5cXHNpZ21hIl0sWzAsMSwiXFxhcHBfe1xcc2lnbWEsXFx0YXV9IiwwLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZG90dGVkIn19fV0sWzEsMiwiXFxjdHhFeHQoXFx0YXUpIl0sWzAsMiwiXFxjdHhFeHQoXFxzZW1TdWJzdHtcXHR5cGVQaShcXHNpZ21hLFxcdGF1KX17XFxjdHhFeHQoXFxzaWdtYSl9KSIsMl1d
+  \[\begin{tikzcd}
+      {\Gamma.\sigma.\semSubst{\typePi(\sigma,\tau)}{\ctxExt(\sigma)}} && {\Gamma.\sigma.\tau} \\
+      {\Gamma.\sigma}
+      \arrow["{\app_{\sigma,\tau}}", dotted, from=1-1, to=1-3]
+      \arrow["{\ctxExt(\semSubst{\typePi(\sigma,\tau)}{\ctxExt(\sigma)})}"', from=1-1, to=2-1]
+      \arrow["{\ctxExt(\tau)}", from=1-3, to=2-1]
+    \end{tikzcd}\]
+  such that the following properties hold:
+  \begin{itemize}
+  \item for every term $t \in \Tm{\cC}(\Gamma.\sigma,\tau)$, the following diagram commutes:
+    % https://q.uiver.app/#q=WzAsMyxbMCwwLCJcXEdhbW1hLlxcc2lnbWEuXFxzZW1TdWJzdHtcXHR5cGVQaShcXHNpZ21hLFxcdGF1KX17XFxjdHhFeHQoXFxzaWdtYSl9Il0sWzIsMCwiXFxHYW1tYS5cXHNpZ21hLlxcdGF1Il0sWzAsMSwiXFxHYW1tYS5cXHNpZ21hIl0sWzAsMSwiXFxhcHBfe1xcc2lnbWEsXFx0YXV9Il0sWzIsMSwiXFxjdHhTZWN7dH0iLDJdLFsyLDAsIlxcY3R4U2Vje1xcc2VtU3Vic3R7XFxsYW1fe1xcc2lnbWEsXFx0YXV9KHQpfXtcXGN0eEV4dChcXHNpZ21hKX19Il1d
+    \[\begin{tikzcd}
+	{\Gamma.\sigma.\semSubst{\typePi(\sigma,\tau)}{\ctxExt(\sigma)}} && {\Gamma.\sigma.\tau} \\
+	{\Gamma.\sigma}
+	\arrow["{\app_{\sigma,\tau}}", from=1-1, to=1-3]
+	\arrow["{\ctxSec{\semSubst{\lam_{\sigma,\tau}(t)}{\ctxExt(\sigma)}}}", from=2-1, to=1-1]
+	\arrow["{\ctxSec{t}}"', from=2-1, to=1-3]
+      \end{tikzcd}\]
+  \item ...
+  \end{itemize}
+\end{proposition}
+
+
+
+\begin{definition}
+  A CwF $\cC$ supports strict $\Pi$-types if it supports them and whenever $t \in \Tm{\cC}(\Gamma.\sigma,\tau)$ and $s \in \Tm{\cC}(\typePi(\sigma,\tau))$ and $\app_{\sigma,\tau} \circ \ctxSec{s^+} = \ctxSec{t}$ then $s = \lam_{\sigma,\tau}(t)$.
+\end{definition}
 
 \subsubsection{The term model}\label{sec:ttm}
 \subsubsection{The set model}\label{sec:tsm}
@@ -252,7 +284,32 @@ There is a unique morphism $\ctxWkn(f,\sigma) : B.\semSubst{\sigma}{f} \to \Gamm
 \subsubsection{Modest sets}\label{sec:ms}
 \subsubsection{The presheaf model}\label{sec:tpm}
 \subsection{Interpretation of the syntax}\label{sec:iots}
+
+Assume a fixed type theory and a CwF $\cC$ supporting the type and term formers present in this theory.
+We define a partial interpretation function $\intp{-}$ which maps
+\begin{itemize}
+\item pre-contexts $\Gamma$ to objects of $\cC$;
+\item pairs $\Gamma;\sigma$, where $\Gamma$ is a pre-context and $\sigma$ is a pre-type, to families in $\Ty{\cC}(\intp{\Gamma})$;
+\item pairs $\Gamma;t$, where $\Gamma$ is a pre-context and $t$ is a pre-term, to elements of $\Tm{\cC}(\Gamma,\sigma)$ for some $\sigma \in \Ty{\cC}(\intp{\Gamma})$.
+\end{itemize}
+
+\begin{proposition}[Soundness]
+  The interpretation function enjoys the following soundness properties:
+  \begin{itemize}
+  \item if $\ctxJudg{\Gamma}$, then $\intp{\Gamma}$ is an object of $\cC$;
+  \item if $\Gamma \vdash \typeJudg{\sigma}$, then $\intp{\Gamma;\sigma}$ is an element of $\Ty{\cC}(\intp{\Gamma})$;
+  \item if $\Gamma \vdash t : \sigma$, then $\intp{\Gamma;t}$ is an element of $\Tm{\cC}(\intp{\Gamma},\intp{\Gamma;\sigma})$;
+  \item if $\Gamma \vdash \typeJudg{\sigma = \tau}$, then $\intp{\Gamma;\sigma} = \intp{\Gamma;\tau}$;
+  \item if $\Gamma \vdash u = s : \sigma$, then $\intp{\Gamma;u} = \intp{\Gamma;s}$.
+  \end{itemize}
+\end{proposition}
+
 \subsection{Conservativity of the logical framework}\label{sec:cotlf}
+
+\begin{proposition}[Conservativity]
+  If $\Gamma \dvdash{\cT} \typeJudg{\sigma}$ and $\Gamma \dvdash{\LF{\cT}} t : \sigma$ for some term $t$, then there exists a term $t'$ such that $\Gamma \dvdash{\cT} t' : \sigma$.
+\end{proposition}
+
 \section{Other notions of semantics}\label{sec:onos}
 
 \bibliography{semdtt}
