@@ -81,16 +81,18 @@ In plain English, a context morphism $\Gamma \vdash f \Rightarrow \Delta$ is a s
 If $\Gamma \vdash f \Rightarrow \Delta$ and $\sigma$ is a pre-type, we write $\sigma[f]$ for the simultaneous substitution of the $\Delta$-variables in $\sigma$ by the corresponding terms in $f$.
 This operation is defined analogously for pre-terms, pre-contexts, and judgments of the form $t : \sigma$, $\typeJudg{\sigma}$, $t = s : \sigma$, and $\typeJudg{\sigma = \tau}$.
 
+In the following examples, we use commutative diagrams informally; we do not assume that there is a category of pre-contexts and context morphisms.
+
 \begin{example}
   For any context $\Gamma$, there exists a unique context morphism $()$ from $\Gamma$ to the empty context $\emptyCtx$.
 \end{example}
 
 \begin{example}
-  If $\Gamma := x_1 : \sigma_1,\ldots,x_{n} : \sigma_n$ is a context and $\Gamma \vdash \typeJudg{\sigma}$ and $x$ is a fresh variable, then $(x_1,\ldots,x_n)$ is a context morphism from $\Gamma, x : \sigma$ to $\Gamma$ which we denote by $\ctxP(\Gamma,\sigma)$.
+  If $\Gamma := x_1 : \sigma_1,\ldots,x_{n} : \sigma_n$ is a context and $\Gamma \vdash \typeJudg{\sigma}$ and $x$ is a fresh variable, then $(x_1,\ldots,x_n)$ is a context morphism from $\Gamma, x : \sigma$ to $\Gamma$ which we denote by $\ctxExt(\Gamma,\sigma)$.
 \end{example}
 
 \begin{example}\label{eg:bar}
-  For any context $\Gamma = x_1 : \sigma_1,\ldots,x_n : \sigma_n$ and any term $\Gamma \vdash t : \sigma$ we can form a context morphism $\Gamma \vdash \overline{t} \Rightarrow \Gamma, x : \sigma$ where $\overline{t} = (x_1,\ldots,x_n,t)$.
+  For any context $\Gamma = x_1 : \sigma_1,\ldots,x_n : \sigma_n$ and any term $\Gamma \vdash t : \sigma$ we can form a context morphism $\Gamma \vdash \ctxSec{t} \Rightarrow \Gamma, x : \sigma$ where $\ctxSec{t} = (x_1,\ldots,x_n,t)$.
 \end{example}
 
 \begin{example}
@@ -98,8 +100,19 @@ This operation is defined analogously for pre-terms, pre-contexts, and judgments
 \end{example}
 
 \begin{example}
-  Suppose $\Gamma \vdash f \Rightarrow \Delta$ and $\vdash \ctxJudg{\Delta,\Theta}$.
-  There is a context morphism $\ctxQ(f,\Theta)$ from $\Gamma,\Theta[f]$ to $\Delta,\Theta$ given by $q(f,\Theta) = (f, z_1,\ldots,z_k)$ for $\Theta = z_1 : \theta_1,\ldots,z_k : \theta_k$.
+  Suppose $\Gamma \vdash f \Rightarrow \Delta$.
+  There is a context morphism $\ctxWkn(f,\sigma)$ in the following configuration:
+  % https://q.uiver.app/#q=WzAsNCxbMCwxLCJcXEdhbW1hIl0sWzEsMSwiXFxEZWx0YSJdLFsxLDAsIlxcRGVsdGEseDpcXHNpZ21hIl0sWzAsMCwiXFxHYW1tYSx4Olxcc2lnbWFbZl0iXSxbMCwxLCJmIiwyXSxbMiwxLCJcXGN0eEV4dChcXERlbHRhLFxcc2lnbWEpIl0sWzMsMCwiXFxjdHhFeHQoXFxHYW1tYSxcXHNpZ21hW2ZdKSIsMl0sWzMsMiwiXFxjdHhXa24oZixcXHNpZ21hKSIsMCx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRvdHRlZCJ9fX1dXQ==
+  \[\begin{tikzcd}
+      {\Gamma,x:\sigma[f]} & {\Delta,x:\sigma} \\
+      \Gamma & \Delta
+      \arrow["{\ctxWkn(f,\sigma)}", dotted, from=1-1, to=1-2]
+      \arrow["{\ctxExt(\Gamma,\sigma[f])}"', from=1-1, to=2-1]
+      \arrow["{\ctxExt(\Delta,\sigma)}", from=1-2, to=2-2]
+      \arrow["f"', from=2-1, to=2-2]
+    \end{tikzcd}\]
+  Explicitly, $\ctxWkn(f,\sigma)$ is given by $(f, x)$.
+  In fact, the diagram commutes up to variable renaming.
 \end{example}
 
 If $\Gamma \vdash f \Rightarrow \Delta$ and $\Delta \vdash g \Rightarrow \Theta$ where $g = (t_1,\ldots,t_k)$ we can form the sequence $g \circ f = (t_1[f],\ldots,t_k[f])$.
@@ -120,11 +133,11 @@ By a straightforward induction argument, one can show the following:
   The followings hold (up to variable renaming):
   \begin{enumerate}
   \item If $\Gamma \vdash f \Rightarrow \Delta$, then $\id{\Delta} \circ f = f = f \circ \id{\Gamma}$.
-  \item If $\Gamma \vdash t : \sigma$, then $\ctxP(\Gamma,\sigma) \circ \overline{t} = \id{\Gamma}$.
-  \item If $\Gamma \vdash (f,t) \Rightarrow \Delta,x : \sigma$, then $\ctxP(\Gamma,\sigma) \circ (f, t) = f$ and $x[(f,t)] = t$.
-  \item If $\Gamma \vdash f \Rightarrow \Delta$ and $\vdash \ctxJudg{\Delta,x : \sigma}$ then $\ctxP(\Delta,\sigma) \circ \ctxQ(f,x:\sigma) = f \circ \ctxP(\Gamma,\sigma[f])$.
-  \item If $\Gamma \vdash f \Rightarrow \Delta$ and $\Delta \vdash t : \sigma$, then $\overline{t} \circ f = \ctxQ(f,x : \sigma) \circ \overline{t[f]}$.
-  \item If $\Gamma \vdash \typeJudg{\sigma}$ and $x$ is fresh, then $\id{\Gamma,x:\sigma} = (\ctxP(\Gamma,\sigma),x)$.
+  \item If $\Gamma \vdash t : \sigma$, then $\ctxExt(\Gamma,\sigma) \circ \ctxSec{t} = \id{\Gamma}$.
+  \item If $\Gamma \vdash (f,t) \Rightarrow \Delta,x : \sigma$, then $\ctxExt(\Gamma,\sigma) \circ (f, t) = f$ and $x[(f,t)] = t$.
+  \item If $\Gamma \vdash f \Rightarrow \Delta$ and $\vdash \ctxJudg{\Delta,x : \sigma}$ then $\ctxExt(\Delta,\sigma) \circ \ctxWkn(f,x:\sigma) = f \circ \ctxExt(\Gamma,\sigma[f])$.
+  \item If $\Gamma \vdash f \Rightarrow \Delta$ and $\Delta \vdash t : \sigma$, then $\ctxSec{t} \circ f = \ctxWkn(f,x : \sigma) \circ \ctxSec{t[f]}$.
+  \item If $\Gamma \vdash \typeJudg{\sigma}$ and $x$ is fresh, then $\id{\Gamma,x:\sigma} = (\ctxExt(\Gamma,\sigma),x)$.
   \end{enumerate}
 \end{proposition}
 
@@ -145,12 +158,12 @@ This is the most bare-metal definition; it only accounts for the structural rule
 
 \begin{definition}
   Let $\cC$ be a category and $F = (\Ty{\cC},\Tm{\cC}) : \cC\op \to \Fam$ be a functor; let $\Gamma \in \cC$ and $\sigma \in \Ty{\cC}(\Gamma)$.
-  A \emph{comprehension} of $\sigma$ is given by an object $\Gamma.\sigma \in \cC$ together with two projections $\ctxP(\sigma) : \Gamma.\sigma \to \Gamma$ and $v_{\sigma} \in \Tm{\cC}(\Gamma.\sigma, \semSubst{\sigma}{\ctxP(\sigma)})$ such that for each $f : \Delta \to \Gamma$ and $t \in \Tm{\cC}(\Delta,\semSubst{\sigma}{f})$ there exists a unique morphism $\semComp{f}{t}{\sigma} : \Delta \to \Gamma.\sigma$ satisfying $\ctxP(\sigma) \circ \semComp{f}{t}{\sigma} = f$ and $\semSubst{v_{\sigma}}{\semComp{f}{t}{\sigma}} = t$.
+  A \emph{comprehension} of $\sigma$ is given by an object $\Gamma.\sigma \in \cC$ together with two projections $\ctxExt(\sigma) : \Gamma.\sigma \to \Gamma$ and $v_{\sigma} \in \Tm{\cC}(\Gamma.\sigma, \semSubst{\sigma}{\ctxExt(\sigma)})$ such that for each $f : \Delta \to \Gamma$ and $t \in \Tm{\cC}(\Delta,\semSubst{\sigma}{f})$ there exists a unique morphism $\semComp{f}{t}{\sigma} : \Delta \to \Gamma.\sigma$ satisfying $\ctxExt(\sigma) \circ \semComp{f}{t}{\sigma} = f$ and $\semSubst{v_{\sigma}}{\semComp{f}{t}{\sigma}} = t$.
   % https://q.uiver.app/#q=WzAsMyxbMSwxLCJcXEdhbW1hIl0sWzEsMCwiXFxHYW1tYS5cXHNpZ21hIl0sWzAsMSwiXFxEZWx0YSJdLFsxLDAsIlxcY3R4UChcXHNpZ21hKSJdLFsyLDAsImYiLDJdLFsyLDEsIlxcc2VtQ29tcHtmfXt0fXtcXHNpZ21hfSIsMCx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRhc2hlZCJ9fX1dXQ==
   \[\begin{tikzcd}
       & {\Gamma.\sigma} \\
       \Delta & \Gamma
-      \arrow["{\ctxP(\sigma)}", from=1-2, to=2-2]
+      \arrow["{\ctxExt(\sigma)}", from=1-2, to=2-2]
       \arrow["{\semComp{f}{t}{\sigma}}", dashed, from=2-1, to=1-2]
       \arrow["f"', from=2-1, to=2-2]
     \end{tikzcd}\]
@@ -170,28 +183,33 @@ This is the most bare-metal definition; it only accounts for the structural rule
 Given a CwF $\cC$.
 If $t \in \Tm{\cC}(\Gamma,\sigma)$ then also $t \in \Tm{\cC}(\Gamma,\semSubst{\sigma}{\id{\Gamma}})$.
 Then we can define the semantic counterpart of \cref{eg:bar} as the unique section in the following configuration:
-% https://q.uiver.app/#q=WzAsMyxbMCwxLCJcXEdhbW1hIl0sWzEsMCwiXFxHYW1tYS5cXHNpZ21hIl0sWzEsMSwiXFxHYW1tYSJdLFswLDEsIlxcb3ZlcmxpbmV7dH0iXSxbMCwyLCIiLDIseyJsZXZlbCI6Miwic3R5bGUiOnsiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFsxLDIsIlxcY3R4UChcXHNpZ21hKSJdXQ==
+% https://q.uiver.app/#q=WzAsMyxbMCwxLCJcXEdhbW1hIl0sWzEsMCwiXFxHYW1tYS5cXHNpZ21hIl0sWzEsMSwiXFxHYW1tYSJdLFswLDEsIlxcY3R4U2Vje3R9IiwwLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZGFzaGVkIn19fV0sWzAsMiwiIiwyLHsibGV2ZWwiOjIsInN0eWxlIjp7ImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbMSwyLCJcXGN0eEV4dChcXHNpZ21hKSJdXQ==
 \[\begin{tikzcd}
     & {\Gamma.\sigma} \\
     \Gamma & \Gamma
-    \arrow["{\ctxP(\sigma)}", from=1-2, to=2-2]
-    \arrow["{\overline{t}}", from=2-1, to=1-2]
+    \arrow["{\ctxExt(\sigma)}", from=1-2, to=2-2]
+    \arrow["{\ctxSec{t}}", dashed, from=2-1, to=1-2]
     \arrow[equals, from=2-1, to=2-2]
   \end{tikzcd}\]
 
-Conversely, if $f : \Gamma \to \Gamma.\sigma$ is a section of $\ctxP(\sigma)$ then
+Conversely, if $f : \Gamma \to \Gamma.\sigma$ is a section of $\ctxExt(\sigma)$ then
 \[
   \semSubst{v_{\sigma}}{f} \in \Tm{\cC}(\Gamma,\sigma)
-\]
-Thus, there is a bijective correspondence between the set of sections of $ctxP(\sigma)$ and $\Tm{\cC}(\Gamma,\sigma)$.
+\] 
+Thus, there is a bijective correspondence between the set of sections of $\ctxExt(\sigma)$ and $\Tm{\cC}(\Gamma,\sigma)$.
 
 \subsubsection{Weakening}\label{sec:w}
 
-Suppose that $f : B \to \Gamma$ and $\sigma \in \Ty{\cC}(\Gamma)$.
-A context morphism $\ctxQ(f,\sigma) : B.\semSubst{\sigma}{f} \to \Gamma.\sigma$ called the weakening of $f$ by $\sigma$ is defined by
-\[
-  \ctxQ(f,\sigma) = \semComp{f \circ \ctxP(\semSubst{\sigma}{f})}{v_{\semSubst{\sigma}{f}}}{\sigma}
-\]
+Suppose that $f : \Delta \to \Gamma$ and $\sigma \in \Ty{\cC}(\Gamma)$.
+There is a unique morphism $\ctxWkn(f,\sigma) : B.\semSubst{\sigma}{f} \to \Gamma.\sigma$, called the weakening of $f$ by $\sigma$, given by comprehension in the following configuration:
+% https://q.uiver.app/#q=WzAsMyxbMSwxLCJcXEdhbW1hIl0sWzEsMCwiXFxHYW1tYS5cXHNpZ21hIl0sWzAsMSwiXFxEZWx0YS5cXHNlbVN1YnN0e1xcc2lnbWF9e2Z9Il0sWzEsMCwiXFxjdHhFeHQoXFxzaWdtYSkiXSxbMiwwLCJmIFxcY2lyYyBcXGN0eEV4dChcXHNlbVN1YnN0e1xcc2lnbWF9e2Z9KSIsMl0sWzIsMSwiXFxjdHhXa24oZixcXHNpZ21hKSIsMCx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRhc2hlZCJ9fX1dXQ==
+\[\begin{tikzcd}
+    & {\Gamma.\sigma} \\
+    {\Delta.\semSubst{\sigma}{f}} & \Gamma
+    \arrow["{\ctxExt(\sigma)}", from=1-2, to=2-2]
+    \arrow["{\ctxWkn(f,\sigma)}", dashed, from=2-1, to=1-2]
+    \arrow["{f \circ \ctxExt(\semSubst{\sigma}{f})}"', from=2-1, to=2-2]
+  \end{tikzcd}\]
 
 \begin{proposition}
   Let $\cC$ be a CwF, $f : B \to \Gamma$, and $\sigma \in \Ty{\cC}{\Gamma}$.
@@ -200,10 +218,10 @@ A context morphism $\ctxQ(f,\sigma) : B.\semSubst{\sigma}{f} \to \Gamma.\sigma$ 
   \[\begin{tikzcd}
       {B.\semSubst{\sigma}{f}} & {\Gamma.\sigma} \\
       B & \Gamma
-      \arrow["{\ctxQ(f,\sigma)}", from=1-1, to=1-2]
-      \arrow["{\ctxP(\semSubst{\sigma}{f})}"', from=1-1, to=2-1]
+      \arrow["{\ctxWkn(f,\sigma)}", from=1-1, to=1-2]
+      \arrow["{\ctxExt(\semSubst{\sigma}{f})}"', from=1-1, to=2-1]
       \arrow["\lrcorner"{anchor=center, pos=0.125}, draw=none, from=1-1, to=2-2]
-      \arrow["{\ctxP(\sigma)}", from=1-2, to=2-2]
+      \arrow["{\ctxExt(\sigma)}", from=1-2, to=2-2]
       \arrow["f"', from=2-1, to=2-2]
     \end{tikzcd}\]
 \end{proposition}
@@ -215,16 +233,15 @@ A context morphism $\ctxQ(f,\sigma) : B.\semSubst{\sigma}{f} \to \Gamma.\sigma$ 
   \begin{itemize}
   \item \emph{(formation)}: a type $\typePi(\sigma,\tau) \in \Ty{\cC}(\Gamma)$;
   \item \emph{(introduction)}: for each term $t \in \Tm{\cC}(\Gamma.\sigma)$, there is a term $\lam_{\sigma,\tau}(t) \in \Tm{\cC}(\Gamma,\typePi(\sigma,\tau))$;
-  \item \emph{(elimination)}: for each term $u \in \Tm{\cC}(\Gamma,\typePi(\sigma,\tau))$ and $s \in \Tm{\cC}(\Gamma,\sigma)$, there is a term $\app(u,v) \in \Tm{\cC}(\Gamma,\semSubst{\tau}{\overline{u}})$.
+  \item \emph{(elimination)}: for each term $u \in \Tm{\cC}(\Gamma,\typePi(\sigma,\tau))$ and $s \in \Tm{\cC}(\Gamma,\sigma)$, there is a term $\app(u,v) \in \Tm{\cC}(\Gamma,\semSubst{\tau}{\ctxSec{u}})$.
   \end{itemize}
   subject to the following equations:
   \begin{align*}
-    \app_{\sigma,\tau}(\lam_{\sigma,\tau}(u),s) &= \semSubst{u}{\overline{s}}
+    \app_{\sigma,\tau}(\lam_{\sigma,\tau}(u),s) &= \semSubst{u}{\ctxSec{s}}
     && \beta\text{-law}\\
-    \semSubst{\typePi(\sigma,\tau)}{f} &= \typePi(\semSubst{\sigma}{f},\semSubst{\tau}{\ctxQ(f,\sigma)})
-    && \text{congruence}\\
-    \semSubst{\lam_{\sigma,\tau}(t)}{f} &= \lam_{\semSubst{\sigma}{f},\semSubst{\tau}{\ctxQ(f,\sigma)}}(\semSubst{t}{\ctxQ(f,\sigma)})
-    && \text{congruence}\\
+    \semSubst{\typePi(\sigma,\tau)}{f} &= \typePi(\semSubst{\sigma}{f},\semSubst{\tau}{\ctxWkn(f,\sigma)})\\
+    \semSubst{\lam_{\sigma,\tau}(t)}{f} &= \lam_{\semSubst{\sigma}{f},\semSubst{\tau}{\ctxWkn(f,\sigma)}}(\semSubst{t}{\ctxWkn(f,\sigma)})\\
+    \semSubst{\app_{\sigma,\tau}(u,s)}{f} &= \app_{\semSubst{\sigma}{f},\semSubst{\tau}{\ctxWkn(f,\sigma)}}(\semSubst{u}{f},\semSubst{s}{f})
   \end{align*}
 \end{definition}
 
