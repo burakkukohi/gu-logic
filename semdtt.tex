@@ -20,9 +20,11 @@ Unlike simple types, dependent types, as the name suggests, depend on or vary wi
 The quintessential example of a dependent type is the vector type.
 Similar to the list type, the vector type is a container of items; however, the length of the container is explicitly stored in the type.
 
-Semantics is a compositional assignment of mathematical objects to syntactic objects; for instance, types and terms may be interpreted as sets and functions respectively.
+Semantics is a compositional assignment of mathematical objects to syntactic objects, and such a function is called an \emph{interpretation}.
+There are two main approaches to defining an interpretation function: one can define a partial function on pre-syntactic objects and prove that the function is total on actual syntactic objects that arise in the theory; the other approach is to define a function on derivations and show that various coherent conditions are satisfied.
 
-The aim of \cite{Hofmann1997} is to develop an abstract notion of semantics that provides a framework upon which one can develop various interpretations of type theory: to obtain an interpretation is to check that one has an instance of the semantic notion.
+For each semantic domain, one has to define a non-trivial interpretation function.
+The aim of \cite{Hofmann1997} is to develop an abstract notion of semantics for which a single interpretation can be defined once and for all; then to show that a theory can be interpreted in a given semantic domain, one only has to show that the given semantic domain supports such abstract notion.
 
 \section{Dependent type theory}\label{sec:dtt}
 
@@ -99,7 +101,7 @@ In the following examples, we use commutative diagrams informally; we do not ass
   For any context $\Gamma = x_1 : \sigma_1,\ldots,x_n : \sigma_n$, we have the identity context morphism $\Gamma \vdash \id{\Gamma} \Rightarrow \Gamma$ given by $\id{\Gamma} = (x_1,\ldots,x_n)$.
 \end{example}
 
-\begin{example}
+\begin{example}\label{eg:weak}
   Suppose $\Gamma \vdash f \Rightarrow \Delta$.
   There is a context morphism $\ctxWkn(f,\sigma)$ in the following configuration:
   % https://q.uiver.app/#q=WzAsNCxbMCwxLCJcXEdhbW1hIl0sWzEsMSwiXFxEZWx0YSJdLFsxLDAsIlxcRGVsdGEseDpcXHNpZ21hIl0sWzAsMCwiXFxHYW1tYSx4Olxcc2lnbWFbZl0iXSxbMCwxLCJmIiwyXSxbMiwxLCJcXGN0eEV4dChcXERlbHRhLFxcc2lnbWEpIl0sWzMsMCwiXFxjdHhFeHQoXFxHYW1tYSxcXHNpZ21hW2ZdKSIsMl0sWzMsMiwiXFxjdHhXa24oZixcXHNpZ21hKSIsMCx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRvdHRlZCJ9fX1dXQ==
@@ -181,8 +183,8 @@ This is the most bare-metal definition; it only accounts for the structural rule
 \subsubsection{Terms and sections}\label{sec:tas}
 
 Given a CwF $\cC$.
-If $t \in \Tm{\cC}(\Gamma,\sigma)$ then also $t \in \Tm{\cC}(\Gamma,\semSubst{\sigma}{\id{\Gamma}})$.
-Then we can define the semantic counterpart of \cref{eg:bar} as the unique section in the following configuration:
+If $t \in \Tm{\cC}(\Gamma,\sigma)$, then also $t \in \Tm{\cC}(\Gamma,\semSubst{\sigma}{\id{\Gamma}})$.
+Hence, we can define the semantic counterpart of \cref{eg:bar} as the unique section given by comprehension in the following configuration:
 % https://q.uiver.app/#q=WzAsMyxbMCwxLCJcXEdhbW1hIl0sWzEsMCwiXFxHYW1tYS5cXHNpZ21hIl0sWzEsMSwiXFxHYW1tYSJdLFswLDEsIlxcY3R4U2Vje3R9IiwwLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZGFzaGVkIn19fV0sWzAsMiwiIiwyLHsibGV2ZWwiOjIsInN0eWxlIjp7ImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbMSwyLCJcXGN0eEV4dChcXHNpZ21hKSJdXQ==
 \[\begin{tikzcd}
     & {\Gamma.\sigma} \\
@@ -191,17 +193,16 @@ Then we can define the semantic counterpart of \cref{eg:bar} as the unique secti
     \arrow["{\ctxSec{t}}", dashed, from=2-1, to=1-2]
     \arrow[equals, from=2-1, to=2-2]
   \end{tikzcd}\]
+Explicitly, $\ctxSec{t} = \semComp{\id{\Gamma}}{t}{\sigma}$.
 
-Conversely, if $f : \Gamma \to \Gamma.\sigma$ is a section of $\ctxExt(\sigma)$ then
-\[
-  \semSubst{v_{\sigma}}{f} \in \Tm{\cC}(\Gamma,\sigma)
-\] 
-Thus, there is a bijective correspondence between the set of sections of $\ctxExt(\sigma)$ and $\Tm{\cC}(\Gamma,\sigma)$.
+Conversely, if $f : \Gamma \to \Gamma.\sigma$ is a section of $\ctxExt(\sigma)$ then $\semSubst{v_{\sigma}}{f} \in \Tm{\cC}(\Gamma,\sigma)$.
+Since $\semSubst{v_{\sigma}}{\ctxSec{t}} = t$, one can establish that there is a bijective correspondence between $\Tm{\cC}(\Gamma,\sigma)$ and the set of sections of $\ctxExt(\sigma)$.
 
 \subsubsection{Weakening}\label{sec:w}
 
+Now, we establish the semantic counterpart of \cref{eg:weak}.
 Suppose that $f : \Delta \to \Gamma$ and $\sigma \in \Ty{\cC}(\Gamma)$.
-There is a unique morphism $\ctxWkn(f,\sigma) : B.\semSubst{\sigma}{f} \to \Gamma.\sigma$, called the weakening of $f$ by $\sigma$, given by comprehension in the following configuration:
+By comprehension, there is a projection $v_{\semSubst{\sigma}{f}} \in \Tm{\cC}(\Delta.\semSubst{\sigma}{f},\semSubst{\sigma}{f \circ \ctxExt(\semSubst{\sigma}{f})})$; then we define the morphism $\ctxWkn(f,\sigma) : \Delta.\semSubst{\sigma}{f} \to \Gamma.\sigma$, called the \emph{weakening of $f$ by $\sigma$}, with respect to $v_{\semSubst{\sigma}{f}}$ by comprehension in the following configuration:
 % https://q.uiver.app/#q=WzAsMyxbMSwxLCJcXEdhbW1hIl0sWzEsMCwiXFxHYW1tYS5cXHNpZ21hIl0sWzAsMSwiXFxEZWx0YS5cXHNlbVN1YnN0e1xcc2lnbWF9e2Z9Il0sWzEsMCwiXFxjdHhFeHQoXFxzaWdtYSkiXSxbMiwwLCJmIFxcY2lyYyBcXGN0eEV4dChcXHNlbVN1YnN0e1xcc2lnbWF9e2Z9KSIsMl0sWzIsMSwiXFxjdHhXa24oZixcXHNpZ21hKSIsMCx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRhc2hlZCJ9fX1dXQ==
 \[\begin{tikzcd}
     & {\Gamma.\sigma} \\
@@ -210,6 +211,11 @@ There is a unique morphism $\ctxWkn(f,\sigma) : B.\semSubst{\sigma}{f} \to \Gamm
     \arrow["{\ctxWkn(f,\sigma)}", dashed, from=2-1, to=1-2]
     \arrow["{f \circ \ctxExt(\semSubst{\sigma}{f})}"', from=2-1, to=2-2]
   \end{tikzcd}\]
+Explicitly, $\ctxWkn(f,\sigma) = \semComp{f \circ \ctxExt(\semSubst{\sigma}{f})}{v_{\semSubst{\sigma}{f}}}{\sigma}$.
+
+\begin{notation}
+  Substitution along $\ctxExt(\sigma)$ or $\ctxWkn(f,\sigma)$ will not be spelled out explicitly; we write $\weaken{t}$ for $\semSubst{t}{\ctxExt(\sigma)}$ or $\semSubst{t}{\ctxWkn(f,\sigma)}$ when the correct substitution can be inferred from the context.
+\end{notation}
 
 \begin{proposition}
   Let $\cC$ be a CwF, $f : B \to \Gamma$, and $\sigma \in \Ty{\cC}{\Gamma}$.
