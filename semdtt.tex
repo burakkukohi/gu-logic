@@ -180,7 +180,7 @@ This is the most bare-metal definition; it only accounts for the structural rule
   \end{itemize}
 \end{definition}
 
-\subsubsection{Terms and sections}\label{sec:tas}
+\subsection{Terms and sections}\label{sec:tas}
 
 Given a CwF $\cC$.
 If $t \in \Tm{\cC}(\Gamma,\sigma)$, then also $t \in \Tm{\cC}(\Gamma,\semSubst{\sigma}{\id{\Gamma}})$.
@@ -198,7 +198,7 @@ Explicitly, $\ctxSec{t} = \semComp{\id{\Gamma}}{t}{\sigma}$.
 Conversely, if $f : \Gamma \to \Gamma.\sigma$ is a section of $\ctxExt(\sigma)$ then $\semSubst{v_{\sigma}}{f} \in \Tm{\cC}(\Gamma,\sigma)$.
 Since $\semSubst{v_{\sigma}}{\ctxSec{t}} = t$, one can establish that there is a bijective correspondence between $\Tm{\cC}(\Gamma,\sigma)$ and the set of sections of $\ctxExt(\sigma)$.
 
-\subsubsection{Weakening}\label{sec:w}
+\subsection{Weakening}\label{sec:w}
 
 Now, we establish the semantic counterpart of \cref{eg:weak}.
 Suppose that $f : \Delta \to \Gamma$ and $\sigma \in \Ty{\cC}(\Gamma)$.
@@ -236,59 +236,77 @@ Explicitly, $\ctxWkn(f,\sigma) = \semComp{f \circ \ctxExt(\semSubst{\sigma}{f})}
 
 In order to interpret type formers, the given CwF must be equipped with additional structures...
 
-\begin{definition}\label{def:pi}
+\subsubsection{Semantic $\Pi$-types}\label{sec:spi}
+\begin{definition}\label{def:spi}
   A CwF $\cC$ supports $\Pi$-types if for any two types $\sigma \in \Ty{\cC}(\Gamma)$ and $\tau \in \Ty{\cC}(\Gamma.\sigma)$, we have the followings:
   \begin{itemize}
-  \item \emph{(formation)}: a type $\typePi(\sigma,\tau) \in \Ty{\cC}(\Gamma)$;
-  \item \emph{(introduction)}: for each term $t \in \Tm{\cC}(\Gamma.\sigma)$, there is a term $\lam_{\sigma,\tau}(t) \in \Tm{\cC}(\Gamma,\typePi(\sigma,\tau))$;
-  \item \emph{(elimination)}: for each term $u \in \Tm{\cC}(\Gamma,\typePi(\sigma,\tau))$ and $s \in \Tm{\cC}(\Gamma,\sigma)$, there is a term $\app(u,s) \in \Tm{\cC}(\Gamma,\semSubst{\tau}{\ctxSec{u}})$.
-  \end{itemize}
-  subject to the following equations:
-  \begin{align*}
-    \app_{\sigma,\tau}(\lam_{\sigma,\tau}(u),s) &= \semSubst{u}{\ctxSec{s}}
-    && \beta\text{-law}\\
-    \semSubst{\typePi(\sigma,\tau)}{f} &= \typePi(\semSubst{\sigma}{f},\semSubst{\tau}{\ctxWkn(f,\sigma)})\\
-    \semSubst{\lam_{\sigma,\tau}(t)}{f} &= \lam_{\semSubst{\sigma}{f},\semSubst{\tau}{\ctxWkn(f,\sigma)}}(\semSubst{t}{\ctxWkn(f,\sigma)})\\
-    \semSubst{\app_{\sigma,\tau}(u,s)}{f} &= \app_{\semSubst{\sigma}{f},\semSubst{\tau}{\ctxWkn(f,\sigma)}}(\semSubst{u}{f},\semSubst{s}{f})
-  \end{align*}
-\end{definition}
-
-\begin{proposition}
-  A CwF $\cC$ supports dependent function spaces if and only if there are operations $\typePi$ and $\lam$ as in \cref{def:pi}; additionally, for any two types $\sigma \in \Ty{\cC}(\Gamma)$ and $\tau \in \Ty{\cC}(\Gamma.\sigma)$, there exists a morphism in the following configuration:
-  % https://q.uiver.app/#q=WzAsMyxbMCwwLCJcXEdhbW1hLlxcc2lnbWEuXFxzZW1TdWJzdHtcXHR5cGVQaShcXHNpZ21hLFxcdGF1KX17XFxjdHhFeHQoXFxzaWdtYSl9Il0sWzIsMCwiXFxHYW1tYS5cXHNpZ21hLlxcdGF1Il0sWzAsMSwiXFxHYW1tYS5cXHNpZ21hIl0sWzAsMSwiXFxhcHBfe1xcc2lnbWEsXFx0YXV9IiwwLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZG90dGVkIn19fV0sWzEsMiwiXFxjdHhFeHQoXFx0YXUpIl0sWzAsMiwiXFxjdHhFeHQoXFxzZW1TdWJzdHtcXHR5cGVQaShcXHNpZ21hLFxcdGF1KX17XFxjdHhFeHQoXFxzaWdtYSl9KSIsMl1d
-  \[\begin{tikzcd}
-      {\Gamma.\sigma.\semSubst{\typePi(\sigma,\tau)}{\ctxExt(\sigma)}} && {\Gamma.\sigma.\tau} \\
-      {\Gamma.\sigma}
-      \arrow["{\app_{\sigma,\tau}}", dotted, from=1-1, to=1-3]
-      \arrow["{\ctxExt(\semSubst{\typePi(\sigma,\tau)}{\ctxExt(\sigma)})}"', from=1-1, to=2-1]
-      \arrow["{\ctxExt(\tau)}", from=1-3, to=2-1]
-    \end{tikzcd}\]
-  such that the following properties hold:
-  \begin{itemize}
-  \item for every term $t \in \Tm{\cC}(\Gamma.\sigma,\tau)$, the following diagram commutes:
-    % https://q.uiver.app/#q=WzAsMyxbMCwwLCJcXEdhbW1hLlxcc2lnbWEuXFxzZW1TdWJzdHtcXHR5cGVQaShcXHNpZ21hLFxcdGF1KX17XFxjdHhFeHQoXFxzaWdtYSl9Il0sWzIsMCwiXFxHYW1tYS5cXHNpZ21hLlxcdGF1Il0sWzAsMSwiXFxHYW1tYS5cXHNpZ21hIl0sWzAsMSwiXFxhcHBfe1xcc2lnbWEsXFx0YXV9Il0sWzIsMSwiXFxjdHhTZWN7dH0iLDJdLFsyLDAsIlxcY3R4U2Vje1xcc2VtU3Vic3R7XFxsYW1fe1xcc2lnbWEsXFx0YXV9KHQpfXtcXGN0eEV4dChcXHNpZ21hKX19Il1d
+  \item \emph{formation}: a type $\typePi(\sigma,\tau) \in \Ty{\cC}(\Gamma)$;
+  \item \emph{introduction}: for each term $t \in \Tm{\cC}(\Gamma.\sigma)$, there is a term $\lam_{\sigma,\tau}(t) \in \Tm{\cC}(\Gamma,\typePi(\sigma,\tau))$;
+  \item \emph{elimination}: a morphism in the following configuration:
+    % https://q.uiver.app/#q=WzAsMyxbMCwwLCJcXEdhbW1hLlxcc2lnbWEuXFx3ZWFrZW57XFxQaShcXHNpZ21hLFxcdGF1KX0iXSxbMCwxLCJcXEdhbW1hLlxcc2lnbWEiXSxbMiwwLCJcXEdhbW1hLlxcc2lnbWEuXFx0YXUiXSxbMCwyLCJcXGFwcF97XFxzaWdtYSxcXHRhdX0iLDAseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJkb3R0ZWQifX19XSxbMCwxLCJcXGN0eEV4dChcXHdlYWtlbntcXFBpKFxcc2lnbWEsXFx0YXUpfSkiLDJdLFsyLDEsIlxcY3R4RXh0KFxcdGF1KSJdXQ==
     \[\begin{tikzcd}
-	{\Gamma.\sigma.\semSubst{\typePi(\sigma,\tau)}{\ctxExt(\sigma)}} && {\Gamma.\sigma.\tau} \\
+	{\Gamma.\sigma.\weaken{\Pi(\sigma,\tau)}} && {\Gamma.\sigma.\tau} \\
+	{\Gamma.\sigma}
+	\arrow["{\app_{\sigma,\tau}}", dotted, from=1-1, to=1-3]
+	\arrow["{\ctxExt(\weaken{\Pi(\sigma,\tau)})}"', from=1-1, to=2-1]
+	\arrow["{\ctxExt(\tau)}", from=1-3, to=2-1]
+      \end{tikzcd}\]
+  \end{itemize}
+  These data are subject to the following conditions:
+  \begin{itemize}
+  \item \emph{$\beta$-law}: for every term $t \in \Tm{\cC}(\Gamma.\sigma,\tau)$, the following diagram commutes:
+    % https://q.uiver.app/#q=WzAsMyxbMCwwLCJcXEdhbW1hLlxcc2lnbWEuXFx3ZWFrZW57XFxQaShcXHNpZ21hLFxcdGF1KX0iXSxbMiwwLCJcXEdhbW1hLlxcc2lnbWEuXFx0YXUiXSxbMCwxLCJcXEdhbW1hLlxcc2lnbWEiXSxbMCwxLCJcXGFwcF97XFxzaWdtYSxcXHRhdX0iXSxbMiwwLCJcXGN0eFNlY3tcXHdlYWtlbntcXGxhbV97XFxzaWdtYSxcXHRhdX0odCl9fSJdLFsyLDEsIlxcY3R4U2Vje3R9IiwyXV0=
+    \[\begin{tikzcd}
+	{\Gamma.\sigma.\weaken{\Pi(\sigma,\tau)}} && {\Gamma.\sigma.\tau} \\
 	{\Gamma.\sigma}
 	\arrow["{\app_{\sigma,\tau}}", from=1-1, to=1-3]
-	\arrow["{\ctxSec{\semSubst{\lam_{\sigma,\tau}(t)}{\ctxExt(\sigma)}}}", from=2-1, to=1-1]
+	\arrow["{\ctxSec{\weaken{\lam_{\sigma,\tau}(t)}}}", from=2-1, to=1-1]
 	\arrow["{\ctxSec{t}}"', from=2-1, to=1-3]
       \end{tikzcd}\]
-  \item ...
+  \item \emph{stability under substitution}: for every morphism $f : \Delta \to \Gamma$, one has the following equations:
+    \begin{align*}
+      \semSubst{\typePi(\sigma,\tau)}{f} &= \typePi(\semSubst{\sigma}{f},\weaken{\tau})\\
+      \semSubst{\lam_{\sigma,\tau}(t)}{f} &= \lam_{\semSubst{\sigma}{f},\weaken{\tau}}(\weaken{t})
+    \end{align*}
+    and the following diagram commutes:
+    % https://q.uiver.app/#q=WzAsNCxbMCwwLCJcXERlbHRhLlxcc2VtU3Vic3R7XFxzaWdtYX17Zn0uXFx3ZWFrZW57XFx0eXBlUGkoXFxzZW1TdWJzdHtcXHNpZ21hfXtmfSxcXHdlYWtlbntcXHRhdX0pfSJdLFsyLDAsIlxcRGVsdGEuXFxzZW1TdWJzdHtcXHNpZ21hfXtmfS5cXHdlYWtlbntcXHRhdX0iXSxbMCwxLCJcXEdhbW1hLlxcc2lnbWEuXFx3ZWFrZW57XFx0eXBlUGkoXFxzaWdtYSxcXHRhdSl9Il0sWzIsMSwiXFxHYW1tYS5cXHNpZ21hLlxcdGF1Il0sWzIsMywiXFxhcHBfe1xcc2lnbWEsXFx0YXV9IiwyXSxbMCwxLCJcXGFwcF97XFxzZW1TdWJzdHtcXHNpZ21hfXtmfSxcXHdlYWtlbntcXHRhdX19Il0sWzAsMiwiXFxjdHhXa24oXFxjdHhXa24oZixcXHNpZ21hKSxcXHdlYWtlbntcXFBpKFxcc2lnbWEsXFx0YXUpfSkiLDJdLFsxLDMsIlxcY3R4V2tuKFxcY3R4V2tuKGYsXFxzaWdtYSksXFx0YXUpIl1d
+    \[\begin{tikzcd}
+	{\Delta.\semSubst{\sigma}{f}.\weaken{\typePi(\semSubst{\sigma}{f},\weaken{\tau})}} && {\Delta.\semSubst{\sigma}{f}.\weaken{\tau}} \\
+	{\Gamma.\sigma.\weaken{\typePi(\sigma,\tau)}} && {\Gamma.\sigma.\tau}
+	\arrow["{\app_{\semSubst{\sigma}{f},\weaken{\tau}}}", from=1-1, to=1-3]
+	\arrow["{\ctxWkn(\ctxWkn(f,\sigma),\weaken{\Pi(\sigma,\tau)})}"', from=1-1, to=2-1]
+	\arrow["{\ctxWkn(\ctxWkn(f,\sigma),\tau)}", from=1-3, to=2-3]
+	\arrow["{\app_{\sigma,\tau}}"', from=2-1, to=2-3]
+      \end{tikzcd}\]
   \end{itemize}
-\end{proposition}
-
-
-
-\begin{definition}
-  A CwF $\cC$ supports strict $\Pi$-types if it supports them and whenever $t \in \Tm{\cC}(\Gamma.\sigma,\tau)$ and $s \in \Tm{\cC}(\typePi(\sigma,\tau))$ and $\app_{\sigma,\tau} \circ \ctxSec{s^+} = \ctxSec{t}$ then $s = \lam_{\sigma,\tau}(t)$.
 \end{definition}
 
-\subsubsection{The term model}\label{sec:ttm}
-\subsubsection{The set model}\label{sec:tsm}
-\subsubsection{The $\omega$-set model}\label{sec:twsm}
-\subsubsection{Modest sets}\label{sec:ms}
-\subsubsection{The presheaf model}\label{sec:tpm}
+The reader may wonder why we presented the elimination form as a morphism rather than a combinator; this seemingly unnatural choice has made the definition somewhat obscure.
+However, this more economical definition is in fact equivalent to the natural one \cite[Proposition 3.16]{Hofmann1997}.
+
+Intuitively, $\app_{\sigma,\tau}$ maps $(\gamma,s,u) : \Gamma.\tau.\weaken{\typePi(\sigma,\tau)}$ to $(\gamma,s,u(s)) : \Gamma.\sigma.\tau$; then one can project out $u(s)$ via $v_{\tau}$ as follows:
+\[
+  \semSubst{v_{\tau}}{\app_{\sigma,\tau} \circ \semComp{s}{\weaken{u}}{\weaken{\typePi(\sigma,\tau)}}}
+\]
+
+\begin{definition}\label{def:sspi}
+  A CwF $\cC$ supports strict $\Pi$-types if it supports ordinary $\Pi$-types (\cref{def:spi}) and for any two terms $u \in \Tm{\cC}(\Gamma,\typePi(\sigma,\tau))$ and $s \in \Tm{\cC}(\Gamma.\sigma,\tau)$ such that the following diagram commutes:
+  % https://q.uiver.app/#q=WzAsMyxbMCwxLCJcXEdhbW1hLlxcc2lnbWEiXSxbMCwwLCJcXEdhbW1hLlxcc2lnbWEuXFx3ZWFrZW57XFx0eXBlUGkoXFxzaWdtYSxcXHRhdSl9Il0sWzIsMCwiXFxHYW1tYS5cXHNpZ21hLlxcdGF1Il0sWzEsMiwiXFxhcHBfe1xcc2lnbWEsXFx0YXV9Il0sWzAsMSwiXFxjdHhTZWN7XFx3ZWFrZW57dX19Il0sWzAsMiwiXFxjdHhTZWN7c30iLDJdXQ==
+  \[\begin{tikzcd}
+      {\Gamma.\sigma.\weaken{\typePi(\sigma,\tau)}} && {\Gamma.\sigma.\tau} \\
+      {\Gamma.\sigma}
+      \arrow["{\app_{\sigma,\tau}}", from=1-1, to=1-3]
+      \arrow["{\ctxSec{\weaken{u}}}", from=2-1, to=1-1]
+      \arrow["{\ctxSec{s}}"', from=2-1, to=1-3]
+    \end{tikzcd}\]
+  then one has $u = \lam_{\sigma,\tau}(s)$.
+\end{definition}
+
+Under the lens of $\lambda$-calculus, the content of \cref{def:sspi} is precisely the $\eta$-law: if $u(x)$ is the expression $s$, then $u$ is the $\lambda$-abstraction of $s$.
+
+\subsubsection{Semantic $\Sigma$-types}\label{sec:ssig}
+
+
 \subsection{Interpretation of the syntax}\label{sec:iots}
 
 Assume a fixed type theory and a CwF $\cC$ supporting the type and term formers present in this theory.
@@ -309,6 +327,12 @@ We define a partial interpretation function $\intp{-}$ which maps
   \item if $\Gamma \vdash u = s : \sigma$, then $\intp{\Gamma;u} = \intp{\Gamma;s}$.
   \end{itemize}
 \end{proposition}
+
+\subsubsection{The term model}\label{sec:ttm}
+\subsubsection{The set model}\label{sec:tsm}
+\subsubsection{The $\omega$-set model}\label{sec:twsm}
+\subsubsection{Modest sets}\label{sec:ms}
+\subsubsection{The presheaf model}\label{sec:tpm}
 
 \subsection{Conservativity of the logical framework}\label{sec:cotlf}
 
