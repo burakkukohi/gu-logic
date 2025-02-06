@@ -16,14 +16,22 @@
 
 \newcommand{\cat}[1]{\mathsf{#1}}
 \newcommand{\Fam}{\cat{Fam}}
+\newcommand{\Set}{\cat{Set}}
+\newcommand{\Sl}[2]{#1_{/#2}}
+\newcommand{\Hom}[1]{\operatorname{\mathrm{Hom}_{#1}}}
 
-\newcommand{\sem}[1]{\operatorname{\mathfrak{#1}}}
+\newcommand{\sem}[1]{\operatorname{\textcolor{magenta}{\mathsf{#1}}}}
 \newcommand{\typePi}{\sem{Pi}}
 \newcommand{\lam}{\sem{lam}}
 \newcommand{\app}{\sem{app}}
+
 \newcommand{\typeSig}{\sem{Sig}}
 \newcommand{\pair}{\sem{pair}}
 \newcommand{\indSig}{\sem{ind}^{\typeSig}}
+
+\newcommand{\typeId}{\sem{Id}}
+\newcommand{\refl}{\sem{refl}}
+\newcommand{\indId}{\sem{ind}^{\typeId}}
 
 
 \newcommand{\intp}[1]{\DelimBbrk{#1}}

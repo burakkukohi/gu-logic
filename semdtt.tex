@@ -2,7 +2,7 @@
 
 \usepackage{preamble}
 \usepackage{semdtt-macros}
-\RequirePackage{showlabels}
+\RequirePackage{showkeys}
 
 \title{Category with families}
 \author{Frank Tsai}
@@ -155,20 +155,19 @@ A category with families \emph{should} contain the following data:
 This is the most bare-metal definition; it only accounts for the structural rules common to all systems of dependent types.
 
 \begin{definition}
-  The category $\Fam$ of families of sets has as objects pairs $(B^0,B^1)$ where $B^0$ is a set and $(B^1_b)_{b \in B^0}$ is a family of sets indexed over $B^0$; a morphism from $(B^0,B^1)$ to $(C^0,C^1)$ is a pair $(f^0,f^1)$ where $f^0 : B^0 \to C^0$ is a function and $f^1 = (f^1_b)_{b \in B^0}$ is a family of functions $f^1_b : B^1_b \to C^1_{f^0(b)}$.
+  Let $\Fam$ be the category of families of sets.
+  An object of $\Fam$ is a pair $(B^0,B^1)$, where $B^0$ is a set and $B^1$ is an $B^0$-indexed family of sets $(B^1_b)_{b \in B^0}$; a morphism $(B^0,B^1) \to (C^0,C^1)$ is a pair $(f^0,f^1)$, where $f^0 : B^0 \to C^0$ is a function and $f^1$ is an $B^0$-indexed family of functions $(f^1_b : B^1_b \to C^1_{f^0(b)})_{b \in B^0}$.
 \end{definition}
+
+Given a functor $F : \cC\op \to \Fam$ and a type $\sigma \in \Ty{\cC}(\Gamma)$, we can carve out a functor $F_{\Gamma,\sigma} : \prn{\Sl{\cC}{\Gamma}}\op \to \Set$ that maps each object $f : \Delta \to \Gamma$ to the set $\prn{F(\Delta)}^1_{\semSubst{\sigma}{f}} = \Tm{\cC}(\Delta,\semSubst{\sigma}{f})$ and each morphism $g : f' \to f$ to the function $\prn{F(g)}^1_{\semSubst{\sigma}{f}} : \Tm{\cC}(\Delta,\semSubst{\sigma}{f}) \to \Tm{\cC}(\Delta',\semSubst{\sigma}{f'})$.
+Note that, $\prn{F(g)}^1_{\semSubst{\sigma}{f}}$ is precisely the substitution along $g$ on terms in the set $\Tm{\cC}(\Delta,\semSubst{\sigma}{f})$.
 
 \begin{definition}
   Let $\cC$ be a category and $F = (\Ty{\cC},\Tm{\cC}) : \cC\op \to \Fam$ be a functor; let $\Gamma \in \cC$ and $\sigma \in \Ty{\cC}(\Gamma)$.
-  A \emph{comprehension} of $\sigma$ is given by an object $\Gamma.\sigma \in \cC$ together with two projections $\ctxExt(\sigma) : \Gamma.\sigma \to \Gamma$ and $v_{\sigma} \in \Tm{\cC}(\Gamma.\sigma, \semSubst{\sigma}{\ctxExt(\sigma)})$ such that for each $f : \Delta \to \Gamma$ and $t \in \Tm{\cC}(\Delta,\semSubst{\sigma}{f})$ there exists a unique morphism $\semComp{f}{t}{\sigma} : \Delta \to \Gamma.\sigma$ satisfying $\ctxExt(\sigma) \circ \semComp{f}{t}{\sigma} = f$ and $\semSubst{v_{\sigma}}{\semComp{f}{t}{\sigma}} = t$.
-  % https://q.uiver.app/#q=WzAsMyxbMSwxLCJcXEdhbW1hIl0sWzEsMCwiXFxHYW1tYS5cXHNpZ21hIl0sWzAsMSwiXFxEZWx0YSJdLFsxLDAsIlxcY3R4UChcXHNpZ21hKSJdLFsyLDAsImYiLDJdLFsyLDEsIlxcc2VtQ29tcHtmfXt0fXtcXHNpZ21hfSIsMCx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRhc2hlZCJ9fX1dXQ==
-  \[\begin{tikzcd}
-      & {\Gamma.\sigma} \\
-      \Delta & \Gamma
-      \arrow["{\ctxExt(\sigma)}", from=1-2, to=2-2]
-      \arrow["{\semComp{f}{t}{\sigma}}", dashed, from=2-1, to=1-2]
-      \arrow["f"', from=2-1, to=2-2]
-    \end{tikzcd}\]
+  The type $\sigma$ has \emph{comprehension} if the functor $F_{\Gamma,\sigma}$ is representable.
+  \[
+    F_{\Gamma,\sigma} \iso \Hom{\Sl{\cC}{\Gamma}}(-,\ctxExt(\sigma))
+  \]
 \end{definition}
 
 \begin{definition}
@@ -269,12 +268,12 @@ In order to interpret type formers, the given CwF must be equipped with addition
       \semSubst{\lam_{\sigma,\tau}(t)}{f} &= \lam_{\semSubst{\sigma}{f},\weaken{\tau}}(\weaken{t})
     \end{align*}
     and the following diagram commutes:
-    % https://q.uiver.app/#q=WzAsNCxbMCwwLCJcXERlbHRhLlxcc2VtU3Vic3R7XFxzaWdtYX17Zn0uXFx3ZWFrZW57XFx0eXBlUGkoXFxzZW1TdWJzdHtcXHNpZ21hfXtmfSxcXHdlYWtlbntcXHRhdX0pfSJdLFsyLDAsIlxcRGVsdGEuXFxzZW1TdWJzdHtcXHNpZ21hfXtmfS5cXHdlYWtlbntcXHRhdX0iXSxbMCwxLCJcXEdhbW1hLlxcc2lnbWEuXFx3ZWFrZW57XFx0eXBlUGkoXFxzaWdtYSxcXHRhdSl9Il0sWzIsMSwiXFxHYW1tYS5cXHNpZ21hLlxcdGF1Il0sWzIsMywiXFxhcHBfe1xcc2lnbWEsXFx0YXV9IiwyXSxbMCwxLCJcXGFwcF97XFxzZW1TdWJzdHtcXHNpZ21hfXtmfSxcXHdlYWtlbntcXHRhdX19Il0sWzAsMiwiXFxjdHhXa24oXFxjdHhXa24oZixcXHNpZ21hKSxcXHdlYWtlbntcXFBpKFxcc2lnbWEsXFx0YXUpfSkiLDJdLFsxLDMsIlxcY3R4V2tuKFxcY3R4V2tuKGYsXFxzaWdtYSksXFx0YXUpIl1d
+    % https://q.uiver.app/#q=WzAsNCxbMCwwLCJcXERlbHRhLlxcc2VtU3Vic3R7XFxzaWdtYX17Zn0uXFx3ZWFrZW57XFx0eXBlUGkoXFxzZW1TdWJzdHtcXHNpZ21hfXtmfSxcXHdlYWtlbntcXHRhdX0pfSJdLFsyLDAsIlxcRGVsdGEuXFxzZW1TdWJzdHtcXHNpZ21hfXtmfS5cXHdlYWtlbntcXHRhdX0iXSxbMCwxLCJcXEdhbW1hLlxcc2lnbWEuXFx3ZWFrZW57XFx0eXBlUGkoXFxzaWdtYSxcXHRhdSl9Il0sWzIsMSwiXFxHYW1tYS5cXHNpZ21hLlxcdGF1Il0sWzIsMywiXFxhcHBfe1xcc2lnbWEsXFx0YXV9IiwyXSxbMCwxLCJcXGFwcF97XFxzZW1TdWJzdHtcXHNpZ21hfXtmfSxcXHdlYWtlbntcXHRhdX19Il0sWzAsMiwiXFxjdHhXa24oXFxjdHhXa24oZixcXHNpZ21hKSxcXHdlYWtlbntcXHR5cGVQaShcXHNpZ21hLFxcdGF1KX0pIiwyXSxbMSwzLCJcXGN0eFdrbihcXGN0eFdrbihmLFxcc2lnbWEpLFxcdGF1KSJdXQ==
     \[\begin{tikzcd}
 	{\Delta.\semSubst{\sigma}{f}.\weaken{\typePi(\semSubst{\sigma}{f},\weaken{\tau})}} && {\Delta.\semSubst{\sigma}{f}.\weaken{\tau}} \\
 	{\Gamma.\sigma.\weaken{\typePi(\sigma,\tau)}} && {\Gamma.\sigma.\tau}
 	\arrow["{\app_{\semSubst{\sigma}{f},\weaken{\tau}}}", from=1-1, to=1-3]
-	\arrow["{\ctxWkn(\ctxWkn(f,\sigma),\weaken{\Pi(\sigma,\tau)})}"', from=1-1, to=2-1]
+	\arrow["{\ctxWkn(\ctxWkn(f,\sigma),\weaken{\typePi(\sigma,\tau)})}"', from=1-1, to=2-1]
 	\arrow["{\ctxWkn(\ctxWkn(f,\sigma),\tau)}", from=1-3, to=2-3]
 	\arrow["{\app_{\sigma,\tau}}"', from=2-1, to=2-3]
       \end{tikzcd}\]
@@ -325,8 +324,45 @@ Under the lens of $\lambda$-calculus, the content of \cref{def:sspi} is precisel
   These data are subject to the following conditions:
   \begin{itemize}
   \item \emph{$\beta$-law}: for every type $\rho \in \Ty{\cC}(\Gamma.\typeSig(\sigma,\tau))$ and term $t \in \Tm{\cC}(\Gamma.\sigma.\tau,\semSubst{\rho}{\pair_{\sigma,\tau}})$, the equation $\semSubst{\indSig_{\sigma,\tau,\rho}(t)}{\pair_{\sigma,\tau}} = t$ holds;
-  \item \emph{stability under substitution}:
+  \item \emph{stability under substitution}: for any morphism $f : \Delta \to \Gamma$ the following equations hold:
+    \begin{align*}
+      \semSubst{\typeSig(\sigma,\tau)}{f} &= \typeSig(\semSubst{\sigma}{f},\weaken{\tau})\\
+      \semSubst{\indSig_{\sigma,\tau,\rho}(t)}{\ctxWkn(f,\typeSig(\sigma,\tau))} &= \indSig_{\semSubst{\sigma}{f},\weaken{\tau},\weaken{\rho}}(\weaken{t})
+    \end{align*}
+    and the following diagram commutes:
+    % https://q.uiver.app/#q=WzAsNCxbMCwwLCJcXERlbHRhLlxcc2VtU3Vic3R7XFxzaWdtYX17Zn0uXFx3ZWFrZW57XFx0YXV9Il0sWzIsMCwiXFxEZWx0YS5cXHR5cGVTaWcoXFxzZW1TdWJzdHtcXHNpZ21hfXtmfSxcXHdlYWtlbntcXHRhdX0pIl0sWzAsMSwiXFxHYW1tYS5cXHNpZ21hLlxcdGF1Il0sWzIsMSwiXFxHYW1tYS5cXHR5cGVTaWcoXFxzaWdtYSxcXHRhdSkiXSxbMiwzLCJcXHBhaXJfe1xcc2lnbWEsXFx0YXV9IiwyXSxbMCwxLCJcXHBhaXJfe1xcc2VtU3Vic3R7XFxzaWdtYX17Zn0sXFx3ZWFrZW57XFx0YXV9fSJdLFswLDIsIlxcY3R4V2tuKFxcY3R4V2tuKGYsXFxzaWdtYSksXFx0YXUpIiwyXSxbMSwzLCJcXGN0eFdrbihmLFxcdHlwZVNpZyhcXHNpZ21hLFxcdGF1KSkiXV0=
+    \[\begin{tikzcd}
+	{\Delta.\semSubst{\sigma}{f}.\weaken{\tau}} && {\Delta.\typeSig(\semSubst{\sigma}{f},\weaken{\tau})} \\
+	{\Gamma.\sigma.\tau} && {\Gamma.\typeSig(\sigma,\tau)}
+	\arrow["{\pair_{\semSubst{\sigma}{f},\weaken{\tau}}}", from=1-1, to=1-3]
+	\arrow["{\ctxWkn(\ctxWkn(f,\sigma),\tau)}"', from=1-1, to=2-1]
+	\arrow["{\ctxWkn(f,\typeSig(\sigma,\tau))}", from=1-3, to=2-3]
+	\arrow["{\pair_{\sigma,\tau}}"', from=2-1, to=2-3]
+      \end{tikzcd}\]
   \end{itemize}
+\end{definition}
+
+\subsubsection{Semantic (intensional) identity types}\label{sec:sid}
+
+\begin{definition}\label{def:sid}
+  A CwF $\cC$ supports (intensional) identity types if for every $\sigma \in \Ty{\cC}(\Gamma)$, the following data are given:
+  \begin{itemize}
+  \item \emph{formation}: a type $\typeId_{\sigma} \in \Ty{\cC}(\Gamma.\sigma.\weaken{\sigma})$;
+  \item \emph{introduction}: a morphism $\refl_{\sigma} : \Gamma.\sigma \to \Gamma.\sigma.\weaken{\sigma}.\typeId_{\sigma}$ in the following configuration:
+    % https://q.uiver.app/#q=WzAsMyxbMCwwLCJcXEdhbW1hLlxcc2lnbWEiXSxbMiwwLCJcXEdhbW1hLlxcc2lnbWEuXFx3ZWFrZW57XFxzaWdtYX0uXFx0eXBlSWRfe1xcc2lnbWF9Il0sWzAsMSwiXFxHYW1tYS5cXHNpZ21hLlxcd2Vha2Vue1xcc2lnbWF9Il0sWzAsMSwiXFxyZWZsX3tcXHNpZ21hfSIsMCx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRvdHRlZCJ9fX1dLFsxLDIsIlxcY3R4RXh0KFxcdHlwZUlkX3tcXHNpZ21hfSkiXSxbMCwyLCJcXGN0eFNlY3t2X3tcXHNpZ21hfX0iLDJdXQ==
+    \[\begin{tikzcd}
+	{\Gamma.\sigma} && {\Gamma.\sigma.\weaken{\sigma}.\typeId_{\sigma}} \\
+	{\Gamma.\sigma.\weaken{\sigma}}
+	\arrow["{\refl_{\sigma}}", dotted, from=1-1, to=1-3]
+	\arrow["{\ctxSec{v_{\sigma}}}"', from=1-1, to=2-1]
+	\arrow["{\ctxExt(\typeId_{\sigma})}", from=1-3, to=2-1]
+      \end{tikzcd}\]
+  \item \emph{elimination}: for each type $\tau \in \Ty{\cC}(\Gamma.\sigma.\weaken{\sigma}.\typeId_{\sigma})$, a function $\indId_{\sigma,\tau} : \Tm{\cC}(\Gamma.\tau,\semSubst{\tau}{\refl_{\sigma}}) \to \Tm{\cC}(\Gamma.\sigma.\weaken{\sigma}.\typeId_{\sigma},\tau)$.
+  \end{itemize}
+  These data are required to be stable under substitution and additionally the following equation holds for every term $t \in \Tm{\cC}(\Gamma.\tau,\semSubst{\tau}{\refl_{\sigma}})$:
+  \begin{align*}
+    \semSubst{\indId_{\sigma,\tau}(t)}{\refl_{\sigma}} = t && \text{$\beta$-law}
+  \end{align*}
 \end{definition}
 
 \subsection{Interpretation of the syntax}\label{sec:iots}
