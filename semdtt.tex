@@ -137,11 +137,20 @@ Note that the $\eta$-law does not type check without the \emph{equality reflecti
 \end{mathpar}
 
 \subsection{Universes}\label{sec:u}
+
+\begin{mathpar}
+  \ebrule[$U$-F]{
+    \infer0{\Gamma \vdash \typeJudg{U}}
+  }\and
+  \ebrule[$\El$-I]{
+    \hypo{\Gamma \vdash \sigma : U}
+    \infer1{\Gamma \vdash \typeJudg{\El(\sigma)}}
+  }
+\end{mathpar}
+
 \subsection{Examples of type theories}\label{sec:eott}
 
 Martin-L\"of's Logical Framework (LF) is a type theory with $\Pi$-types and a universe.
-
-The Calculus of Constructions (CoC) is a type theory with $\Pi$-types and a universe closed under impredicative quantification.
 
 \section{Pre-syntax and context morphisms}\label{sec:pscm}
 
@@ -243,14 +252,17 @@ This is the most bare-metal definition; it only accounts for the structural rule
   An object of $\Fam$ is a pair $(B^0,B^1)$, where $B^0$ is a set and $B^1$ is an $B^0$-indexed family of sets $(B^1_b)_{b \in B^0}$; a morphism $(B^0,B^1) \to (C^0,C^1)$ is a pair $(f^0,f^1)$, where $f^0 : B^0 \to C^0$ is a function and $f^1$ is an $B^0$-indexed family of functions $(f^1_b : B^1_b \to C^1_{f^0(b)})_{b \in B^0}$.
 \end{definition}
 
-Given a functor $F : \cC\op \to \Fam$ and a type $\sigma \in \Ty{\cC}(\Gamma)$, we can carve out the ``substitution-on-terms functor'' $F_{\Gamma,\sigma} : \prn{\Sl{\cC}{\Gamma}}\op \to \Set$ that maps each object $f : \Delta \to \Gamma$ to the set $\prn{F(\Delta)}^1_{\semSubst{\sigma}{f}} = \Tm{\cC}(\Delta,\semSubst{\sigma}{f})$ and each morphism $g : f' \to f$ to the function $\semSubst{-}{g} : \Tm{\cC}(\Delta,\semSubst{\sigma}{f}) \to \Tm{\cC}(\Delta',\semSubst{\sigma}{f'})$.
+For each $\Gamma \in \cC$, we can form the slice category $\Sl{\cC}{\Gamma}$; it is helpful to think of the objects of $\Sl{\cC}{\Gamma}$ as ``extensions'' of $\Gamma$ and morphisms as compatible substitutions between two extensions. 
+
+Now, given a functor $F : \cC\op \to \Fam$ and a type $\sigma \in \Ty{\cC}(\Gamma)$, we can carve out a functor $F_{\Gamma,\sigma} : \prn{\Sl{\cC}{\Gamma}}\op \to \Set$ that maps each extension $f : \Delta \to \Gamma \in \Sl{\cC}{\Gamma}$ to the set $\Tm{\cC}(\Delta,\semSubst{\sigma}{f})$ and each compatible substitution $g : f' \to f$ to the function $\semSubst{-}{g} : \Tm{\cC}(\Delta,\semSubst{\sigma}{f}) \to \Tm{\cC}(\Delta',\semSubst{\sigma}{f'})$.
 
 \begin{definition}
-  Let $\cC$ be a category and $F = (\Ty{\cC},\Tm{\cC}) : \cC\op \to \Fam$ be a functor; let $\Gamma \in \cC$ and $\sigma \in \Ty{\cC}(\Gamma)$.
-  The type $\sigma$ has \emph{comprehension} if the functor $F_{\Gamma,\sigma}$ is representable.
+  Let $\cC$ be a category and $F = (\Ty{\cC},\Tm{\cC}) : \cC\op \to \Fam$ be a functor.
+  Given $\Gamma \in \cC$ and $\sigma \in \Ty{\cC}(\Gamma)$, the type $\sigma$ has \emph{comprehension} if there is a universal extension, i.e., $F_{\Gamma,\sigma}$ is representable.
   \[
     F_{\Gamma,\sigma} \iso \Hom{\Sl{\cC}{\Gamma}}(-,\ctxExt(\sigma))
   \]
+  We write $\Gamma.\sigma$ for the domain of $\ctxExt(\sigma)$.
 \end{definition}
 
 \begin{definition}
@@ -261,6 +273,10 @@ Given a functor $F : \cC\op \to \Fam$ and a type $\sigma \in \Ty{\cC}(\Gamma)$, 
   \item a comprehension for each $\Gamma \in \cC$ and $\sigma \in \Ty{\cC}(\Gamma)$.
   \end{itemize}
 \end{definition}
+
+\begin{example}
+  The category of contexts and context morphisms (identified by definitional equality) can be extended to a CwF...
+\end{example}
 
 \subsection{Terms and sections}\label{sec:tas}
 
@@ -386,6 +402,26 @@ Intuitively, $\app_{\sigma,\tau}$ maps $(\gamma,s,u) : \Gamma.\tau.\weaken{\type
 
 Under the lens of $\lambda$-calculus, the content of \cref{def:sspi} is precisely the $\eta$-law: if $u(x)$ is the expression $s$, then $u$ is the $\lambda$-abstraction of $s$.
 
+\begin{example}
+  The term model of a type theory supports $\Pi$-types with the evident setting:
+  \begin{align*}
+    \typePi(\sigma,\tau) &:= \Pi x : \sigma.\tau\\
+    \lam_{\sigma,\tau}(t) &:= \lambda x : \sigma.t
+  \end{align*}
+  and $\app_{\sigma,\tau}$ is given by the context morphism
+  \[
+    \Gamma,y : \sigma, z : \Pi x : \sigma.\tau \vdash (\gamma,z(y)) \Rightarrow \Gamma, x : \sigma, w : \tau
+  \]
+  Moreover, if the underlying type theory has $\eta$-law for $\Pi$-types, then the term model supports them strictly.
+\end{example}
+
+\begin{example}
+  The set-theoretic model supports strict $\Pi$-types in the following setting: if $\prn{\sigma_{\gamma}}_{\gamma \in \Gamma} \in \Ty{\Set}(\Gamma)$ and $\prn{\tau_{\gamma,x}}_{(\gamma,x)} \in \Gamma.\sigma$ then
+  \begin{align*}
+    \typePi(\sigma,\tau)_{\gamma} &:= \prod_{x \in \sigma_{\gamma}}\tau_{(\gamma,x)}
+  \end{align*}
+\end{example}
+
 \subsubsection{Semantic $\Sigma$-types}\label{sec:ssig}
 
 \begin{definition}
@@ -424,6 +460,25 @@ Under the lens of $\lambda$-calculus, the content of \cref{def:sspi} is precisel
       \end{tikzcd}\]
   \end{itemize}
 \end{definition}
+
+\begin{example}
+  The term model supports $\Sigma$-types with the following setting:
+  \begin{align*}
+    \typeSig(\sigma,\tau) &:= \Sigma x : \sigma.\tau\\
+    \pair_{\sigma,\tau} &:= \Gamma, x : \sigma, y : \tau \vdash (\gamma, \synPair{u}{s}) \Rightarrow \Gamma, z : \Sigma x : \sigma.\tau\\
+    \indSig_{\sigma,\tau,\rho}(s) &:= \synIndSig(x,s)
+  \end{align*}
+  where $x$ is an open variable of type $\Sigma x : \sigma.\tau$.
+\end{example}
+
+\begin{example}
+  The set-theoretic model supports strict $\Sigma$-types in the following setting:
+  \begin{align*}
+    \typeSig(\sigma,\tau)_{\gamma \in \Gamma} &:= \setNotat{(x,y) : x \in \sigma_{\gamma}, y \in \tau_{(\gamma,x)}}\\
+    \pair_{\sigma,\tau}(\gamma,x,y) &:= (\gamma,(x,y))\\
+    \indSig_{\sigma,\tau,\rho}(t) &:= ...
+  \end{align*}
+\end{example}
 
 \subsubsection{Semantic (intensional) identity types}\label{sec:sid}
 
