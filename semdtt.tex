@@ -50,8 +50,92 @@ To summarize, there are six kinds of judgments:
 \end{align*}
 
 \subsection{Dependent product types}\label{sec:dpt}
+
+\begin{mathpar}
+  \ebrule[$\Pi$-F]{
+    \hypo{\Gamma, x : \sigma \vdash \typeJudg{\tau}}
+    \infer1{\Gamma \vdash \typeJudg{\Pi x : \sigma.\tau}}
+  }\and
+  \ebrule[$\Pi$-I]{
+    \hypo{\Gamma, x : \sigma \vdash t : \tau}
+    \infer1{\Gamma \vdash \lambda x : \sigma.t : \Pi x : \sigma.\tau}
+  }\and
+  \ebrule[$\Pi$-E]{
+    \hypo{\Gamma \vdash f : \Pi x : \sigma.\tau}
+    \hypo{\Gamma \vdash u : \sigma}
+    \infer2{\Gamma \vdash f(u) : \tau[u/x]}
+  }
+\end{mathpar}
+\begin{itemize}
+\item \emph{$\beta$-law}: $(\lambda x : \sigma.t)(u) = t[u/x] : \tau[u/x]$;
+\item \emph{$\eta$-law (optional)}: $f = \lambda x : \sigma.f(x) : \Pi x : \sigma.\tau$.
+\end{itemize}
+
 \subsection{Dependent sum types}\label{sec:dst}
+
+\begin{mathpar}
+  \ebrule[$\Sigma$-F]{
+    \hypo{\Gamma, x : \sigma \vdash \typeJudg{\tau}}
+    \infer1{\Gamma \vdash \typeJudg{\Sigma x : \sigma.\tau}}
+  }\and
+  \ebrule[$\Sigma$-I]{
+    \hypo{\Gamma \vdash u : \sigma}
+    \hypo{\Gamma \vdash s : \tau[u/x]}
+    \infer2{\Gamma \vdash \synPair{u}{s} : \Sigma x : \sigma.\tau}
+  }\and
+  \ebrule[$\Sigma$-E]{
+    \hypo{
+      \begin{matrix}
+        \Gamma,z : \Sigma x : \sigma.\tau \vdash \typeJudg{\rho}\\
+        \Gamma,x : \sigma, y : \tau \vdash s : \rho[\synPair{x}{y}/z]\\
+        \Gamma \vdash u : \Sigma x : \sigma.\tau\\
+      \end{matrix}
+    }
+    \infer1{\Gamma \vdash \synIndSig(u,s) : \rho[u/z]}
+  }
+\end{mathpar}
+\begin{itemize}
+\item \emph{$\beta$-law}: $\synIndSig(\synPair{a}{b},s) = s[a/x,b/y] : \rho[\synPair{a}{b}/z]$;
+\item \emph{$\eta$-law (optional)}: $u = \synPair{\synIndSig(u,x)}{\synIndSig(u,y)} : \Sigma x : \sigma.\tau$.
+\end{itemize}
+
 \subsection{Identity types}\label{sec:it}
+
+\begin{mathpar}
+  \ebrule[$\synTypeId$-F]{
+    \hypo{\Gamma \vdash u : \sigma}
+    \hypo{\Gamma \vdash s : \sigma}
+    \infer2{\Gamma \vdash \typeJudg{\synTypeId_{\sigma}(u,s)}}
+  }\and
+  \ebrule[$\synTypeId$-I]{
+    \hypo{\Gamma \vdash a : \sigma}
+    \infer1{\Gamma \vdash \synRefl_{\sigma}(a) : \synTypeId_{\sigma}(a,a)}
+  }\and
+  \ebrule[$\synTypeId$-E]{
+    \hypo{
+      \begin{matrix}
+        \Gamma, x : \sigma, y : \sigma, p : \synTypeId_{\sigma}(x,y) \vdash \typeJudg{\rho}\\
+        \Gamma, z : \sigma \vdash s : \rho[z/x,z/y,\synRefl_{\sigma}(z)/p]\\
+        \Gamma \vdash a : \sigma \qquad \Gamma \vdash b : \sigma\\
+        \Gamma \vdash u : \synTypeId_{\sigma}(a,b)\\
+      \end{matrix}
+    }
+    \infer1{\Gamma \vdash \synIndId(u,s) : \rho[a/x,b/y,u/p]}
+  }
+\end{mathpar}
+\begin{itemize}
+\item \emph{$\beta$-law}: $\synIndId(\synRefl_{\sigma}(a),s) = s[a/z] : \rho[a/x,a/y,\synRefl_{\sigma}(a)/p]$.
+\end{itemize}
+Extensional type theory:
+\emph{$\eta$-law}: $p = \synRefl_{\sigma}(a) : \synTypeId(a,b)$.
+Note that the $\eta$-law does not type check without the \emph{equality reflection} rule:
+\begin{mathpar}
+  \ebrule{
+    \hypo{\Gamma \vdash p : \synTypeId_{\sigma}(a,b)}
+    \infer1{\Gamma \vdash a = b : \sigma}
+  }
+\end{mathpar}
+
 \subsection{Universes}\label{sec:u}
 \subsection{Examples of type theories}\label{sec:eott}
 
@@ -159,8 +243,7 @@ This is the most bare-metal definition; it only accounts for the structural rule
   An object of $\Fam$ is a pair $(B^0,B^1)$, where $B^0$ is a set and $B^1$ is an $B^0$-indexed family of sets $(B^1_b)_{b \in B^0}$; a morphism $(B^0,B^1) \to (C^0,C^1)$ is a pair $(f^0,f^1)$, where $f^0 : B^0 \to C^0$ is a function and $f^1$ is an $B^0$-indexed family of functions $(f^1_b : B^1_b \to C^1_{f^0(b)})_{b \in B^0}$.
 \end{definition}
 
-Given a functor $F : \cC\op \to \Fam$ and a type $\sigma \in \Ty{\cC}(\Gamma)$, we can carve out a functor $F_{\Gamma,\sigma} : \prn{\Sl{\cC}{\Gamma}}\op \to \Set$ that maps each object $f : \Delta \to \Gamma$ to the set $\prn{F(\Delta)}^1_{\semSubst{\sigma}{f}} = \Tm{\cC}(\Delta,\semSubst{\sigma}{f})$ and each morphism $g : f' \to f$ to the function $\prn{F(g)}^1_{\semSubst{\sigma}{f}} : \Tm{\cC}(\Delta,\semSubst{\sigma}{f}) \to \Tm{\cC}(\Delta',\semSubst{\sigma}{f'})$.
-Note that, $\prn{F(g)}^1_{\semSubst{\sigma}{f}}$ is precisely the substitution along $g$ on terms in the set $\Tm{\cC}(\Delta,\semSubst{\sigma}{f})$.
+Given a functor $F : \cC\op \to \Fam$ and a type $\sigma \in \Ty{\cC}(\Gamma)$, we can carve out the ``substitution-on-terms functor'' $F_{\Gamma,\sigma} : \prn{\Sl{\cC}{\Gamma}}\op \to \Set$ that maps each object $f : \Delta \to \Gamma$ to the set $\prn{F(\Delta)}^1_{\semSubst{\sigma}{f}} = \Tm{\cC}(\Delta,\semSubst{\sigma}{f})$ and each morphism $g : f' \to f$ to the function $\semSubst{-}{g} : \Tm{\cC}(\Delta,\semSubst{\sigma}{f}) \to \Tm{\cC}(\Delta',\semSubst{\sigma}{f'})$.
 
 \begin{definition}
   Let $\cC$ be a category and $F = (\Ty{\cC},\Tm{\cC}) : \cC\op \to \Fam$ be a functor; let $\Gamma \in \cC$ and $\sigma \in \Ty{\cC}(\Gamma)$.
