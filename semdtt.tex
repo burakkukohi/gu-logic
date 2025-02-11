@@ -275,7 +275,22 @@ Now, given a functor $F : \cC\op \to \Fam$ and a type $\sigma \in \Ty{\cC}(\Gamm
 \end{definition}
 
 \begin{example}
-  The category of contexts and context morphisms (identified by definitional equality) can be extended to a CwF...
+  The category of contexts and context morphisms (identified by definitional equality) can be extended to a CwF.
+  We define the functor $F$ by mapping each syntactic context $\Gamma$ to the family $([\Gamma \vdash \typeJudg{\sigma}], [\Gamma \vdash t : \sigma]_{\sigma})$, where $[\Gamma \vdash \typeJudg{\sigma}]$ denotes the set of all syntactic types $\sigma$ such that $\Gamma \vdash \typeJudg{\sigma}$ is derivable and similarly $[\Gamma \vdash t : \sigma]$ is the set of all terms $t$ such that $\Gamma \vdash t : \sigma$; and each syntactic context morphism $\Delta \vdash f \Rightarrow \Gamma$ is mapped to the syntactic substitution $-[f]$.
+
+  Comprehension of $\sigma$ is given by the context morphism
+  \[
+    \Gamma, x : \sigma \vdash (x_1,\ldots,x_n) \Rightarrow \Gamma
+  \]
+  where $\Gamma = x_1 : \sigma_1,\ldots,x_n : \sigma_n$.
+\end{example}
+
+\begin{example}
+  The category $\Set$ can be extended to a CwF.
+  We define the functor $F$ by mapping each set $\Gamma$ to the family $\prn{\prn{\sigma_{\gamma}}_{\gamma \in \Gamma},\prn{\prod_{\gamma \in \Gamma}\sigma_{\gamma}}_{\sigma}}$.
+  Substitution is given by precomposition: for each function $f : \Delta \to \Gamma$ and each family of sets $\prn{\sigma_{\gamma}}_{\gamma \in \Gamma}$, $\prn{\semSubst{\sigma}{f}}_{\delta}$ is the set $\sigma_{f(\delta)}$; and for each $t \in \Pi_{\gamma \in \Gamma}\sigma_{\gamma}$, $\semSubst{t}{f}(\delta)$ is $t(f(\delta))$.
+
+  Comprehension of $\sigma$ is given by the first projection of the disjoint union of $\sigma_{\gamma}$'s, i.e., the domain is the set $\setNotat{(\gamma,x) : \gamma \in \Gamma, x \in \sigma_{\gamma}}$ and the first projection maps $(\gamma,x)$ to $\gamma$.
 \end{example}
 
 \subsection{Terms and sections}\label{sec:tas}
@@ -531,6 +546,8 @@ We define a partial interpretation function $\intp{-}$ which maps
 \subsubsection{The presheaf model}\label{sec:tpm}
 
 \subsection{Conservativity of the logical framework}\label{sec:cotlf}
+
+
 
 \begin{proposition}[Conservativity]
   If $\Gamma \dvdash{\cT} \typeJudg{\sigma}$ and $\Gamma \dvdash{\LF{\cT}} t : \sigma$ for some term $t$, then there exists a term $t'$ such that $\Gamma \dvdash{\cT} t' : \sigma$.
