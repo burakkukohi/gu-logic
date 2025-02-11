@@ -148,9 +148,24 @@ Note that the $\eta$-law does not type check without the \emph{equality reflecti
   }
 \end{mathpar}
 
-\subsection{Examples of type theories}\label{sec:eott}
+\subsection{Logical framework}\label{sec:eott}
 
 Martin-L\"of's Logical Framework (LF) is a type theory with $\Pi$-types and a universe.
+Other theories can be defined as extensions of the LF by constants and equations.
+For instance, $\Sigma$-types can be encoded in LF as follows:
+
+\begin{align*}
+  &\vdash \objSig : \LFPi \sigma : \LFU. \LFPi \tau : \sigma \to \LFU. \LFU\\
+  &\vdash \objPair : \LFPi \sigma : \LFU. \LFPi \tau : \sigma \to \LFU.\LFPi x : \sigma. \tau(x) \to \objSig(\sigma,\tau)\\
+  &\vdash \objIndSig : \LFPi \sigma : \LFU. \LFPi \tau : \sigma \to \LFU. \LFPi \rho : \objSig(\sigma, \tau) \to \LFU.\\
+  &\qquad\prn{\LFPi x : \sigma. \LFPi y : \tau(x). \rho(\objPair(\sigma,\tau,x,y))} \to\\
+  &\qquad\LFPi z : \objSig(\sigma,\tau). \rho(z)\\
+  &\Gamma \vdash \objIndSig(\sigma,\tau,\rho,f,\objPair(\sigma,\tau,a,b)) = f(a)(b)
+\end{align*}
+where $\Gamma$ declares the variables used on the right-hand side.
+
+Compare this to the $\Sigma$-types defined in the hand-crafted formalism above; binding in the object language is represented as abstraction in the LF and substitution in the object language is represented as application in the LF.
+The burden of dealing with binding and substitution is shifted from the object language to the LF.
 
 \section{Pre-syntax and context morphisms}\label{sec:pscm}
 
