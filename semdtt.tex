@@ -302,7 +302,7 @@ Now, given a functor $F : \cC\op \to \Fam$ and a type $\sigma \in \Ty{\cC}(\Gamm
 
 \begin{example}
   The category $\Set$ can be extended to a CwF.
-  We define the functor $F$ by mapping each set $\Gamma$ to the family $\prn{\prn{\sigma_{\gamma}}_{\gamma \in \Gamma},\prn{\prod_{\gamma \in \Gamma}\sigma_{\gamma}}_{\sigma}}$.
+  We define the functor $F$ by mapping each set $\Gamma$ to the family $\prn{\prn{\sigma_{\gamma}}_{\gamma \in \Gamma},\prn{\prod_{\gamma \in \Gamma}\tau_{\gamma}}_{\tau \in \prn{\sigma_{\gamma}}_{\gamma \in \Gamma}}}$.
   Substitution is given by precomposition: for each function $f : \Delta \to \Gamma$ and each family of sets $\prn{\sigma_{\gamma}}_{\gamma \in \Gamma}$, $\prn{\semSubst{\sigma}{f}}_{\delta}$ is the set $\sigma_{f(\delta)}$; and for each $t \in \Pi_{\gamma \in \Gamma}\sigma_{\gamma}$, $\semSubst{t}{f}(\delta)$ is $t(f(\delta))$.
 
   Comprehension of $\sigma$ is given by the first projection of the disjoint union of $\sigma_{\gamma}$'s, i.e., the domain is the set $\setNotat{(\gamma,x) : \gamma \in \Gamma, x \in \sigma_{\gamma}}$ and the first projection maps $(\gamma,x)$ to $\gamma$.
@@ -433,7 +433,7 @@ Intuitively, $\app_{\sigma,\tau}$ maps $(\gamma,s,u) : \Gamma.\tau.\weaken{\type
 Under the lens of $\lambda$-calculus, the content of \cref{def:sspi} is precisely the $\eta$-law: if $u(x)$ is the expression $s$, then $u$ is the $\lambda$-abstraction of $s$.
 
 \begin{example}
-  The term model of a type theory supports $\Pi$-types with the evident setting:
+  The term model of a type theory supports $\Pi$-types with the evident settings:
   \begin{align*}
     \typePi(\sigma,\tau) &:= \Pi x : \sigma.\tau\\
     \lam_{\sigma,\tau}(t) &:= \lambda x : \sigma.t
@@ -446,9 +446,11 @@ Under the lens of $\lambda$-calculus, the content of \cref{def:sspi} is precisel
 \end{example}
 
 \begin{example}
-  The set-theoretic model supports strict $\Pi$-types in the following setting: if $\prn{\sigma_{\gamma}}_{\gamma \in \Gamma} \in \Ty{\Set}(\Gamma)$ and $\prn{\tau_{\gamma,x}}_{(\gamma,x)} \in \Gamma.\sigma$ then
+  The set-theoretic model supports strict $\Pi$-types with the following settings:
   \begin{align*}
-    \typePi(\sigma,\tau)_{\gamma} &:= \prod_{x \in \sigma_{\gamma}}\tau_{(\gamma,x)}
+    \typePi(\sigma,\tau)_{\gamma} &:= \prod_{x \in \sigma_{\gamma}}\tau_{(\gamma,x)}\\
+    \lam_{\sigma,\tau}(t) &:= \lambda\gamma \in \Gamma.\lambda x \in \sigma_{\gamma}.t(\gamma,x)\\
+    \app_{\sigma,\tau}(\gamma,x,f) &:= (\gamma,f(x))
   \end{align*}
 \end{example}
 
@@ -492,7 +494,7 @@ Under the lens of $\lambda$-calculus, the content of \cref{def:sspi} is precisel
 \end{definition}
 
 \begin{example}
-  The term model supports $\Sigma$-types with the following setting:
+  The term model supports $\Sigma$-types with the following settings:
   \begin{align*}
     \typeSig(\sigma,\tau) &:= \Sigma x : \sigma.\tau\\
     \pair_{\sigma,\tau} &:= \Gamma, x : \sigma, y : \tau \vdash (\gamma, \synPair{u}{s}) \Rightarrow \Gamma, z : \Sigma x : \sigma.\tau\\
@@ -502,12 +504,13 @@ Under the lens of $\lambda$-calculus, the content of \cref{def:sspi} is precisel
 \end{example}
 
 \begin{example}
-  The set-theoretic model supports strict $\Sigma$-types in the following setting:
+  The set-theoretic model supports $\Sigma$-types in the following settings:
   \begin{align*}
     \typeSig(\sigma,\tau)_{\gamma \in \Gamma} &:= \setNotat{(x,y) : x \in \sigma_{\gamma}, y \in \tau_{(\gamma,x)}}\\
     \pair_{\sigma,\tau}(\gamma,x,y) &:= (\gamma,(x,y))\\
-    \indSig_{\sigma,\tau,\rho}(t) &:= ...
+    \indSig_{\sigma,\tau,\rho}(s) &:= \lambda(\gamma,(x,y)) \in \Gamma.\typeSig(\sigma,\tau).s(\gamma,x,y)
   \end{align*}
+  Observe that $\pair_{\sigma,\tau}$ is a bijection; hence the set-theoretic model in fact supports strict $\Sigma$-types.
 \end{example}
 
 \subsubsection{Semantic (intensional) identity types}\label{sec:sid}
@@ -525,13 +528,32 @@ Under the lens of $\lambda$-calculus, the content of \cref{def:sspi} is precisel
 	\arrow["{\ctxSec{v_{\sigma}}}"', from=1-1, to=2-1]
 	\arrow["{\ctxExt(\typeId_{\sigma})}", from=1-3, to=2-1]
       \end{tikzcd}\]
-  \item \emph{elimination}: for each type $\tau \in \Ty{\cC}(\Gamma.\sigma.\weaken{\sigma}.\typeId_{\sigma})$, a function $\indId_{\sigma,\tau} : \Tm{\cC}(\Gamma.\tau,\semSubst{\tau}{\refl_{\sigma}}) \to \Tm{\cC}(\Gamma.\sigma.\weaken{\sigma}.\typeId_{\sigma},\tau)$.
+  \item \emph{elimination}: for each type $\tau \in \Ty{\cC}(\Gamma.\sigma.\weaken{\sigma}.\typeId_{\sigma})$, a function $\indId_{\sigma,\tau} : \Tm{\cC}(\Gamma.\sigma,\semSubst{\tau}{\refl_{\sigma}}) \to \Tm{\cC}(\Gamma.\sigma.\weaken{\sigma}.\typeId_{\sigma},\tau)$.
   \end{itemize}
   These data are required to be stable under substitution and additionally the following equation holds for every term $t \in \Tm{\cC}(\Gamma.\tau,\semSubst{\tau}{\refl_{\sigma}})$:
   \begin{align*}
     \semSubst{\indId_{\sigma,\tau}(t)}{\refl_{\sigma}} = t && \text{$\beta$-law}
   \end{align*}
 \end{definition}
+
+\begin{example}
+  The term model of intensional type theory supports identity types with the following settings:
+  \begin{align*}
+    \typeId_{\sigma} &:= \Gamma, x : \sigma, y : \sigma \vdash \typeJudg{\synTypeId_{\sigma}(x,y)}\\
+    \refl_{\sigma} &:= \Gamma, x : \sigma \vdash (\gamma,x,x,\synRefl_{\sigma}(x)) \Rightarrow \Gamma, x : \sigma, y : \sigma, p : \synTypeId_{\sigma}(x,x)\\
+    \indId_{\sigma,\tau}(t) &:= \synIndId(p,t)
+  \end{align*}
+  where $p$ is a free variable.
+\end{example}
+
+\begin{example}
+  The set-theoretic model supports identity types with the following settings:
+  \begin{align*}
+    \prn{\typeId_{\sigma}}_{(\gamma,x,y)} &:= [x = y]\\
+    \refl_{\sigma}(\gamma,x) &:= (\gamma,x,x,*)\\
+    \indId_{\sigma,\tau}(s)(\gamma,x,y,p) &:= s(\gamma,x)
+  \end{align*}
+\end{example}
 
 \subsection{Interpretation of the syntax}\label{sec:iots}
 
