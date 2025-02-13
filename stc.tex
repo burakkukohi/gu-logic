@@ -1,0 +1,149 @@
+\documentclass[a4paper]{article}
+
+\usepackage{preamble}
+\usepackage{stc-macros}
+
+\title{Synthetic Tait computability}
+\author{Frank Tsai}
+
+\begin{document}
+
+\maketitle
+
+\section{Internal type theory}
+
+Internal to each logos $\cE$ is a dependent type theory.
+
+\begin{itemize}
+\item A closed type $\vdash A$ is an object $A$ in $\Sl{\cE}{\termObj{\cE}} = \cE$.
+\item Given a closed type $\vdash A$, a type family $x : A \vdash B$ is an object $B$ in $\Sl{\cE}{A}$.
+\item A term $\vdash a : A$ is a global element of $A$ in $\cE$.
+\item A term $x : A \vdash b : B$ is a global element of $B$ in $\Sl{\cE}{A}$.
+\end{itemize}
+When $\Gamma = x_1 : A_1,\ldots,x_n : A_n$, we write $\Sl{\cE}{\Gamma}$ for the iterated slice $\Sl{\prn{\Sl{\prn{\Sl{\cE}{A_1}}}{\ldots}}}{A_n}$.
+Note that logoi are closed under slicing; hence $\Sl{\cE}{\Gamma}$ is a logoi whose internal type theory may be regarded as a type theory \emph{relative to} $\Gamma$.
+
+Let $A \in \Sl{\cE}{\Gamma}$ be a type.
+We can identify $A$ with the unique morphism $A \to \termObj{\Sl{\cE}{\Gamma}}$; hence there is the pullback functor $\pb{A} : \Sl{\cE}{\Gamma} \to \Sl{\cE}{\Gamma,A}$ sending each type $B \in \Sl{\cE}{\Gamma}$ to the same type in the weakened context $\Gamma, x : A$.
+
+For each type $A \in \Sl{\cE}{\Gamma}$, there is a term $x : \termObj{\Sl{\cE}{\Gamma,A}} \to \pb{A}(A)$ called the \emph{variable}.
+We construct this term inside $\Sl{\cE}{\Gamma}$ as follows:
+% https://q.uiver.app/#q=WzAsNSxbMiwxLCJBIl0sWzIsMiwiXFx0ZXJtT2Jqe1xcU2x7XFxjRX17XFxHYW1tYX19Il0sWzEsMiwiQSJdLFsxLDEsIlxcZG9tKFxccGJ7QX0oQSkpIl0sWzAsMCwiQSJdLFsyLDFdLFswLDFdLFszLDIsIlxccGJ7QX0oQSkiXSxbMywwXSxbMywxLCIiLDEseyJzdHlsZSI6eyJuYW1lIjoiY29ybmVyIn19XSxbNCwyLCJcXHRlcm1PYmp7XFxTbHtcXGNFfXtcXEdhbW1hLEF9fSIsMix7ImN1cnZlIjoyfV0sWzQsMCwiXFx0ZXJtT2Jqe1xcU2x7XFxjRX17XFxHYW1tYSxBfX0iLDAseyJjdXJ2ZSI6LTJ9XSxbNCwzLCJ4IiwxLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZGFzaGVkIn19fV1d
+\[\begin{tikzcd}
+    A \\
+    & {\dom(\pb{A}(A))} & A \\
+    & A & {\termObj{\Sl{\cE}{\Gamma}}}
+    \arrow["x"{description}, dashed, from=1-1, to=2-2]
+    \arrow["{\termObj{\Sl{\cE}{\Gamma,A}}}", curve={height=-12pt}, from=1-1, to=2-3]
+    \arrow["{\termObj{\Sl{\cE}{\Gamma,A}}}"', curve={height=12pt}, from=1-1, to=3-2]
+    \arrow[from=2-2, to=2-3]
+    \arrow["{\pb{A}(A)}", from=2-2, to=3-2]
+    \arrow["\lrcorner"{anchor=center, pos=0.125}, draw=none, from=2-2, to=3-3]
+    \arrow[from=2-3, to=3-3]
+    \arrow[from=3-2, to=3-3]
+  \end{tikzcd}\]
+
+\begin{figure}
+  \centering
+  \begin{mathpar}
+    \ebrule[Var]{
+      \infer0{\Gamma,x : A \vdash x : A}
+    }
+  \end{mathpar}
+  \caption{Structural rules}
+  \label{fig:0001}
+\end{figure}
+
+\subsection{Dependent product types}
+
+Let $A \in \Sl{\cE}{\Gamma}$ and $B \in \Sl{\cE}{\Gamma,A}$ be types.
+The pullback functor $\pb{A} : \Sl{\cE}{\Gamma} \to \Sl{\cE}{\Gamma,A}$ admits a right adjoint functor $\pb{A} \adj \Pi_{A}$.
+
+\emph{Formation}: Given types $A \in \Sl{\cE}{\Gamma}$ and $B \in \Sl{\cE}{\Gamma,A}$, $\Pi_{A}B$ is a type in $\Sl{\cE}{\Gamma}$.
+
+\emph{Introduction}: Note that $\pb{A}(\termObj{\Sl{\cE}{\Gamma}}) = \termObj{\Sl{\cE}{\Gamma,A}}$; hence every term $t : \termObj{\Sl{\cE}{\Gamma,A}} \to B$ corresponds bijectively to a term $\lambda x : A.t : \termObj{\Sl{\cE}{\Gamma}} \to \Pi_AB$ under the adjunction $\pb{A} \adj \Pi_A$.
+
+\emph{Elimination}: Suppose that we have two terms $f : \termObj{\Sl{\cE}{\Gamma}} \to \Pi_AB$ and $a : \termObj{\Sl{\cE}{\Gamma}} \to A$.
+The term $f$ corresponds to a unique term $f' : \termObj{\Sl{\cE}{\Gamma,A}} \to B$; hence we have the following diagram in $\Sl{\cE}{\Gamma}$ in which the triangle commutes:
+% https://q.uiver.app/#q=WzAsNCxbMiwxLCJBIl0sWzIsMCwiXFxkb20oQikiXSxbMSwwLCJBIl0sWzAsMCwiXFx0ZXJtT2Jqe1xcU2x7XFxjRX17XFxHYW1tYX19Il0sWzEsMCwiQiJdLFsyLDAsIlxcdGVybU9iantcXFNse1xcY0V9e1xcR2FtbWEsQX19IiwyXSxbMiwxLCJmJyJdLFszLDIsImEiXV0=
+\[\begin{tikzcd}
+    {\termObj{\Sl{\cE}{\Gamma}}} & A & {\dom(B)} \\
+    && A
+    \arrow["a", from=1-1, to=1-2]
+    \arrow["{f'}", from=1-2, to=1-3]
+    \arrow["{\termObj{\Sl{\cE}{\Gamma,A}}}"', from=1-2, to=2-3]
+    \arrow["B", from=1-3, to=2-3]
+  \end{tikzcd}\]
+Then the term $f' \circ a : \termObj{\Sl{\cE}{\Gamma}} \to \dom(B)$ corresponds uniquely to a term $f(a) : \termObj{\Sl{\cE}{\Gamma}} \to B[a/x]$ via the following pullback diagram:
+% https://q.uiver.app/#q=WzAsNSxbMSwxLCJCW2EveF0iXSxbMSwyLCJcXHRlcm1PYmp7XFxTbHtcXGNFfXtcXEdhbW1hfX0iXSxbMiwyLCJBIl0sWzIsMSwiXFxkb20oQikiXSxbMCwwLCJcXHRlcm1PYmp7XFxTbHtcXGNFfXtcXEdhbW1hfX0iXSxbMSwyLCJhIiwyXSxbMywyLCJCIl0sWzAsMV0sWzAsM10sWzAsMiwiIiwxLHsic3R5bGUiOnsibmFtZSI6ImNvcm5lciJ9fV0sWzQsMSwiXFx0ZXJtT2Jqe1xcU2x7XFxjRX17XFxHYW1tYSxBfX0iLDIseyJjdXJ2ZSI6Mn1dLFs0LDMsImYnIFxcY2lyYyBhIiwwLHsiY3VydmUiOi0yfV0sWzQsMCwiZihhKSIsMSx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRhc2hlZCJ9fX1dXQ==
+\[\begin{tikzcd}
+    {\termObj{\Sl{\cE}{\Gamma}}} \\
+    & {B[a/x]} & {\dom(B)} \\
+    & {\termObj{\Sl{\cE}{\Gamma}}} & A
+    \arrow["{f(a)}"{description}, dashed, from=1-1, to=2-2]
+    \arrow["{f' \circ a}", curve={height=-12pt}, from=1-1, to=2-3]
+    \arrow["{\termObj{\Sl{\cE}{\Gamma,A}}}"', curve={height=12pt}, from=1-1, to=3-2]
+    \arrow[from=2-2, to=2-3]
+    \arrow[from=2-2, to=3-2]
+    \arrow["\lrcorner"{anchor=center, pos=0.125}, draw=none, from=2-2, to=3-3]
+    \arrow["B", from=2-3, to=3-3]
+    \arrow["a"', from=3-2, to=3-3]
+  \end{tikzcd}\]
+
+\emph{$\beta$-law}: Given two terms $t : \termObj{\Sl{\cE}{\Gamma,A}} \to B$ and $a : \termObj{\Sl{\cE}{\Gamma}} \to A$, the term $t[a/x]$ is given by the following pullback diagram:
+% https://q.uiver.app/#q=WzAsNSxbMSwxLCJCW2EveF0iXSxbMSwyLCJcXHRlcm1PYmp7XFxTbHtcXGNFfXtcXEdhbW1hfX0iXSxbMiwyLCJBIl0sWzIsMSwiXFxkb20oQikiXSxbMCwwLCJcXHRlcm1PYmp7XFxTbHtcXGNFfXtcXEdhbW1hfX0iXSxbMSwyLCJhIiwyXSxbMywyLCJCIl0sWzAsMV0sWzAsM10sWzAsMiwiIiwxLHsic3R5bGUiOnsibmFtZSI6ImNvcm5lciJ9fV0sWzQsMSwiXFx0ZXJtT2Jqe1xcU2x7XFxjRX17XFxHYW1tYSxBfX0iLDIseyJjdXJ2ZSI6Mn1dLFs0LDMsInQgXFxjaXJjIGEiLDAseyJjdXJ2ZSI6LTJ9XSxbNCwwLCJ0W2EveF0iLDEseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJkYXNoZWQifX19XV0=
+\[\begin{tikzcd}
+    {\termObj{\Sl{\cE}{\Gamma}}} \\
+    & {B[a/x]} & {\dom(B)} \\
+    & {\termObj{\Sl{\cE}{\Gamma}}} & A
+    \arrow["{t[a/x]}"{description}, dashed, from=1-1, to=2-2]
+    \arrow["{t \circ a}", curve={height=-12pt}, from=1-1, to=2-3]
+    \arrow["{\termObj{\Sl{\cE}{\Gamma,A}}}"', curve={height=12pt}, from=1-1, to=3-2]
+    \arrow[from=2-2, to=2-3]
+    \arrow[from=2-2, to=3-2]
+    \arrow["\lrcorner"{anchor=center, pos=0.125}, draw=none, from=2-2, to=3-3]
+    \arrow["B", from=2-3, to=3-3]
+    \arrow["a"', from=3-2, to=3-3]
+  \end{tikzcd}\]
+Since $\lambda x : A.t$ corresponds precisely to $t$, we conclude that the application $(\lambda x : A.t)(a)$ equals $t[a/x]$ by uniqueness.
+
+\emph{$\eta$-law}: I expect the internal $\Pi$-types to have $\eta$-law, but I have not worked it out.
+
+We have demonstrated how to translate $\Pi$-types in the internal type theory into its external language (objects and morphisms in $\cE$).
+
+\begin{figure}
+  \centering
+  \begin{mathpar}
+    \ebrule[$\Pi$-F]{
+      \hypo{\Gamma, x : A \vdash B}
+      \infer1{\Gamma \vdash \Pi_{x : A}B}
+    }\and
+    \ebrule[$\Pi$-I]{
+      \hypo{\Gamma, x : A \vdash t : B}
+      \infer1{\Gamma \vdash \lambda x : A.t : \Pi_{x : A}B}
+    }\and
+    \ebrule[$\Pi$-E]{
+      \hypo{\Gamma \vdash f : \Pi_{x : A}B}
+      \hypo{\Gamma \vdash a : A}
+      \infer2{\Gamma \vdash f(a) : B[a/x]}
+    }\and
+    \ebrule[$\Pi$-$\beta$]{
+      \hypo{\Gamma, x : A \vdash t : B}
+      \hypo{\Gamma \vdash a : A}
+      \infer2{\Gamma \vdash (\lambda x : A.t)(a) = t[a/x] : B[a/x]}
+    }\and
+    \ebrule[$\Pi$-$\eta$]{
+      \hypo{\Gamma \vdash f : \Pi_{x : A}B}
+      \infer1{\Gamma \vdash f = \lambda x : A.f(x) : \Pi_{x : A}B}
+    }
+  \end{mathpar}
+  \caption{Rules for $\Pi$-types}
+  \label{fig:0000}
+\end{figure}
+
+\subsection{Dependent sum types}
+
+\bibliography{bib}
+\bibliographystyle{alpha}
+
+\end{document}
