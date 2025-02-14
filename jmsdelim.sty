@@ -206,6 +206,12 @@
 \NewDocumentCommand\DelimGl{m}{
   \jmsdelim_surround:nnn {\langle} {\rangle} {#1}
 }
+\NewDocumentCommand\DelimUc{m}{
+  \jmsdelim_surround:nnn {\ulcorner} {\urcorner} {#1}
+}
+\NewDocumentCommand\DelimLc{m}{
+  \jmsdelim_surround:nnn {\llcorner} {\lrcorner} {#1}
+}
 \ProcessKeysPackageOptions {jmsdelim}
 \endinput
 %%

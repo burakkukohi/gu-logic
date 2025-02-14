@@ -107,7 +107,7 @@ Then the term $f' \circ a : \termObj{\Sl{\cE}{\Gamma}} \to \dom(B)$ corresponds 
   \end{tikzcd}\]
 Since $\lambda x : A.t$ corresponds precisely to $t$, we conclude that the application $(\lambda x : A.t)(a)$ equals $t[a/x]$ by uniqueness.
 
-\emph{$\eta$-law}: I expect the internal $\Pi$-types to have $\eta$-law, but I have not worked it out.
+\todo\emph{$\eta$-law}:
 
 We have demonstrated how to translate $\Pi$-types in the internal type theory into its external language (objects and morphisms in $\cE$).
 
@@ -142,6 +142,128 @@ We have demonstrated how to translate $\Pi$-types in the internal type theory in
 \end{figure}
 
 \subsection{Dependent sum types}
+
+Let $A \in \Sl{\cE}{\Gamma}$ and $B \in \Sl{\cE}{\Gamma,A}$ be types.
+The pullback functor $\pb{A} : \Sl{\cE}{\Gamma} \to \Sl{\cE}{\Gamma,A}$ admits a left adjoint functor $\Sigma_{A} \adj \pb{A}$; the left adjoint functor has an explicit formula: $\Sigma_A = A \circ (-)$.
+
+\emph{Formation}: Given two types $A \in \Sl{\cE}{\Gamma}$ and $B \in \Sl{\cE}{\Gamma,A}$, we have a type $\Sigma_AB \in \Sl{\cE}{\Gamma}$.
+Explicitly, $\Sigma_AB$ is equivalently the following composite in $\Sl{\cE}{\Gamma}$:
+% https://q.uiver.app/#q=WzAsMyxbMSwxLCJcXHRlcm1PYmp7XFxTbHtcXGNFfXtcXEdhbW1hfX0iXSxbMCwwLCJBIl0sWzEsMCwiXFxTaWdtYV9BQiJdLFsxLDBdLFsyLDEsIkIiLDJdLFsyLDAsIiIsMSx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRvdHRlZCJ9fX1dXQ==
+\[\begin{tikzcd}
+    A & {\Sigma_AB} \\
+    & {\termObj{\Sl{\cE}{\Gamma}}}
+    \arrow[from=1-1, to=2-2]
+    \arrow["B"', from=1-2, to=1-1]
+    \arrow[dotted, from=1-2, to=2-2]
+  \end{tikzcd}\]
+Henceforth, we write $\Sigma_AB$ for the domain (or \emph{total space}) of the type family $B : \Sigma_AB \to A$ in $\Sl{\cE}{\Gamma}$.
+
+\emph{Introduction}: Suppose that we have two terms $a : \termObj{\Sl{\cE}{\Gamma}} \to A$ and $b : \termObj{\Sl{\cE}{\Gamma}} \to B[a/x]$.
+Observe that $\Sigma_a(\termObj{\Sl{\cE}{\Gamma}}) = \termObj{\Sl{\cE}{\Gamma,A}}$; hence the term $b$ corresponds bijectively to a term $b' : \termObj{\Sl{\cE}{\Gamma,A}} \to B$ under the adjunction $\Sigma_a \adj \pb{a}$.
+Again, observe that $\Sigma_A(\termObj{\Sl{\cE}{\Gamma,A}}) = \termObj{\Sl{\cE}{\Gamma}}$; hence $\Sigma_A(b') : \termObj{\Sl{\cE}{\Gamma}} \to \Sigma_AB$ is the required term.
+
+\emph{Elimination}: Suppose that we have a term $c : \termObj{\Sl{\cE}{\Gamma}} \to \Sigma_AB$.
+The term $\prl(c) : \termObj{\Sl{\cE}{\Gamma}} \to A$ is given by the following composite in $\Sl{\cE}{\Gamma}$:
+% https://q.uiver.app/#q=WzAsMyxbMSwwLCJcXHRlcm1PYmp7XFxTbHtcXGNFfXtcXEdhbW1hfX0iXSxbMSwxLCJBIl0sWzAsMCwiXFxTaWdtYV9BQiJdLFsyLDEsIkIiLDJdLFswLDIsImMiLDJdLFswLDEsIlxccHJsKGMpIiwwLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZG90dGVkIn19fV1d
+\[\begin{tikzcd}
+    {\Sigma_AB} & {\termObj{\Sl{\cE}{\Gamma}}} \\
+    & A
+    \arrow["B"', from=1-1, to=2-2]
+    \arrow["c"', from=1-2, to=1-1]
+    \arrow["{\prl(c)}", dotted, from=1-2, to=2-2]
+  \end{tikzcd}\]
+Note that $c$ is a morphism $B \circ c \to B$ in $\Sl{\cE}{\Gamma,A}$; moreover, $\Sigma_{\prl(c)}(\termObj{\Sl{\cE}{\Gamma}}) = \prl(c) = B \circ c$.
+Then, we take $\prr(c) : \termObj{\Sl{\cE}{\Gamma}} \to \pb{(\prl(c))}(B)$ to be the unique term that corresponds to $c : \Sigma_{\prl(c)}(\termObj{\Sl{\cE}{\Gamma}}) \to B$ under the adjunction $\Sigma_{\prl(c)} \adj \pb{(\prl(c))}$.
+
+\todo \emph{$\beta$-law}:
+
+\todo \emph{$\eta$-law}:
+
+\begin{figure}
+  \centering
+  \begin{mathpar}
+    \ebrule[$\Sigma$-F]{
+      \hypo{\Gamma, x : A \vdash B}
+      \infer1{\Gamma \vdash \Sigma x : A.B}
+    }\and
+    \ebrule[$\Sigma$-I]{
+      \hypo{\Gamma \vdash a : A}
+      \hypo{\Gamma \vdash b : B[a/x]}
+      \infer2{\Gamma \vdash \pair{a}{b} : \Sigma x : A.B}
+    }\and
+    \ebrule[$\Sigma$-E$_1$]{
+      \hypo{\Gamma \vdash c : \Sigma x : A.B}
+      \infer1{\Gamma \vdash \prl(c) : A}
+    }\and
+    \ebrule[$\Sigma$-E$_2$]{
+      \hypo{\Gamma \vdash c : \Sigma x : A.B}
+      \infer1{\Gamma \vdash \prr(c) : B[\prl(c)/x]}
+    }\and
+    \ebrule[$\Sigma$-$\beta_1$]{
+      \hypo{\Gamma \vdash a : A}
+      \hypo{\Gamma \vdash b : B[a/x]}
+      \infer2{\Gamma \vdash \prl(\pair{a}{b}) = a : A}
+    }\and
+    \ebrule[$\Sigma$-$\beta_2$]{
+      \hypo{\Gamma \vdash a : A}
+      \hypo{\Gamma \vdash b : B[a/x]}
+      \infer2{\Gamma \vdash \prr(\pair{a}{b}) = b : B[a/x]}
+    }\and
+    \ebrule[$\Sigma$-$\eta$]{
+      \hypo{\Gamma \vdash c : \Sigma x : A.B}
+      \infer1{\Gamma \vdash c = \pair{\prl(c)}{\prr(c)} : \Sigma x : A.B}
+    }
+  \end{mathpar}
+  \caption{Rules for $\Sigma$-types}
+  \label{fig:0002}
+\end{figure}
+
+\subsection{Internal logic}
+
+Each $\Sl{\cE}{\Gamma}$ is equipped with a subobject classifier $\subClf{\Sl{\cE}{\Gamma}}$ and a generic monomorphism $\genMono{\Sl{\cE}{\Gamma}} : \termObj{\EGamma} \mono \subClf{\EGamma}$; hence a term $\phi : \termObj{\EGamma} \to \subClf{\EGamma}$ corresponds to a unique subterminal object $\name{\phi} \mono \termObj{\EGamma}$ and \viceversa.
+We leave the decoding $\name{-}$ implicit.
+
+We refer to terms $\phi : \subClf{\EGamma}$, or the explicit decoding $\name{\phi}$, as \emph{propositions} rather than types; and we refer to a proposition $\psi : \subClf{\EGammaA}$ as a \emph{predicate over $A$}.
+
+The dependent product $\Pi_A$, as a right adjoint functor, preserves monomorphisms; hence if $\phi : \subClf{\EGammaA}$ is a predicate over $A$, the type $\Pi_A\phi$ is a proposition called the \emph{universal quantification of $\phi$ over $A$}.
+We write $\forall_A\phi$ for $\Pi_A\phi$.
+
+Any two inhabitants of $\phi$ are equal since $\phi$ is a subterminal object; hence if $\star : \phi$, we refer to $\star$ as a \emph{proof} of $\phi$.
+
+\subsection{Comprehension types}
+
+\begin{definition}
+  Given a type $A \in \EGamma$ and a predicate $\name{\phi} \in \EGammaA$, the \emph{comprehension type} $\compType{a : A}{\name{\phi}}$ is defined to be the type $\Sigma_A\name{\phi} \in \EGamma$; hence we may manipulate comprehension types using the rules in \cref{fig:0002}, although it may be more convenient to use the rules in \cref{fig:0003}.
+
+  Note that $\Sigma_A\name{\phi}$ is not necessarily a proposition, so it does not make sense to call it the existential quantification of $\name{\phi}$ over $A$.
+\end{definition}
+
+\begin{figure}
+  \centering
+  \begin{mathpar}
+    \ebrule[C-F]{
+      \hypo{\Gamma \vdash A}
+      \hypo{\Gamma, x : A \vdash \name{\phi}}
+      \infer2{\Gamma \vdash \compType{a : A}{\name{\phi}}}
+    }\and
+    \ebrule[C-I]{
+      \hypo{\Gamma \vdash a : A}
+      \hypo{\Gamma \vdash \star : \name{\phi}[a/x]}
+      \infer2{\Gamma \vdash \roll(a) : \compType{a : A}{\name{\phi}}}
+    }\and
+    \ebrule[C-E]{
+      \hypo{\Gamma \vdash c : \compType{a : A}{\name{\phi}}}
+      \infer1{\Gamma \vdash \unroll(c) : A}
+    }\and
+    \ebrule[C-$\beta$]{
+      \hypo{\Gamma \vdash a : A}
+      \hypo{\Gamma \vdash \star : \name{\phi}[a/x]}
+      \infer2{\Gamma \vdash \unroll(\roll(a)) = a : A}
+    }
+  \end{mathpar}
+  \caption{Rules for comprehension types}
+  \label{fig:0003}
+\end{figure}
 
 \bibliography{bib}
 \bibliographystyle{alpha}
