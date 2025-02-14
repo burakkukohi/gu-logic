@@ -360,9 +360,20 @@ Explicitly, $\ctxWkn(f,\sigma) = \semComp{f \circ \ctxExt(\semSubst{\sigma}{f})}
     \end{tikzcd}\]
 \end{proposition}
 
+\subsection{Interpretation of the syntax}\label{sec:iots}
+Let $\cC$ be a CwF, we define partial interpretation functions for pre-contexts, pre-terms, and pre-types simultaneously.
+The function is undefined if its argument is either ill-formed or underivable.
+\begin{align*}
+  \intp{\ctx}{\emptyCtx} &= \termObj{\cC}\\
+  \intp{\ctx}{\Gamma, x : \sigma} &= \intp{\ctx}{\Gamma}.\intp{\ty}{\Gamma;\sigma}\\
+  \intp{\tm}{\Gamma, x : \sigma; x} &= v_{\intp{\ty}{\Gamma;\sigma}}\\
+  \intp{\tm}{\Gamma, x : \sigma, y : \tau} &= \semSubst{\intp{\tm}{\Gamma, x : \sigma; x}}{\ctxExt(\intp{\ty}{\Gamma, x : \sigma; \tau})}
+\end{align*}
+To define $\intp{\ty}{-}$, $\cC$ must be equipped with appropriate constants.
+
 \subsection{Semantic type formers}\label{sec:stf}
 
-In order to interpret type formers, the given CwF must be equipped with additional structures...
+To define $\intp{\ty}{-}$, $\cC$ must be equipped with appropriate constants.
 
 \subsubsection{Semantic $\Pi$-types}\label{sec:spi}
 \begin{definition}\label{def:spi}
@@ -408,6 +419,15 @@ In order to interpret type formers, the given CwF must be equipped with addition
       \end{tikzcd}\]
   \end{itemize}
 \end{definition}
+
+\begin{construction}
+  Given a CwF that supports $\Pi$-types, we extent the interpretation as follows:
+  \begin{align*}
+    \intp{\ty}{\Gamma;\Pi(\sigma,\tau)} &= \typePi(\intp{\ty}{\Gamma;\sigma},\intp{\ty}{\Gamma, x : \sigma;\tau})\\
+    \intp{\tm}{\Gamma;\lambda x : \sigma. t} &= \lam_{\intp{\ty}{\Gamma;\sigma},\intp{\ty}{\Gamma, x : \sigma;\tau}}(\intp{\tm}{\Gamma,x : \sigma;t})\\
+    \intp{\tm}{\Gamma;u(s)} &= \app_{\intp{\ty}{\Gamma;\sigma},\intp{\ty}{\Gamma, x : \sigma;\tau}} \circ \semComp{\ctxSec{\intp{\tm}{\Gamma;u}}}{\weaken{\intp{\tm}{\Gamma;s}}}{\weaken{\intp{\ty}{\Gamma;\Pi(\sigma,\tau)}}}
+  \end{align*}
+\end{construction}
 
 The reader may wonder why we presented the elimination form as a morphism rather than a combinator; this seemingly unnatural choice has made the definition somewhat obscure.
 However, this more economical definition is in fact equivalent to the natural one \cite[Proposition 3.16]{Hofmann1997}.
@@ -493,6 +513,15 @@ Under the lens of $\lambda$-calculus, the content of \cref{def:sspi} is precisel
   \end{itemize}
 \end{definition}
 
+\begin{construction}
+  Given a CwF that supports $\Sigma$-types, we extend the interpretation function as follows:
+  \begin{align*}
+    \intp{\ty}{\Gamma;\Sigma(\sigma,\tau)} &= \typeSig(\intp{\ty}{\Gamma;\sigma},\intp{\ty}{\Gamma, x : \sigma;\tau})\\
+    \intp{\tm}{\Gamma;\synPair{a}{b}} &= \pair_{\sigma,\tau} \circ \semComp{\ctxSec{\intp{\tm}{\Gamma;a}}}{\weaken{\intp{\tm}{\Gamma,x:\sigma;b}}}{\weaken{\intp{\ty}{\Gamma,x:\sigma;\tau}}}\\
+    \intp{\tm}{\Gamma;\synIndSig(u,s)} &= ?
+  \end{align*}
+\end{construction}
+
 \begin{example}
   The term model supports $\Sigma$-types with the following settings:
   \begin{align*}
@@ -554,27 +583,6 @@ Under the lens of $\lambda$-calculus, the content of \cref{def:sspi} is precisel
     \indId_{\sigma,\tau}(s)(\gamma,x,y,p) &:= s(\gamma,x)
   \end{align*}
 \end{example}
-
-\subsection{Interpretation of the syntax}\label{sec:iots}
-
-Assume a fixed type theory and a CwF $\cC$ supporting the type and term formers present in this theory.
-We define a partial interpretation function $\intp{-}$ which maps
-\begin{itemize}
-\item pre-contexts $\Gamma$ to objects of $\cC$;
-\item pairs $\Gamma;\sigma$, where $\Gamma$ is a pre-context and $\sigma$ is a pre-type, to families in $\Ty{\cC}(\intp{\Gamma})$;
-\item pairs $\Gamma;t$, where $\Gamma$ is a pre-context and $t$ is a pre-term, to elements of $\Tm{\cC}(\Gamma,\sigma)$ for some $\sigma \in \Ty{\cC}(\intp{\Gamma})$.
-\end{itemize}
-
-\begin{proposition}[Soundness]
-  The interpretation function enjoys the following soundness properties:
-  \begin{itemize}
-  \item if $\ctxJudg{\Gamma}$, then $\intp{\Gamma}$ is an object of $\cC$;
-  \item if $\Gamma \vdash \typeJudg{\sigma}$, then $\intp{\Gamma;\sigma}$ is an element of $\Ty{\cC}(\intp{\Gamma})$;
-  \item if $\Gamma \vdash t : \sigma$, then $\intp{\Gamma;t}$ is an element of $\Tm{\cC}(\intp{\Gamma},\intp{\Gamma;\sigma})$;
-  \item if $\Gamma \vdash \typeJudg{\sigma = \tau}$, then $\intp{\Gamma;\sigma} = \intp{\Gamma;\tau}$;
-  \item if $\Gamma \vdash u = s : \sigma$, then $\intp{\Gamma;u} = \intp{\Gamma;s}$.
-  \end{itemize}
-\end{proposition}
 
 \subsubsection{The term model}\label{sec:ttm}
 \subsubsection{The set model}\label{sec:tsm}
