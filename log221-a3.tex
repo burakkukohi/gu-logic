@@ -1,0 +1,105 @@
+\documentclass[a4paper]{article}
+
+\usepackage{preamble}
+
+\title{LOG221 - A3}
+\author{Frank Tsai}
+
+\begin{document}
+
+\maketitle
+
+\section*{Derived rules}
+
+We freely use the following derived rules.
+\begin{mathpar}
+  \ebrule[R$\lnot\lnot$]{
+    \hypo{\Gamma \Rightarrow A}
+    \infer1{\Gamma \Rightarrow \lnot\lnot A}
+  }\and
+  \ebrule[L$\lnot$]{
+    \hypo{\Gamma \Rightarrow A}
+    \infer1{\Gamma, \lnot A \Rightarrow \bot}
+  }\and
+  \ebrule[Con]{
+    \hypo{\Gamma,A \Rightarrow B}
+    \infer1{\Gamma,\lnot B \Rightarrow \lnot A}
+  }\and
+  \ebrule[LR$\lnot\lnot$]{
+    \hypo{\Gamma,A \Rightarrow B}
+    \infer1{\Gamma,\lnot\lnot A \Rightarrow \lnot\lnot B}
+  }
+\end{mathpar}
+
+\section{}
+In light of the cut elimination theorem, we may freely use the cut rule since every instance of it can be removed after the fact; additionally, we freely use derived rules to make derivations shorter.
+We proceed by induction on $A$.
+\begin{itemize}
+\item $A = \bot$:\qquad
+  $
+  \ebrule{
+    \hypo{\bot \Rightarrow \bot}
+    \infer1[R$\to$]{\Rightarrow \lnot \bot}
+    \infer1[L$\lnot$]{\lnot\lnot\bot \Rightarrow \bot}
+  }
+  $
+\item $A = B \wedge C$: By the induction hypothesis, we have $\vdash_0 \lnot\lnot B \Rightarrow B$ and $\vdash_0 \lnot\lnot C \Rightarrow C$; hence we have $\vdash_0 \lnot\lnot B \wedge \lnot\lnot C \Rightarrow B \wedge C$ by applying the right conjunction rule followed by the left conjunction rule.
+  It suffices to show that $\vdash \lnot\lnot(B \wedge C) \Rightarrow \lnot\lnot B \wedge \lnot\lnot C$; then the required sequent is obtained by an application of the cut rule.
+  \[
+    \ebrule{
+      \hypo{B,C \Rightarrow B}
+      \infer1[L$\wedge$]{B \wedge C \Rightarrow B}
+      \infer1[LR$\lnot\lnot$]{\lnot\lnot(B \wedge C) \Rightarrow \lnot\lnot B}
+      \hypo{}
+      \ellipsis{analogous}{\lnot\lnot(B \wedge C) \Rightarrow \lnot\lnot C}
+      \infer2[R$\wedge$]{\lnot\lnot(B \wedge C) \Rightarrow \lnot\lnot B \wedge \lnot\lnot C}
+    }
+  \]
+\item $A = B \to C$: By the induction hypothesis, we have $\vdash_0 \lnot\lnot B \Rightarrow B$ and $\vdash_0 \lnot\lnot C \Rightarrow C$.
+  Weakening the latter sequent gives $\vdash \lnot\lnot C, B \Rightarrow C$.
+  We show that $\lnot\lnot(B \to C),B \Rightarrow \lnot\lnot C$; then the desired sequent is obtained by an application of the cut rule followed by R$\to$.
+  \[
+    \ebrule{
+      \hypo{B \to C,B \Rightarrow B}
+      \hypo{B \to C,B,C \Rightarrow C}
+      \infer2[L$\to$]{B \to C,B \Rightarrow C}
+      \infer1[LR$\lnot\lnot$]{\lnot\lnot(B \to C),B \Rightarrow \lnot\lnot C}
+    }
+  \]
+\item $A = \forall x.A(x)$: Let $a$ be a constant not occurring in $A$.
+  By the induction hypothesis, we have $\vdash \lnot\lnot A(a) \Rightarrow A(a)$.
+  Hence
+  \[
+    \ebrule{
+      \hypo{\lnot\lnot A(a) \Rightarrow A(a)}
+      \infer1[L$\forall$]{\forall x.\lnot\lnot A(x) \Rightarrow A(a)}
+      \infer1[R$\forall$]{\forall x.\lnot\lnot A(x) \Rightarrow \forall x.A(x)}
+    }
+  \]
+  Note that the eigenvariable condition is satisfied since $a$ does not occur in $A$.
+  It suffices to show that $\vdash \lnot\lnot\forall x.A(x) \Rightarrow \forall x.\lnot\lnot A(x)$; the desired sequent is then obtained by an application of the cut rule.
+  \[
+    \ebrule{
+      \hypo{A(a) \Rightarrow A(a)}
+      \infer1[L$\forall$]{\forall x.A(x) \Rightarrow A(a)}
+      \infer1[LR$\lnot\lnot$]{\lnot\lnot\forall x.A(x) \Rightarrow \lnot\lnot A(a)}
+      \infer1[R$\forall$]{\lnot\lnot\forall x.A(x) \Rightarrow \forall x.\lnot\lnot A(x)}
+    }
+  \]
+  Again, the eigenvariable condition is satisfied since $a$ does not occur in $A$.
+\end{itemize}
+
+As a consequence, the following rule is admissible.
+\begin{mathpar}
+  \ebrule[L$\lnot\lnot$]{
+    \hypo{\Gamma, A \Rightarrow B}
+    \infer1{\Gamma, \lnot\lnot A \Rightarrow B}
+  }\qquad\text{for any negative formula $A$}
+\end{mathpar}
+
+\section{}
+
+% \bibliography{bib}
+% \bibliographystyle{alpha}
+
+\end{document}
