@@ -1,5 +1,8 @@
 \RequirePackage{mathtools}
 
+\newcommand{\ctx}{\mathrm{ctx}}
+\newcommand{\ty}{\mathrm{ty}}
+\newcommand{\tm}{\mathrm{tm}}
 \newcommand{\typeJudg}[1]{#1~\mathrm{type}}
 \newcommand{\ctxJudg}[1]{#1~\mathrm{ctx}}
 \newcommand{\VecT}{\operatorname{Vec}}
@@ -37,7 +40,7 @@
 \newcommand{\indId}{\sem{ind}^{\typeId}}
 
 
-\newcommand{\intp}[1]{\DelimBbrk{#1}}
+\newcommand{\intp}[2]{\DelimBbrk{#2}_{#1}}
 \newcommand{\weaken}[1]{\prescript{}{+}{#1}}
 \newcommand{\setNotat}[1]{\DelimBrc{#1}}
 
