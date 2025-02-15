@@ -39,7 +39,7 @@ Note that every admissible rule for the intuitionistic sequent calculus is also 
       \hypo{\Gamma,A,\lnot A \Rightarrow B}
     }
   \end{mathpar}
-  \caption{Admissible rules for ISC}
+  \caption{Admissible rules in ISC}
   \label{fig:0000}
 \end{figure}
 \begin{figure}[h]
@@ -53,7 +53,7 @@ Note that every admissible rule for the intuitionistic sequent calculus is also 
       \hypo{\Gamma \Rightarrow A, \lnot A}
     }
   \end{mathpar}
-  \caption{Admissible rules for CSC}
+  \caption{Admissible rules in CSC}
   \label{fig:0001}
 \end{figure}
 
@@ -114,6 +114,19 @@ We proceed by induction on $A$.
   \]
   Again, the eigenvariable condition is satisfied since $a$ does not occur in $A$.
 \end{itemize}
+
+As a consequence, the following rules are admissible in ISC:
+\begin{mathpar}
+  \ebrule[L$\lnot\lnot$]{
+    \hypo{\Gamma,A \Rightarrow B}
+    \infer1{I \vdash \Gamma,\lnot\lnot A \Rightarrow B}
+  }\and
+  \ebrule[R$\lnot\lnot$-Inv]{
+    \hypo{\Gamma \Rightarrow \lnot\lnot A}
+    \infer1{I \vdash \Gamma \Rightarrow A}
+  }\and
+  \text{for any negative formula $A$}
+\end{mathpar}
 
 \section{}
 
@@ -218,6 +231,11 @@ We proceed by induction on $A$.
   \end{itemize}
 \end{proof}
 
+\begin{remark}\label{rmk:0000}
+  Observe that the only places where classical rules are required in \cref{thm:0003} are when $A = p$, $A = B \vee C$, and $A = \exists x.B(x)$; moreover, it is easy to verify that $I \vdash \lnot p \Rightarrow \lnot\lnot\lnot p$ and $I \vdash \lnot\lnot\lnot p \Rightarrow \lnot p$ for all atoms $p$.
+  Hence if we restrict $A$ to negative formulas, then we also have $I \vdash \gtrans{A} \Rightarrow A$ and $I \vdash A \Rightarrow \gtrans{A}$.
+\end{remark}
+
 \cref{thm:0003} together with cut elimination imply that the CSC admits the following invertible rules:
 \begin{mathpar}
   \ebrule{
@@ -225,10 +243,147 @@ We proceed by induction on $A$.
     \infer[double]1[R$g$]{\Gamma \Rightarrow A}
   }\and
   \ebrule{
-    \hypo{\Gamma, \gtrans{A} \Rightarrow B}
-    \infer[double]1[L$g$]{\Gamma, A \Rightarrow B}
+    \hypo{\Gamma, \gtrans{A} \Rightarrow \Delta}
+    \infer[double]1[L$g$]{\Gamma, A \Rightarrow \Delta}
   }
 \end{mathpar}
+
+L$g$ facilitates the proof of the following lemma.
+\begin{lemma}\label{thm:0006}
+  If $C \vdash \gtrans{\Gamma} \Rightarrow \Delta$, then $C \vdash \Gamma \Rightarrow \Delta$.
+\end{lemma}
+\begin{proof}
+  We proceed by induction on the length of $\Gamma$; the base case is trivial.
+  Suppose that $\Gamma = \Pi, A$ and $C \vdash \gtrans{\Pi},\gtrans{A} \Rightarrow \Delta$.
+  We push $\gtrans{A}$ to the right-hand side via R$\lnot$; then by the induction hypothesis, we have $C \vdash \Pi \Rightarrow \lnot\gtrans{A},\Delta$.
+  Now, we can push $\gtrans{A}$ back to the left-hand side and apply L$g$.
+  \[
+    \ebrule{
+      \hypo{\Pi,\gtrans{A} \Rightarrow \Delta}
+      \infer1[L$g$]{\Pi,A \Rightarrow \Delta}
+    }
+  \]
+\end{proof}
+
+We show the main theorem separately.
+
+\begin{proposition}\label{thm:0004}
+  If $C \vdash \Gamma \Rightarrow A$ then $I \vdash \gtrans{\Gamma} \Rightarrow \gtrans{A}$.
+\end{proposition}
+\begin{proof}
+  We proceed by induction on the derivation of $C \vdash \Gamma \Rightarrow A$.
+  Since $\to$, $\wedge$, and $\forall$ commute with $\gtrans{-}$, the required sequent, in these cases, is obtained by applying the corresponding rule to the induction hypothesis; we omit these cases.
+  \begin{itemize}
+  \item id: In this case, $A \in \Gamma$.
+    Hence $\gtrans{A} \in \gtrans{\Gamma}$; then it follows that $I \vdash \gtrans{\Gamma} \Rightarrow \gtrans{A}$ (not necessarily through id).
+  \item $\bot$: Since $\gtrans{\bot} = \bot$, $I \vdash \gtrans{\Gamma} \Rightarrow \gtrans{A}$ is an instance of L$\bot$.
+  \item R$\vee$:
+    $
+    \ebrule{
+      \hypo{\Gamma \Rightarrow B}
+      \infer1{C \vdash \Gamma \Rightarrow B \vee C}
+    }
+    $.
+
+    There are two right rules, but it suffices to show one of them since the other one is completely analogous.
+    By the induction hypothesis, we have $I \vdash \gtrans{\Gamma} \Rightarrow \gtrans{B}$.
+    \begin{mathpar}
+      \ebrule{
+        \hypo{\gtrans{\Gamma}, \lnot\gtrans{C} \Rightarrow \gtrans{B}}
+        \infer1[L$\lnot$]{\gtrans{\Gamma}, \lnot\gtrans{B}, \lnot\gtrans{C} \Rightarrow \bot}
+        \infer1[L$\wedge$]{\gtrans{\Gamma}, \lnot\gtrans{B} \wedge \lnot\gtrans{C} \Rightarrow \bot}
+        \infer1[R$\to$]{I \vdash \gtrans{\Gamma} \Rightarrow \lnot(\lnot\gtrans{B} \wedge \lnot\gtrans{C})}
+      }
+    \end{mathpar}
+  \item L$\vee$:
+    $
+    \ebrule{
+      \hypo{\Gamma, B \Rightarrow A}
+      \hypo{\Gamma, C \Rightarrow A}
+      \infer2{C \vdash \Gamma, B \vee C \Rightarrow A}
+    }
+    $.
+
+    By the induction hypothesis, we have $I \vdash \gtrans{\Gamma},\gtrans{B} \Rightarrow \gtrans{A}$ and $I \vdash \gtrans{\Gamma},\gtrans{C} \Rightarrow \gtrans{A}$.
+    \[
+      \ebrule{
+        \hypo{\gtrans{\Gamma}, \gtrans{B} \Rightarrow \gtrans{A}}
+        \infer1[Con]{\gtrans{\Gamma}, \lnot\gtrans{A} \Rightarrow \lnot\gtrans{B}}
+        \hypo{\gtrans{\Gamma}, \gtrans{C} \Rightarrow \gtrans{A}}
+        \infer1[Con]{\gtrans{\Gamma}, \lnot\gtrans{A} \Rightarrow \lnot\gtrans{C}}
+        \infer2[R$\wedge$]{\gtrans{\Gamma}, \lnot\gtrans{A} \Rightarrow \lnot\gtrans{B} \wedge \lnot\gtrans{C}}
+        \infer1[Con]{\gtrans{\Gamma}, \lnot(\lnot\gtrans{B} \wedge \lnot\gtrans{C}) \Rightarrow \lnot\lnot\gtrans{A}}
+        \infer1[R$\lnot\lnot$-Inv]{I \vdash \gtrans{\Gamma}, \lnot(\lnot\gtrans{B} \wedge \lnot\gtrans{C}) \Rightarrow \gtrans{A}}
+      }
+    \]
+  \item R$\exists$:
+    $
+    \ebrule{
+      \hypo{\Gamma \Rightarrow B(t)}
+      \infer1{C \vdash \Gamma \Rightarrow \exists x.B(x)}
+    }.
+    $
+
+    By the induction hypothesis, we have $I \vdash \gtrans{\Gamma} \Rightarrow \gtrans{B(t)}$.
+    \[
+      \ebrule{
+        \hypo{\gtrans{\Gamma} \Rightarrow \gtrans{B(t)}}
+        \infer1[L$\lnot$]{\gtrans{\Gamma}, \lnot\gtrans{B(t)} \Rightarrow \bot}
+        \infer1[L$\forall$]{\gtrans{\Gamma}, \forall x.\lnot\gtrans{B(x)} \Rightarrow \bot}
+        \infer1[R$\to$]{I \vdash \gtrans{\Gamma} \Rightarrow \lnot\forall x.\lnot\gtrans{B(x)}}
+      }
+    \]
+  \item L$\exists$:
+    $
+    \ebrule{
+      \hypo{\Gamma, B(b) \Rightarrow A}
+      \infer1{C \vdash \Gamma, \exists x.B(x) \Rightarrow A}
+    }
+    $.
+
+    By the induction hypothesis, we have $I \vdash \gtrans{\Gamma}, \gtrans{B(b)} \Rightarrow \gtrans{A}$.
+    \begin{mathpar}
+      \ebrule{
+        \hypo{\gtrans{\Gamma}, \gtrans{B(b)} \Rightarrow \gtrans{A}}
+        \infer1[Con]{\gtrans{\Gamma}, \lnot\gtrans{A} \Rightarrow \lnot \gtrans{B(b)}}
+        \infer1[R$\forall$]{\gtrans{\Gamma}, \lnot\gtrans{A} \Rightarrow \forall x.\lnot\gtrans{B(x)}}
+        \infer1[Con]{\gtrans{\Gamma}, \lnot\forall x.\lnot \gtrans{B(x)} \Rightarrow \lnot\lnot\gtrans{A}}
+        \infer1[R$\lnot\lnot$-Inv]{I \vdash \gtrans{\Gamma}, \lnot\forall x.\lnot \gtrans{B(x)} \Rightarrow \gtrans{A}}
+      }
+    \end{mathpar}
+    The eigenvariable condition is satisfied since it is satisfied in the original derivation.
+  \end{itemize}
+\end{proof}
+
+\begin{proposition}\label{thm:0005}
+  If $I \vdash \gtrans{\Gamma} \Rightarrow \gtrans{A}$, then $C \vdash \Gamma \Rightarrow A$.
+\end{proposition}
+\begin{proof}
+  Suppose that $I \vdash \gtrans{\Gamma} \Rightarrow \gtrans{A}$.
+  Since every intuitionistic proof is automatically a classical proof, we have $C \vdash \gtrans{\Gamma} \Rightarrow \gtrans{A}$.
+  By R$g$, we have $C \vdash \gtrans{\Gamma} \Rightarrow A$; then the result follows by \cref{thm:0006}.
+\end{proof}
+
+\cref{thm:0004,thm:0005} imply the main result.
+
+\section{}
+
+Everything provable intuitionistically is provable classically; hence it suffices to show that $C \vdash \Rightarrow A$ implies $I \vdash \Rightarrow A$ for all negative formulas $A$.
+
+By \cref{thm:0004}, we have $I \vdash \Rightarrow \gtrans{A}$.
+Since $A$ is negative, we have $I \vdash \gtrans{A} \Rightarrow A$ by \cref{rmk:0000}; then we obtain the required sequent by a cut:
+\[
+  \ebrule{
+    \hypo{\Rightarrow \gtrans{A}}
+    \hypo{\gtrans{A} \Rightarrow A}
+    \infer2[Cut]{I \vdash \Rightarrow A}
+  }
+\]
+
+\section{}
+
+By Problems 2 and 3, the translation $\gtrans{-}$ embeds classical logic into intuitionistic logic \emph{conservatively}---indeed, the construction of the embedding implies that every classical connective can be simulated by intuitionistic-$\bot$, $\to$, $\wedge$, and $\forall$.
+We can also support this view from a semantics perspective: every classical model is a trivial Kripke model.
 
 % \bibliography{bib}
 % \bibliographystyle{alpha}
