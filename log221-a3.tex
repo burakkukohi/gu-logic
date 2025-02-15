@@ -2,6 +2,8 @@
 
 \usepackage{preamble}
 
+\newcommand{\gtrans}[1]{\prn{#1}^{\mathrm{g}}}
+
 \title{LOG221 - A3}
 \author{Frank Tsai}
 
@@ -9,30 +11,55 @@
 
 \maketitle
 
-\section*{Derived rules}
+\section*{Admissible rules}
 
-We freely use the following derived rules.
-\begin{mathpar}
-  \ebrule[R$\lnot\lnot$]{
-    \hypo{\Gamma \Rightarrow A}
-    \infer1{\Gamma \Rightarrow \lnot\lnot A}
-  }\and
-  \ebrule[L$\lnot$]{
-    \hypo{\Gamma \Rightarrow A}
-    \infer1{\Gamma, \lnot A \Rightarrow \bot}
-  }\and
-  \ebrule[Con]{
-    \hypo{\Gamma,A \Rightarrow B}
-    \infer1{\Gamma,\lnot B \Rightarrow \lnot A}
-  }\and
-  \ebrule[LR$\lnot\lnot$]{
-    \hypo{\Gamma,A \Rightarrow B}
-    \infer1{\Gamma,\lnot\lnot A \Rightarrow \lnot\lnot B}
-  }
-\end{mathpar}
+We freely use the admissible rules listed in \cref{fig:0000,fig:0001}.
+Note that every admissible rule for the intuitionistic sequent calculus is also admissible for the classical sequent calculus.
+
+\begin{figure}[h]
+  \centering
+  \begin{mathpar}
+    \ebrule[R$\lnot\lnot$]{
+      \hypo{\Gamma \Rightarrow A}
+      \infer1{\Gamma \Rightarrow \lnot\lnot A}
+    }\and
+    \ebrule[L$\lnot$]{
+      \hypo{\Gamma \Rightarrow A}
+      \infer1{\Gamma, \lnot A \Rightarrow \bot}
+    }\and
+    \ebrule[Con]{
+      \hypo{\Gamma,A \Rightarrow B}
+      \infer1{\Gamma,\lnot B \Rightarrow \lnot A}
+    }\and
+    \ebrule[LR$\lnot\lnot$]{
+      \hypo{\Gamma,A \Rightarrow B}
+      \infer1{\Gamma,\lnot\lnot A \Rightarrow \lnot\lnot B}
+    }\and
+    \ebrule[Contra]{
+      \hypo{\Gamma,A,\lnot A \Rightarrow B}
+    }
+  \end{mathpar}
+  \caption{Admissible rules for ISC}
+  \label{fig:0000}
+\end{figure}
+\begin{figure}[h]
+  \centering
+  \begin{mathpar}
+    \ebrule[L$\lnot\lnot$]{
+      \hypo{\Gamma,A \Rightarrow \Delta}
+      \infer1{\Gamma,\lnot\lnot A \Rightarrow \Delta}
+    }\and
+    \ebrule[Lem]{
+      \hypo{\Gamma \Rightarrow A, \lnot A}
+    }
+  \end{mathpar}
+  \caption{Admissible rules for CSC}
+  \label{fig:0001}
+\end{figure}
+
 
 \section{}
-In light of the cut elimination theorem, we may freely use the cut rule since every instance of it can be removed after the fact; additionally, we freely use derived rules to keep derivations short.
+In light of the cut elimination theorem, we may freely use the cut rule since every instance of it can be removed after the fact.
 We proceed by induction on $A$.
 \begin{itemize}
 \item $A = \bot$:\qquad
@@ -55,8 +82,7 @@ We proceed by induction on $A$.
       \infer2[R$\wedge$]{\lnot\lnot(B \wedge C) \Rightarrow \lnot\lnot B \wedge \lnot\lnot C}
     }
   \]
-\item $A = B \to C$: By the induction hypothesis, we have $\vdash_0 \lnot\lnot B \Rightarrow B$ and $\vdash_0 \lnot\lnot C \Rightarrow C$.
-  Weakening the latter sequent gives $\vdash \lnot\lnot C, B \Rightarrow C$.
+\item $A = B \to C$: By the induction hypothesis, we have $\vdash_0 \lnot\lnot C \Rightarrow C$; weakening gives $\vdash \lnot\lnot C, B \Rightarrow C$.
   We show that $\lnot\lnot(B \to C),B \Rightarrow \lnot\lnot C$; then the desired sequent is obtained by an application of the cut rule followed by R$\to$.
   \[
     \ebrule{
@@ -68,7 +94,7 @@ We proceed by induction on $A$.
   \]
 \item $A = \forall x.A(x)$: Let $a$ be a constant not occurring in $A$.
   By the induction hypothesis, we have $\vdash \lnot\lnot A(a) \Rightarrow A(a)$.
-  Hence
+  Hence we have the following derivation:
   \[
     \ebrule{
       \hypo{\lnot\lnot A(a) \Rightarrow A(a)}
@@ -89,17 +115,120 @@ We proceed by induction on $A$.
   Again, the eigenvariable condition is satisfied since $a$ does not occur in $A$.
 \end{itemize}
 
-As a consequence, the following rule is admissible.
-\begin{mathpar}
-  \ebrule[L$\lnot\lnot$]{
-    \hypo{\Gamma, A \Rightarrow B}
-    \infer1{\Gamma, \lnot\lnot A \Rightarrow B}
-  }\qquad\text{for any negative formula $A$}
-\end{mathpar}
-
 \section{}
 
-We show that if $\Gamma$ consists of negative formulas only and $A$ is negative, then $C \vdash \Gamma \Rightarrow A$ if and only if $I \vdash \Gamma \Rightarrow A$.
+\begin{lemma}\label{thm:0003}
+  $C \vdash \gtrans{A} \Rightarrow A$ and $C \vdash A \Rightarrow \gtrans{A}$.
+\end{lemma}
+\begin{proof}
+  We proceed by induction on $A$.
+  \begin{itemize}
+  \item $A = p$:
+    \begin{mathpar}
+      \ebrule{
+        \hypo{p \Rightarrow p}
+        \infer1[L$\lnot\lnot$]{\lnot\lnot p \Rightarrow p}
+      }\and
+      \ebrule{
+        \hypo{p \Rightarrow p}
+        \infer1[R$\lnot\lnot$]{p \Rightarrow \lnot\lnot p}
+      }
+    \end{mathpar}
+  \item $A = \bot$: This case is trivial since $\gtrans{\bot} = \bot$.
+  \item $A = B \wedge C$: By the induction hypothesis, we have $\vdash \gtrans{B} \Rightarrow B$, $\vdash \gtrans{C} \Rightarrow C$, $\vdash B \Rightarrow \gtrans{B}$, and $\vdash C \Rightarrow \gtrans{C}$.
+    \begin{mathpar}
+      \ebrule{
+        \hypo{\gtrans{B}, \gtrans{C} \Rightarrow B}
+        \hypo{\gtrans{B}, \gtrans{C} \Rightarrow C}
+        \infer2[R$\wedge$]{\gtrans{B}, \gtrans{C} \Rightarrow B \wedge C}
+        \infer1[L$\wedge$]{\gtrans{B} \wedge \gtrans{C} \Rightarrow B \wedge C}
+      }\and
+      \ebrule{
+        \hypo{}
+        \ellipsis{analogous}{B \wedge C \Rightarrow \gtrans{B} \wedge \gtrans{C}}
+      }
+    \end{mathpar}
+  \item $A = B \vee C$: By the induction hypothesis, we have $\vdash \gtrans{B} \Rightarrow B$, $\vdash \gtrans{C} \Rightarrow C$, $\vdash B \Rightarrow \gtrans{B}$, and $\vdash C \Rightarrow \gtrans{C}$.
+    \begin{mathpar}
+      \ebrule{
+        \hypo{\gtrans{B} \Rightarrow B, C}
+        \infer1[R$\to$]{\Rightarrow B, C, \lnot\gtrans{B}}
+        \hypo{\gtrans{C} \Rightarrow B, C}
+        \infer1[R$\to$]{\Rightarrow B, C, \lnot\gtrans{C}}
+        \infer2[R$\wedge$]{\Rightarrow B, C, \lnot\gtrans{B} \wedge \lnot\gtrans{C}}
+        \infer1[R*$\vee$]{\Rightarrow B \vee C, \lnot\gtrans{B} \wedge \lnot\gtrans{C}}
+        \infer1[L$\lnot$]{\lnot(\lnot\gtrans{B} \wedge \lnot\gtrans{C}) \Rightarrow B \vee C}
+      }\and
+      \ebrule{
+        \hypo{B, \lnot\gtrans{C} \Rightarrow \gtrans{B}}
+        \infer1[L$\lnot$]{B, \lnot\gtrans{B}, \lnot\gtrans{C} \Rightarrow \bot}
+        \hypo{C, \lnot\gtrans{B} \Rightarrow \gtrans{C}}
+        \infer1[L$\lnot$]{C, \lnot\gtrans{B}, \lnot\gtrans{C} \Rightarrow \bot}
+        \infer2[L$\vee$]{B \vee C, \lnot\gtrans{B}, \lnot\gtrans{C} \Rightarrow \bot}
+        \infer1[L$\wedge$]{B \vee C, \lnot\gtrans{B} \wedge \lnot\gtrans{C} \Rightarrow \bot}
+        \infer1[R$\to$]{B \vee C \Rightarrow \lnot(\lnot\gtrans{B} \wedge \lnot\gtrans{C})}
+      }
+    \end{mathpar}
+  \item $A = B \to C$: By the induction hypothesis, we have $\vdash \gtrans{B} \Rightarrow B$, $\vdash \gtrans{C} \Rightarrow C$, $\vdash B \Rightarrow \gtrans{B}$, and $\vdash C \Rightarrow \gtrans{C}$.
+    \begin{mathpar}
+      \ebrule{
+        \hypo{B \Rightarrow \gtrans{B}}
+        \hypo{\gtrans{C} \Rightarrow C}
+        \infer2[L$\to$]{\gtrans{B} \to \gtrans{C}, B \Rightarrow C}
+        \infer1[R$\to$]{\gtrans{B} \to \gtrans{C} \Rightarrow B \to C}
+      }\and
+      \ebrule{
+        \hypo{}
+        \ellipsis{analogous}{B \to C \Rightarrow \gtrans{B} \to \gtrans{C}}
+      }
+    \end{mathpar}
+  \item $A = \forall x.B(x)$: By the induction hypothesis, $\vdash \gtrans{B(s)} \Rightarrow B(s)$ and $\vdash B(s) \Rightarrow \gtrans{B(s)}$ for any $s$.
+    Let $b$ be a constant not occurring in $B$.
+    \begin{mathpar}
+      \ebrule{
+        \hypo{\gtrans{B(b)} \Rightarrow B(b)}
+        \infer1[L$\forall$]{\forall x.\gtrans{B(x)} \Rightarrow B(b)}
+        \infer1[R$\forall$]{\forall x.\gtrans{B(x)} \Rightarrow \forall x.B(x)}
+      }\and
+      \ebrule{
+        \hypo{}
+        \ellipsis{analogous}{\forall x.B(x) \Rightarrow \forall x.\gtrans{B(x)}}
+      }
+    \end{mathpar}
+    The eigenvariable condition is satisfied since $b$ does not occur in $B$.
+  \item $A = \exists x.B(x)$: By the induction hypothesis, $\vdash \gtrans{B(s)} \Rightarrow B(s)$ and $\vdash B(s) \Rightarrow \gtrans{B(s)}$ for any $s$.
+    Let $b$ be a constant not occurring in $B$.
+    \begin{mathpar}
+      \ebrule{
+        \hypo{\gtrans{B(b)} \Rightarrow B(b)}
+        \infer1[R$\to$]{\Rightarrow B(b), \lnot \gtrans{B(b)}}
+        \infer1[R$\exists$]{\Rightarrow \exists x.B(x), \lnot \gtrans{B(b)}}
+        \infer1[R$\forall$]{\Rightarrow \exists x.B(x), \forall x.\lnot\gtrans{B(x)}}
+        \infer1[L$\lnot$]{\lnot(\forall x.\lnot\gtrans{B(x)}) \Rightarrow \exists x.B(x)}
+      }\and
+      \ebrule{
+        \hypo{B(b) \Rightarrow \gtrans{B(b)}}
+        \infer1[L$\lnot$]{B(b), \lnot\gtrans{B(b)} \Rightarrow \bot}
+        \infer1[L$\forall$]{B(b), \forall x.\lnot\gtrans{B(x)} \Rightarrow \bot}
+        \infer1[L$\exists$]{\exists x.B(x), \forall x.\lnot\gtrans{B(x)} \Rightarrow \bot}
+        \infer1[R$\to$]{\exists x.B(x) \Rightarrow \lnot(\forall x.\lnot\gtrans{B(x)})}
+      }
+    \end{mathpar}
+    The eigenvariable condition is satisfied since $b$ does not occur in $B$.
+  \end{itemize}
+\end{proof}
+
+\cref{thm:0003} together with cut elimination imply that the CSC admits the following invertible rules:
+\begin{mathpar}
+  \ebrule{
+    \hypo{\Gamma \Rightarrow \gtrans{A}}
+    \infer[double]1[R$g$]{\Gamma \Rightarrow A}
+  }\and
+  \ebrule{
+    \hypo{\Gamma, \gtrans{A} \Rightarrow B}
+    \infer[double]1[L$g$]{\Gamma, A \Rightarrow B}
+  }
+\end{mathpar}
 
 % \bibliography{bib}
 % \bibliographystyle{alpha}
