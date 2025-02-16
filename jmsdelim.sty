@@ -197,6 +197,9 @@
 \NewDocumentCommand\DelimBrk{m}{
   \jmsdelim_surround:nnn {[} {]} {#1}
 }
+\NewDocumentCommand\DelimBrrk{m}{
+  \jmsdelim_surround:nnn {\llbracket} {\rrbracket} {#1}
+}
 \NewDocumentCommand\DelimBrc{m}{
   \jmsdelim_surround:nnn {\lbrace} {\rbrace} {#1}
 }
