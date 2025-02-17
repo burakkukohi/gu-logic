@@ -1,7 +1,7 @@
 \documentclass[a4paper]{article}
 
 \usepackage{preamble}
-
+\usepackage{showkeys}
 \newcommand{\gtrans}[1]{\prn{#1}^{\mathrm{g}}}
 
 \title{LOG221 - A3}
@@ -14,7 +14,7 @@
 \section*{Admissible rules}
 
 We freely use the admissible rules listed in \cref{fig:0000,fig:0001}.
-Note that every admissible rule for the intuitionistic sequent calculus is also admissible for the classical sequent calculus.
+Note that every admissible rule in the intuitionistic sequent calculus is also admissible in the classical sequent calculus.
 
 \begin{figure}[h]
   \centering
@@ -34,9 +34,6 @@ Note that every admissible rule for the intuitionistic sequent calculus is also 
     \ebrule[LR$\lnot\lnot$]{
       \hypo{\Gamma,A \Rightarrow B}
       \infer1{\Gamma,\lnot\lnot A \Rightarrow \lnot\lnot B}
-    }\and
-    \ebrule[Contra]{
-      \hypo{\Gamma,A,\lnot A \Rightarrow B}
     }
   \end{mathpar}
 
@@ -49,9 +46,6 @@ Note that every admissible rule for the intuitionistic sequent calculus is also 
     \ebrule[L$\lnot\lnot$]{
       \hypo{\Gamma,A \Rightarrow \Delta}
       \infer1{\Gamma,\lnot\lnot A \Rightarrow \Delta}
-    }\and
-    \ebrule[Lem]{
-      \hypo{\Gamma \Rightarrow A, \lnot A}
     }
   \end{mathpar}
   \caption{Admissible rules in CSC}
@@ -61,7 +55,7 @@ Note that every admissible rule for the intuitionistic sequent calculus is also 
 
 \section{}
 In light of the cut elimination theorem, we may freely use the cut rule since every instance of it can be removed after the fact.
-We proceed by induction on $A$.
+We proceed by induction on $A$; the cases where $A = p$, $A = B \vee C$, and $A = \exists x. B(x)$ are not applicable.
 \begin{itemize}
 \item $A = \bot$:\qquad
   $
@@ -126,6 +120,10 @@ As a consequence, the following rules are admissible in ISC:
     \hypo{\Gamma \Rightarrow \lnot\lnot A}
     \infer1{I \vdash \Gamma \Rightarrow A}
   }\and
+  \ebrule[L$\lnot$-Inv]{
+    \hypo{\Gamma, \lnot A \Rightarrow \bot}
+    \infer1{I \vdash \Gamma \Rightarrow A}
+  }\and
   \text{for any negative formula $A$}
 \end{mathpar}
 
@@ -183,6 +181,7 @@ As a consequence, the following rules are admissible in ISC:
         \infer1[R$\to$]{B \vee C \Rightarrow \lnot(\lnot\gtrans{B} \wedge \lnot\gtrans{C})}
       }
     \end{mathpar}
+    Note that R*$\vee$ is an admissible rule.
   \item $A = B \to C$: By the induction hypothesis, we have $\vdash \gtrans{B} \Rightarrow B$, $\vdash \gtrans{C} \Rightarrow C$, $\vdash B \Rightarrow \gtrans{B}$, and $\vdash C \Rightarrow \gtrans{C}$.
     \begin{mathpar}
       \ebrule{
@@ -233,8 +232,7 @@ As a consequence, the following rules are admissible in ISC:
 \end{proof}
 
 \begin{remark}\label{rmk:0000}
-  Observe that the only places where classical rules are required in \cref{thm:0003} are when $A = p$, $A = B \vee C$, and $A = \exists x.B(x)$; moreover, it is easy to verify that $I \vdash \lnot p \Rightarrow \lnot\lnot\lnot p$ and $I \vdash \lnot\lnot\lnot p \Rightarrow \lnot p$ for all atoms $p$.
-  Hence if we restrict $A$ to negative formulas, then we also have $I \vdash \gtrans{A} \Rightarrow A$ and $I \vdash A \Rightarrow \gtrans{A}$.
+  Observe that the only places where classical rules are required in \cref{thm:0003} are when $A = p$, $A = B \vee C$, and $A = \exists x.B(x)$; hence if we restrict $A$ to negative formulas, then we also have $I \vdash \gtrans{A} \Rightarrow A$ and $I \vdash A \Rightarrow \gtrans{A}$.
 \end{remark}
 
 \cref{thm:0003} together with cut elimination imply that the CSC admits the following invertible rules:
@@ -242,10 +240,6 @@ As a consequence, the following rules are admissible in ISC:
   \ebrule{
     \hypo{\Gamma \Rightarrow \gtrans{A}}
     \infer[double]1[R$g$]{\Gamma \Rightarrow A}
-  }\and
-  \ebrule{
-    \hypo{\Gamma, \gtrans{A} \Rightarrow B}
-    \infer[double]1[L$g$]{\Gamma, A \Rightarrow B}
   }\and
   \ebrule{
     \hypo{\Gamma, \gtrans{A} \Rightarrow \Delta}
@@ -270,94 +264,108 @@ L$g$ facilitates the proof of the following lemma.
   \]
 \end{proof}
 
+\begin{lemma}\label{thm:000A}
+  If $C \vdash \Gamma \Rightarrow \Delta$, then $I \vdash \gtrans{\Gamma}, \lnot\gtrans{\Delta} \Rightarrow \bot$.
+\end{lemma}
+\begin{proof}
+  We proceed by induction on the derivation of $C \vdash \Gamma \Rightarrow \Delta$.
+  \begin{itemize}
+  \item id: In this case, there is an atom $p \in \Gamma \cap \Delta$; hence $\lnot\lnot p \in \gtrans{\Gamma}$ and $\lnot\lnot\lnot p \in \lnot\gtrans{\Delta}$.
+    Then the result follows by applying L$\to$ on $\lnot\lnot\lnot p$.
+  \item L$\bot$: Since $\bot \in \Gamma$ and $\gtrans{\bot} = \bot$, the required sequent is an instance of L$\bot$.
+  \item R$\wedge$: By the induction hypothesis, we have $I \vdash \gtrans{\Gamma}, \lnot\gtrans{\Delta}, \lnot\gtrans{A} \Rightarrow \bot$ and $I \vdash \gtrans{\Gamma}, \lnot\gtrans{\Delta}, \lnot\gtrans{B} \Rightarrow \bot$.
+    \begin{mathpar}
+      \ebrule{
+        \hypo{\gtrans{\Gamma},\lnot\gtrans{\Delta},\lnot\gtrans{A} \Rightarrow \bot}
+        \infer1[L$\lnot$-Inv]{\gtrans{\Gamma},\lnot\gtrans{\Delta} \Rightarrow \gtrans{A}}
+        \hypo{\gtrans{\Gamma},\lnot\gtrans{\Delta},\lnot\gtrans{B} \Rightarrow \bot}
+        \infer1[L$\lnot$-Inv]{\gtrans{\Gamma},\lnot\gtrans{\Delta} \Rightarrow \gtrans{B}}
+        \infer2[R$\wedge$]{\gtrans{\Gamma},\lnot\gtrans{\Delta} \Rightarrow \gtrans{A} \wedge \gtrans{B}}
+        \infer1[L$\lnot$]{I \vdash \gtrans{\Gamma},\lnot\gtrans{\Delta},\lnot(\gtrans{A} \wedge \gtrans{B}) \Rightarrow \bot}
+      }
+    \end{mathpar}
+  \item L$\wedge$: Immediate by applying L$\wedge$ to the induction hypothesis.
+  \item R$\vee$: Without loss of generality, we assume that the rule applied is R$\vee_1$.
+    By the induction hypothesis, we have $I \vdash \gtrans{\Gamma},\lnot\gtrans{\Delta},\lnot\gtrans{A} \Rightarrow \bot$.
+    \begin{mathpar}
+      \ebrule{
+        \hypo{\gtrans{\Gamma},\lnot\gtrans{\Delta},\lnot\gtrans{A}, \lnot\gtrans{B} \Rightarrow \bot}
+        \infer1[L$\wedge$]{\gtrans{\Gamma},\lnot\gtrans{\Delta},\lnot\gtrans{A} \wedge \lnot\gtrans{B} \Rightarrow \bot}
+        \infer1[L$\lnot\lnot$]{%
+          \gtrans{\Gamma},\lnot\gtrans{\Delta},\lnot\lnot(\lnot\gtrans{A} \wedge \lnot\gtrans{B}) \Rightarrow \bot
+        }
+      }
+    \end{mathpar}
+  \item L$\vee$: By the induction hypothesis, we have $I \vdash \gtrans{\Gamma},\lnot\gtrans{\Delta},\gtrans{A} \Rightarrow \bot$ and $I \vdash \gtrans{\Gamma},\lnot\gtrans{\Delta},\gtrans{B} \Rightarrow \bot$.
+    \begin{mathpar}
+      \ebrule{
+        \hypo{\gtrans{\Gamma},\lnot\gtrans{\Delta},\gtrans{A} \Rightarrow \bot}
+        \infer1[R$\to$]{\gtrans{\Gamma},\lnot\gtrans{\Delta} \Rightarrow \lnot\gtrans{A}}
+        \hypo{\gtrans{\Gamma},\lnot\gtrans{\Delta},\gtrans{B} \Rightarrow \bot}
+        \infer1[R$\to$]{\gtrans{\Gamma},\lnot\gtrans{\Delta} \Rightarrow \lnot\gtrans{B}}
+        \infer2[R$\wedge$]{\gtrans{\Gamma},\lnot\gtrans{\Delta} \Rightarrow \lnot\gtrans{A} \wedge \lnot\gtrans{B}}
+        \infer1[L$\lnot$]{\gtrans{\Gamma},\lnot\gtrans{\Delta},\lnot(\lnot\gtrans{A} \wedge \lnot\gtrans{B}) \Rightarrow \bot}
+      }
+    \end{mathpar}
+  \item R$\to$: By the induction hypothesis, we have $I \vdash \gtrans{\Gamma},\lnot\gtrans{\Delta},\gtrans{A},\lnot\gtrans{B} \Rightarrow \bot$.
+    \begin{mathpar}
+      \ebrule{
+        \hypo{\gtrans{\Gamma},\lnot\gtrans{\Delta},\gtrans{A},\lnot\gtrans{B} \Rightarrow \bot}
+        \infer1[L$\lnot$-Inv]{\gtrans{\Gamma},\lnot\gtrans{\Delta},\gtrans{A} \Rightarrow \gtrans{B}}
+        \infer1[R$\to$]{\gtrans{\Gamma},\lnot\gtrans{\Delta} \Rightarrow \gtrans{A} \to \gtrans{B}}
+        \infer1[L$\lnot$]{\gtrans{\Gamma},\lnot\gtrans{\Delta},\lnot(\gtrans{A} \to \gtrans{B}) \Rightarrow \bot}
+      }
+    \end{mathpar}
+  \item L$\to$: By the induction hypothesis, we have $I \vdash \gtrans{\Gamma},\lnot\gtrans{\Delta},\lnot\gtrans{A} \Rightarrow \bot$ and $I \vdash \gtrans{\Gamma},\lnot\gtrans{\Delta},\gtrans{B} \Rightarrow \bot$.
+    \begin{mathpar}
+      \ebrule{
+        \hypo{\gtrans{\Gamma},\lnot\gtrans{\Delta},\lnot\gtrans{A} \Rightarrow \bot}
+        \infer1[L$\lnot$-Inv]{\gtrans{\Gamma},\lnot\gtrans{\Delta} \Rightarrow \gtrans{A}}
+        \hypo{\gtrans{\Gamma},\lnot\gtrans{\Delta},\gtrans{B} \Rightarrow \bot}
+        \infer2[L$\to$]{\gtrans{\Gamma},\lnot\gtrans{\Delta},\gtrans{A} \to \gtrans{B} \Rightarrow \bot}
+      }
+    \end{mathpar}
+  \item R$\forall$: By the induction hypothesis we have $I \vdash \gtrans{\Gamma},\lnot\gtrans{\Delta},\lnot \gtrans{A(a)} \Rightarrow \bot$, where $a$ is fresh for $\Gamma$, $\Delta$, and $\forall x.A(x)$.
+    \begin{mathpar}
+      \ebrule{
+        \hypo{\gtrans{\Gamma},\lnot\gtrans{\Delta},\lnot \gtrans{A(a)} \Rightarrow \bot}
+        \infer1[L$\lnot\lnot$-Inv]{\gtrans{\Gamma},\lnot\gtrans{\Delta} \Rightarrow \gtrans{A(a)}}
+        \infer1[R$\forall$]{\gtrans{\Gamma},\lnot\gtrans{\Delta} \Rightarrow \forall x.\gtrans{A(x)}}
+        \infer1[L$\lnot$]{\gtrans{\Gamma},\lnot\gtrans{\Delta},\lnot\forall x.\gtrans{A(x)} \Rightarrow \bot}
+      }
+    \end{mathpar}
+    The eigenvariable condition is satisfied since it is satisfied in the original derivation.
+  \item L$\forall$: Immediate by applying L$\forall$ to the induction hypothesis.
+  \item R$\exists$: By the induction hypothesis, we have $I \vdash \gtrans{\Gamma},\lnot\gtrans{\Delta},\lnot\gtrans{A(t)} \Rightarrow \bot$ for some term $t$.
+    \begin{mathpar}
+      \ebrule{
+        \hypo{\gtrans{\Gamma},\lnot\gtrans{\Delta},\lnot \gtrans{A(t)} \Rightarrow \bot}
+        \infer1[L$\forall$]{\gtrans{\Gamma},\lnot\gtrans{\Delta},\forall x.\lnot \gtrans{A(x)} \Rightarrow \bot}
+        \infer1[L$\lnot\lnot$]{\gtrans{\Gamma},\lnot\gtrans{\Delta},\lnot\lnot\forall x.\lnot \gtrans{A(x)} \Rightarrow \bot}
+      }
+    \end{mathpar}
+  \item L$\exists$: By the induction hypothesis, we have $I \vdash \gtrans{\Gamma},\lnot\gtrans{\Delta},\gtrans{A(a)} \Rightarrow \bot$.
+    \begin{mathpar}
+      \ebrule{
+        \hypo{\gtrans{\Gamma},\lnot\gtrans{\Delta},\gtrans{A(a)} \Rightarrow \bot}
+        \infer1[R$\to$]{\gtrans{\Gamma},\lnot\gtrans{\Delta} \Rightarrow \lnot\gtrans{A(a)}}
+        \infer1[R$\forall$]{\gtrans{\Gamma},\lnot\gtrans{\Delta} \Rightarrow \forall x.\lnot\gtrans{A(x)}}
+        \infer1[L$\lnot$]{\gtrans{\Gamma},\lnot\gtrans{\Delta},\lnot\forall x.\lnot\gtrans{A(x)} \Rightarrow \bot}
+      }
+    \end{mathpar}
+    The eigenvariable condition is satisfied since it is satisfied in the original derivation.
+  \end{itemize}
+\end{proof}
+
 We show the main theorem separately.
 
 \begin{proposition}\label{thm:0004}
   If $C \vdash \Gamma \Rightarrow A$ then $I \vdash \gtrans{\Gamma} \Rightarrow \gtrans{A}$.
 \end{proposition}
 \begin{proof}
-  We proceed by induction on the derivation of $C \vdash \Gamma \Rightarrow A$.
-  Since $\to$, $\wedge$, and $\forall$ commute with $\gtrans{-}$, the required sequent, in these cases, is obtained by applying the corresponding rule to the induction hypothesis; we omit these cases.
-  \begin{itemize}
-  \item id: In this case, $A \in \Gamma$.
-    Hence $\gtrans{A} \in \gtrans{\Gamma}$; then it follows that $I \vdash \gtrans{\Gamma} \Rightarrow \gtrans{A}$ (not necessarily through id).
-  \item $\bot$: Since $\gtrans{\bot} = \bot$, $I \vdash \gtrans{\Gamma} \Rightarrow \gtrans{A}$ is an instance of L$\bot$.
-  \item R$\vee$:
-    $
-    \ebrule{
-      \hypo{\Gamma \Rightarrow B}
-      \infer1{C \vdash \Gamma \Rightarrow B \vee C}
-    }
-    $.
-
-    There are two right rules, but it suffices to show one of them since the other one is completely analogous.
-    By the induction hypothesis, we have $I \vdash \gtrans{\Gamma} \Rightarrow \gtrans{B}$.
-    \begin{mathpar}
-      \ebrule{
-        \hypo{\gtrans{\Gamma}, \lnot\gtrans{C} \Rightarrow \gtrans{B}}
-        \infer1[L$\lnot$]{\gtrans{\Gamma}, \lnot\gtrans{B}, \lnot\gtrans{C} \Rightarrow \bot}
-        \infer1[L$\wedge$]{\gtrans{\Gamma}, \lnot\gtrans{B} \wedge \lnot\gtrans{C} \Rightarrow \bot}
-        \infer1[R$\to$]{I \vdash \gtrans{\Gamma} \Rightarrow \lnot(\lnot\gtrans{B} \wedge \lnot\gtrans{C})}
-      }
-    \end{mathpar}
-  \item L$\vee$:
-    $
-    \ebrule{
-      \hypo{\Gamma, B \Rightarrow A}
-      \hypo{\Gamma, C \Rightarrow A}
-      \infer2{C \vdash \Gamma, B \vee C \Rightarrow A}
-    }
-    $.
-
-    By the induction hypothesis, we have $I \vdash \gtrans{\Gamma},\gtrans{B} \Rightarrow \gtrans{A}$ and $I \vdash \gtrans{\Gamma},\gtrans{C} \Rightarrow \gtrans{A}$.
-    \[
-      \ebrule{
-        \hypo{\gtrans{\Gamma}, \gtrans{B} \Rightarrow \gtrans{A}}
-        \infer1[Con]{\gtrans{\Gamma}, \lnot\gtrans{A} \Rightarrow \lnot\gtrans{B}}
-        \hypo{\gtrans{\Gamma}, \gtrans{C} \Rightarrow \gtrans{A}}
-        \infer1[Con]{\gtrans{\Gamma}, \lnot\gtrans{A} \Rightarrow \lnot\gtrans{C}}
-        \infer2[R$\wedge$]{\gtrans{\Gamma}, \lnot\gtrans{A} \Rightarrow \lnot\gtrans{B} \wedge \lnot\gtrans{C}}
-        \infer1[Con]{\gtrans{\Gamma}, \lnot(\lnot\gtrans{B} \wedge \lnot\gtrans{C}) \Rightarrow \lnot\lnot\gtrans{A}}
-        \infer1[R$\lnot\lnot$-Inv]{I \vdash \gtrans{\Gamma}, \lnot(\lnot\gtrans{B} \wedge \lnot\gtrans{C}) \Rightarrow \gtrans{A}}
-      }
-    \]
-  \item R$\exists$:
-    $
-    \ebrule{
-      \hypo{\Gamma \Rightarrow B(t)}
-      \infer1{C \vdash \Gamma \Rightarrow \exists x.B(x)}
-    }.
-    $
-
-    By the induction hypothesis, we have $I \vdash \gtrans{\Gamma} \Rightarrow \gtrans{B(t)}$.
-    \[
-      \ebrule{
-        \hypo{\gtrans{\Gamma} \Rightarrow \gtrans{B(t)}}
-        \infer1[L$\lnot$]{\gtrans{\Gamma}, \lnot\gtrans{B(t)} \Rightarrow \bot}
-        \infer1[L$\forall$]{\gtrans{\Gamma}, \forall x.\lnot\gtrans{B(x)} \Rightarrow \bot}
-        \infer1[R$\to$]{I \vdash \gtrans{\Gamma} \Rightarrow \lnot\forall x.\lnot\gtrans{B(x)}}
-      }
-    \]
-  \item L$\exists$:
-    $
-    \ebrule{
-      \hypo{\Gamma, B(b) \Rightarrow A}
-      \infer1{C \vdash \Gamma, \exists x.B(x) \Rightarrow A}
-    }
-    $.
-
-    By the induction hypothesis, we have $I \vdash \gtrans{\Gamma}, \gtrans{B(b)} \Rightarrow \gtrans{A}$.
-    \begin{mathpar}
-      \ebrule{
-        \hypo{\gtrans{\Gamma}, \gtrans{B(b)} \Rightarrow \gtrans{A}}
-        \infer1[Con]{\gtrans{\Gamma}, \lnot\gtrans{A} \Rightarrow \lnot \gtrans{B(b)}}
-        \infer1[R$\forall$]{\gtrans{\Gamma}, \lnot\gtrans{A} \Rightarrow \forall x.\lnot\gtrans{B(x)}}
-        \infer1[Con]{\gtrans{\Gamma}, \lnot\forall x.\lnot \gtrans{B(x)} \Rightarrow \lnot\lnot\gtrans{A}}
-        \infer1[R$\lnot\lnot$-Inv]{I \vdash \gtrans{\Gamma}, \lnot\forall x.\lnot \gtrans{B(x)} \Rightarrow \gtrans{A}}
-      }
-    \end{mathpar}
-    The eigenvariable condition is satisfied since it is satisfied in the original derivation.
-  \end{itemize}
+  Suppose that $C \vdash \Gamma \Rightarrow A$.
+  By \cref{thm:000A}, we have $I \vdash \gtrans{\Gamma},\lnot\gtrans{A} \Rightarrow \bot$.
+  Since $\lnot\gtrans{A}$ is a negative formula, we may apply \textsc{L$\lnot$-Inv} to obtain the required sequent.
 \end{proof}
 
 \begin{proposition}\label{thm:0005}
@@ -375,6 +383,7 @@ We show the main theorem separately.
 
 Everything provable intuitionistically is provable classically; hence it suffices to show that $C \vdash \Rightarrow A$ implies $I \vdash \Rightarrow A$ for all negative formulas $A$.
 
+Suppose that $C \vdash \Rightarrow A$.
 By \cref{thm:0004}, we have $I \vdash \Rightarrow \gtrans{A}$.
 Since $A$ is negative, we have $I \vdash \gtrans{A} \Rightarrow A$ by \cref{rmk:0000}; then we obtain the required sequent by a cut:
 \[
@@ -387,8 +396,10 @@ Since $A$ is negative, we have $I \vdash \gtrans{A} \Rightarrow A$ by \cref{rmk:
 
 \section{}
 
-By Problems 2 and 3, the translation $\gtrans{-}$ embeds classical logic into intuitionistic logic \emph{conservatively}---indeed, the construction of the embedding implies that every classical connective can be simulated by intuitionistic-$\bot$, $\to$, $\wedge$, and $\forall$.
-We can also support this view from a semantics perspective: every classical model is a trivial Kripke model.
+By Problems 2 and 3, the translation $\gtrans{-}$ embeds classical logic into intuitionistic logic \emph{conservatively}---everything provable intuitionistically is (trivially) provable classically and, moreover, anything that one want to prove classically can be translated and proved intuitionistically.
+
+In fact, the construction of the embedding implies that every classical connective can be simulated by intuitionistic-$\bot$, $\to$, $\wedge$, and $\forall$.
+In this sense, intuitionistic logic extends classical logic by two \emph{very} strict logical operators, $\vee$ and $\exists$, satisfying the disjunction and existential properties respectively.
 
 % \bibliography{bib}
 % \bibliographystyle{alpha}
