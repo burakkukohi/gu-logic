@@ -513,12 +513,13 @@ Under the lens of $\lambda$-calculus, the content of \cref{def:sspi} is precisel
   \end{itemize}
 \end{definition}
 
+For space reason, we suppress typing annotations when it is appropriate.
 \begin{construction}
   Given a CwF that supports $\Sigma$-types, we extend the interpretation function as follows:
   \begin{align*}
     \intp{\ty}{\Gamma;\Sigma(\sigma,\tau)} &= \typeSig(\intp{\ty}{\Gamma;\sigma},\intp{\ty}{\Gamma, x : \sigma;\tau})\\
     \intp{\tm}{\Gamma;\synPair{a}{b}} &= \pair_{\sigma,\tau} \circ \semComp{\ctxSec{\intp{\tm}{\Gamma;a}}}{\weaken{\intp{\tm}{\Gamma,x:\sigma;b}}}{\weaken{\intp{\ty}{\Gamma,x:\sigma;\tau}}}\\
-    \intp{\tm}{\Gamma;\synIndSig(u,s)} &= ?
+    \intp{\tm}{\Gamma;\synIndSig(u,s)} &= \semSubst{\indSig(\intp{\tm}{\Gamma,x:\sigma,y:\tau;s})}{\ctxSec{\intp{\tm}{\Gamma;u}}}
   \end{align*}
 \end{construction}
 
@@ -565,6 +566,15 @@ Under the lens of $\lambda$-calculus, the content of \cref{def:sspi} is precisel
   \end{align*}
 \end{definition}
 
+\begin{construction}
+  We extend the interpretation function as follows:
+  \begin{align*}
+    \intp{\ty}{\Gamma;\synTypeId(u,s)} &= \semSubst{\typeId}{\semComp{\ctxSec{\intp{\tm}{\Gamma;u}}}{\weaken{\intp{\tm}{\Gamma;s}}}{}}\\
+    \intp{\tm}{\Gamma;\synRefl(a)} &= \refl \circ \ctxSec{\intp{\tm}{\Gamma;a}}\\
+    \intp{\tm}{\Gamma;\synIndId(u,s)} &= \semSubst{\indId(\intp{\tm}{\Gamma,z:\sigma;s})}{\semComp{-,-}{\weaken{\intp{\tm}{\Gamma;u}}}{}}
+  \end{align*}
+\end{construction}
+
 \begin{example}
   The term model of intensional type theory supports identity types with the following settings:
   \begin{align*}
@@ -584,10 +594,6 @@ Under the lens of $\lambda$-calculus, the content of \cref{def:sspi} is precisel
   \end{align*}
 \end{example}
 
-\subsubsection{The term model}\label{sec:ttm}
-\subsubsection{The set model}\label{sec:tsm}
-\subsubsection{The $\omega$-set model}\label{sec:twsm}
-\subsubsection{Modest sets}\label{sec:ms}
 \subsubsection{The presheaf model}\label{sec:tpm}
 
 \subsection{Conservativity of the logical framework}\label{sec:cotlf}
