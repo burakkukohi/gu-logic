@@ -1,50 +1,36 @@
 \RequirePackage{xparse}
 
-\newcommand{\major}[1]{\textcolor{olive}{#1}}
-\newcommand{\tmCons}[1]{\operatorname{\mathbf{#1}}}
-\newcommand{\tpAnno}[1]{~\textcolor{gray}{\mathrel{:}#1}}
-\newcommand{\tpCons}[1]{\mathbf{#1}}
-\newcommand{\tpEmp}{\tpCons{0}}
-\newcommand{\tmAbort}[1]{\tmCons{abort}(\major{#1})}
-\newcommand{\tmPair}[2]{\tmCons{pair}(#1,#2)}
-\newcommand{\tmDestruct}[2]{\tmCons{destruct}(\major{#1},#2)}
-\newcommand{\tmInl}[1]{\tmCons{inl}(#1)}
-\newcommand{\tmInr}[1]{\tmCons{inr}(#1)}
-\newcommand{\tmCase}[3]{%
-  \tmCons{case}\prn{\major{#1};#2;#3}
-}
-\newcommand{\tmLam}[2]{%
-  \tmCons{lam}_{#1}(#2)
-}
-\newcommand{\tmApp}[3]{\tmCons{app}(\major{#1},#2,#3)}
+\NewDocumentCommand\tpAnno{m}{~\textcolor{gray}{\mathrel{:}#1}}
+\NewDocumentCommand\tpEmp{}{\mathbf{0}}
 
-\newcommand{\tpRule}[1]{\textsc{#1}\xspace}
-\newcommand{\rVar}{\tpRule{Var}}
-\newcommand{\rEmpE}{\tpRule{$\tpEmp$E}}
-\newcommand{\rProdI}{\tpRule{$\times$I}}
-\newcommand{\rProdE}{\tpRule{$\times\text{E}$}}
-\newcommand{\rSumIl}{\tpRule{$+\text{I}_1$}}
-\newcommand{\rSumIr}{\tpRule{$+\text{I}_2$}}
-\newcommand{\rSumE}{\tpRule{$+$E}}
-\newcommand{\rFunI}{\tpRule{$\mathord{\to}$I}}
-\newcommand{\rFunE}{\tpRule{$\mathord{\to}$E}}
+\NewDocumentCommand\major{m}{\textcolor{olive}{#1}}
+\NewDocumentCommand\tm{m}{\operatorname{\mathbf{#1}}}
+\NewDocumentCommand\tmAbort{m}{\tm{abort}\prn{\major{#1}}}
+\NewDocumentCommand\tmPair{mm}{\tm{pair}\prn{#1,#2}}
+\NewDocumentCommand\tmPrl{m}{\tm{pr}_1\prn{\major{#1}}}
+\NewDocumentCommand\tmPrr{m}{\tm{pr}_2\prn{\major{#1}}}
+\NewDocumentCommand\tmInl{m}{\tm{inl}\prn{#1}}
+\NewDocumentCommand\tmInr{m}{\tm{inr}\prn{#1}}
+\NewDocumentCommand\tmCase{mmm}{\tm{case}\prn{\major{#1};#2;#3}}
+\NewDocumentCommand\tmLam{mm}{\tm{lam}_{#1}\prn{#2}}
+\NewDocumentCommand\tmApp{mm}{\tm{app}\prn{\major{#1},#2}}
 
-\newcommand{\rEmpe}{\tpRule{$\tpEmp\eta$}}
-\newcommand{\rProdb}{\tpRule{$\times\beta$}}
-\newcommand{\rProde}{\tpRule{$\times\eta$}}
-\newcommand{\rProdsa}{\tpRule{$\times\sigma_1$}}
-\newcommand{\rProdsb}{\tpRule{$\times\sigma_2$}}
-\newcommand{\rProdsc}{\tpRule{$\times\sigma_3$}}
-\newcommand{\rSumbl}{\tpRule{$+\beta_{1}$}}
-\newcommand{\rSumbr}{\tpRule{$+\beta_{2}$}}
-\newcommand{\rSume}{\tpRule{$+\eta$}}
-\newcommand{\rFunb}{\tpRule{$\mathord{\to}\beta$}}
-\newcommand{\rFune}{\tpRule{$\mathord{\to}\eta$}}
-\newcommand{\rs}{\tpRule{$\sigma$}}
+\NewDocumentCommand\rName{m}{\textsc{#1}}
+\NewDocumentCommand\rVar{}{\rName{Var}}
+\NewDocumentCommand\rEmpE{}{\rName{$\tpEmp$E}}
+\NewDocumentCommand\rProdI{}{\rName{$\times$I}}
+\NewDocumentCommand\rProdEl{}{\rName{$\times$E${}_1$}}
+\NewDocumentCommand\rProdEr{}{\rName{$\times$E${}_2$}}
+\NewDocumentCommand\rSumIl{}{\rName{$+$I${}_1$}}
+\NewDocumentCommand\rSumIr{}{\rName{$+$I${}_2$}}
+\NewDocumentCommand\rSumE{}{\rName{$+$E}}
+\NewDocumentCommand\rFunI{}{\rName{$\mathord{\to}$I}}
+\NewDocumentCommand\rFunE{}{\rName{$\mathord{\to}$E}}
 
-\newcommand{\nf}[2]{\operatorname{\mathsf{nf}}^{#1}_{#2}}
-\newcommand{\neu}[2]{\operatorname{\mathsf{ne}}^{#1}_{#2}}
-\newcommand{\comp}[2]{\operatorname{\mathsf{c}}^{#1}_{#2}}
+\NewDocumentCommand\pred{mmm}{\operatorname{\mathbf{#1}}^{#2}_{#3}}
+\NewDocumentCommand\comp{mm}{\pred{c}{#1}{#2}}
+\NewDocumentCommand\norm{}{\pred{norm}{}{\beta}}
+\NewDocumentCommand\neu{mm}{\pred{ne}{#1}{#2}}
 
 \NewDocumentCommand\bRed{s}{
   \IfBooleanTF{#1}
