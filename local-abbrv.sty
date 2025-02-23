@@ -7,11 +7,12 @@
 \DeclareRobustCommand\onedot{\futurelet\@let@token\@onedot}
 \def\@onedot{\ifx\@let@token.\else.\null\fi\xspace}
 
-\def\eg{e.g.,\xspace}
-\def\vs{vs\xspace}
-\def\ie{i.e.,\xspace}
-\def\cf{cf\onedot}
-\def\etc{etc\onedot}
-\def\etal{et~al\onedot}
-\def\opcit{op.~cit\onedot}
-\def\viceversa{vice~versa\onedot}
+\def\eg{\emph{e.g}.,\xspace}
+\def\vs{\emph{versus}\xspace}
+\def\ie{\emph{i.e}.,\xspace}
+\def\cf{\emph{cf}\onedot}
+\def\etc{\emph{etc}\onedot}
+\def\etal{\emph{et~al}\onedot}
+\def\opcit{\emph{op.~cit}\onedot}
+\def\viceversa{\emph{vice~versa}}
+\def\mutatismutandis{\emph{mutatis~mutandis}}

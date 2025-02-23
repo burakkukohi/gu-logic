@@ -5,7 +5,7 @@
 
 \NewDocumentCommand\major{m}{\textcolor{olive}{#1}}
 \NewDocumentCommand\tm{m}{\operatorname{\mathbf{#1}}}
-\NewDocumentCommand\tmAbort{m}{\tm{abort}\prn{\major{#1}}}
+\NewDocumentCommand\tmAbort{m}{\tm{abort}\prn{#1}}
 \NewDocumentCommand\tmPair{mm}{\tm{pair}\prn{#1,#2}}
 \NewDocumentCommand\tmPrl{m}{\tm{pr}_1\prn{\major{#1}}}
 \NewDocumentCommand\tmPrr{m}{\tm{pr}_2\prn{\major{#1}}}
@@ -28,9 +28,9 @@
 \NewDocumentCommand\rFunE{}{\rName{$\mathord{\to}$E}}
 
 \NewDocumentCommand\pred{mmm}{\operatorname{\mathbf{#1}}^{#2}_{#3}}
-\NewDocumentCommand\comp{mm}{\pred{c}{#1}{#2}}
+\NewDocumentCommand\comp{mm}{\pred{comp}{#1}{#2}}
 \NewDocumentCommand\norm{}{\pred{norm}{}{\beta}}
-\NewDocumentCommand\neu{mm}{\pred{ne}{#1}{#2}}
+\NewDocumentCommand\neu{mm}{\pred{nne}{#1}{#2}}
 
 \NewDocumentCommand\bRed{s}{
   \IfBooleanTF{#1}
