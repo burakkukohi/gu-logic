@@ -292,11 +292,11 @@ We may equivalently treat these collections as unary predicates, writing $\neu{\
   \item[\rSumE:] By the induction hypothesis, we have $\comp{\Delta}{D + E}(s[\gamma])$; there are three cases to consider, and two of which are analogous: (1) $s[\gamma] \bRed* \tmInl{d}$ for some computable $d$, or (2) $s[\gamma] \bRed* t'$ for some normalizing neutral element $t'$.
 
     In the former case, it suffices to show $\comp{\Delta}{C}(c[\gamma,d/x])$; this is immediate by the induction hypothesis since $\comp{\Delta}{\Gamma,x : D}(\gamma, d/x)$.
-    In the latter case, note that $\comp{\Delta}{D}(x)$ and $\comp{\Delta}{E}(y)$; then by the induction hypothesis, $c[\gamma,x/x]$ and $c'[\gamma,y/y]$ are normalizing by \cref{thm:0006}.
+    In the latter case, note that variables are computable; then by the induction hypothesis, $c[\gamma,x/x]$ and $c'[\gamma,y/y]$ are computable and thus normalizing by \cref{thm:0006}.
     Then by definition, $\tmCase{s[\gamma]}{c[\gamma,x/x]}{c'[\gamma,y/y]}$ is a normalizing neutral element; hence it is computable by \cref{thm:0006}.
   \item[\rFunI:] Fix $\Delta \subseteq \Delta'$ and $b$ such that $\comp{\Delta'}{B}(b)$.
     It suffices to show $\comp{\Delta'}{C}(c[\gamma,b/y])$.
-    By \cref{thm:1001}, $\comp{\Delta'}{\Gamma}(\gamma)$; hence $\tmLam{y:B}{c[\gamma,y/y]}$ is computable by the induction hypothesis.
+    By \cref{thm:1001}, $\comp{\Delta'}{\Gamma}(\gamma)$; hence $c[\gamma,b/y]$ is computable by the induction hypothesis.
   \item[\rFunE:] By the induction hypothesis, $f[\gamma]$ and $b[\gamma]$ are computable; hence $\tmApp{f[\gamma]}{b[\gamma]}$ is computable by definition.
   \end{itemize}
 \end{proof}
