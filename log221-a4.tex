@@ -1,0 +1,45 @@
+\documentclass[a4paper]{article}
+\usepackage[margin=1in]{geometry}
+
+\usepackage{preamble}
+\usepackage{log221-a4-macros}
+\usepackage{showkeys}
+
+\title{LOG 221 - A4}
+\author{Frank Tsai}
+
+\begin{document}
+
+\maketitle
+
+\begin{lemma}
+  If $\dVdash{n}{\ell}{k}{q} \Gamma \Rightarrow C,\Delta$ and $\dVdash{m}{\ell}{k}{q} \Gamma,C \Rightarrow \Delta$ with $\dRank{C} = \ell + 1$, $\cRank{C} < k$, and $\qRank{C} < q$, then $\dVdash{h}{\ell}{k}{q} \Gamma \Rightarrow \Delta$, where $h \leq \max(n,m) + 2$.
+\end{lemma}
+\begin{proof}
+  We proceed by induction on $n + m$.
+  There are two main cases to consider: (1) $C$ is principal in both derivations, or (2) $C$ is not principal in at least one derivations.
+
+  We treat the former case by doing a case distinction on $C$.
+  \begin{itemize}
+  \item[$\bot,p$:] Not applicable since $\dRank{\bot} = 0 \neq \ell + 1$.
+  \item[$\lnot A$:] Since we have $\dVdash{n-1}{\ell}{k}{q} A, \Gamma \Rightarrow \Delta$ and $\dVdash{m-1}{\ell}{k}{q} \Gamma \Rightarrow A, \Delta$ and $\dRank{A} = \ell$, we can use \rCut.
+    The resulting derivation has height $\max(n-1,m-1) + 1$, which is clearly bounded by $\max(n,m) + 2$.
+  \item[$A \wedge B$:] We have $\dVdash{n-1}{\ell}{k}{q} \Gamma \Rightarrow A, \Delta$, $\dVdash{n-1}{\ell}{k}{q} \Gamma \Rightarrow B, \Delta$, and $\dVdash{m-1}{\ell}{k}{q} A,B,\Gamma \Rightarrow \Delta$.
+    Since $\dRank{A \wedge B} = \max(\dRank{A},\dRank{B}) + 1 = \ell + 1$, we have $\dRank{A} \leq \ell$ and $\dRank{B} \leq \ell$; then we can derived the desired sequent using two \rCut{}s.
+    \[
+      \ebrule{
+        \hypo{\Gamma \Rightarrow B,\Delta}
+        \hypo{\Gamma \Rightarrow A,\Delta}
+        \hypo{A,B,\Gamma \Rightarrow \Delta}
+        \infer2[\rCut]{B,\Gamma \Rightarrow \Delta}
+        \infer2[\rCut]{\Gamma \Rightarrow \Delta}
+      }
+    \]
+  \end{itemize}
+  The height of this derivation is bounded by $\max(n,m) + 1$.
+\end{proof}
+
+% \bibliography{bib}
+% \bibliographystyle{alpha}
+
+\end{document}

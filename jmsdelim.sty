@@ -215,6 +215,9 @@
 \NewDocumentCommand\DelimLc{m}{
   \jmsdelim_surround:nnn {\llcorner} {\lrcorner} {#1}
 }
+\NewDocumentCommand\DelimVert{m}{
+  \jmsdelim_surround:nnn {|} {|} {#1}
+}
 \ProcessKeysPackageOptions {jmsdelim}
 \endinput
 %%
