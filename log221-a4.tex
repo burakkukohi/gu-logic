@@ -12,31 +12,31 @@
 
 \maketitle
 
-\begin{lemma}
-  If $\dVdash{n}{\ell}{k}{q} \Gamma \Rightarrow C,\Delta$ and $\dVdash{m}{\ell}{k}{q} \Gamma,C \Rightarrow \Delta$ with $\dRank{C} = \ell + 1$, $\cRank{C} < k$, and $\qRank{C} < q$, then $\dVdash{h}{\ell}{k}{q} \Gamma \Rightarrow \Delta$, where $h \leq \max(n,m) + 2$.
+By inspection, the inversion lemma still holds for $\dVdash{n}{\ell}{k}{q}$.
+\begin{lemma}\label{0000}
+  If $\dVdash{n}{\ell}{k}{q} \Gamma \Rightarrow C,\Delta$ and $\dVdash{m}{\ell}{k}{q} \Lambda,C \Rightarrow \Pi$ with $\dRank{C} = \ell + 1$, $\cRank{C} = k$, and $\qRank{C} < q$, then $\dVdash{h}{\ell}{k}{q} \Gamma,\Lambda \Rightarrow \Delta,\Pi$, where $h \leq \max(n,m) + 2$.
 \end{lemma}
 \begin{proof}
-  We proceed by induction on $n + m$.
-  There are two main cases to consider: (1) $C$ is principal in both derivations, or (2) $C$ is not principal in at least one derivations.
-
-  We treat the former case by doing a case distinction on $C$.
+  We proceed by case analysis on $C$.
+  Since $\dRank{C} \geq 1$, we do not have to consider $C = p$, $C = \bot$, and $C = Qx.A(x)$.
   \begin{itemize}
-  \item[$\bot,p$:] Not applicable since $\dRank{\bot} = 0 \neq \ell + 1$.
-  \item[$\lnot A$:] Since we have $\dVdash{n-1}{\ell}{k}{q} A, \Gamma \Rightarrow \Delta$ and $\dVdash{m-1}{\ell}{k}{q} \Gamma \Rightarrow A, \Delta$ and $\dRank{A} = \ell$, we can use \rCut.
-    The resulting derivation has height $\max(n-1,m-1) + 1$, which is clearly bounded by $\max(n,m) + 2$.
-  \item[$A \wedge B$:] We have $\dVdash{n-1}{\ell}{k}{q} \Gamma \Rightarrow A, \Delta$, $\dVdash{n-1}{\ell}{k}{q} \Gamma \Rightarrow B, \Delta$, and $\dVdash{m-1}{\ell}{k}{q} A,B,\Gamma \Rightarrow \Delta$.
-    Since $\dRank{A \wedge B} = \max(\dRank{A},\dRank{B}) + 1 = \ell + 1$, we have $\dRank{A} \leq \ell$ and $\dRank{B} \leq \ell$; then we can derived the desired sequent using two \rCut{}s.
+  \item[$\lnot A$:] By inversion, we have $\dVdash{n}{\ell}{k}{q} \Gamma,A \Rightarrow \Delta$ and $\dVdash{m}{\ell}{k}{q} \Gamma \Rightarrow A, \Delta$.
+    Since $\dRank{A} = \ell$, $\cRank{A} < k$, and $\qRank{\lnot A} = \qRank{A} < q$, we can apply \rCut{} to obtain the required sequent.
+    The height of this derivation is bounded by $\max(n,m) + 1$.
+  \item[$A \wedge B$:] By inversion, we have $\dVdash{n}{\ell}{k}{q} \Gamma \Rightarrow A,\Delta$; $\dVdash{n}{\ell}{k}{q} \Gamma \Rightarrow B,\Delta$; and $\dVdash{m}{\ell}{k}{q} \Lambda,A,B \Rightarrow \Pi$.
+    Since $\dRank{A}$ and $\dRank{B}$ are bounded by $\ell$, $\cRank{A}$ and $\cRank{B}$ are strictly less than $k$, and similarly $\qRank{A} < q$ and $\qRank{B} < q$, we can apply two \rCut{}s to obtained the required sequent.
     \[
       \ebrule{
-        \hypo{\Gamma \Rightarrow B,\Delta}
         \hypo{\Gamma \Rightarrow A,\Delta}
-        \hypo{A,B,\Gamma \Rightarrow \Delta}
-        \infer2[\rCut]{B,\Gamma \Rightarrow \Delta}
-        \infer2[\rCut]{\Gamma \Rightarrow \Delta}
+        \hypo{\Gamma \Rightarrow B,\Delta}
+        \hypo{\Lambda,A,B \Rightarrow \Pi}
+        \infer2[\rCut]{\Gamma,\Lambda,A \Rightarrow \Delta,\Pi}
+        \infer2[\rCut]{\Gamma,\Lambda \Rightarrow \Delta,\Pi}
       }
     \]
+    The height of this derivation is bounded by $\max(n,m) + 2$.
+  \item[$A \vee B$:] This is analogous to the previous case: use inversion on both assumptions; and then apply two \rCut{}s.
   \end{itemize}
-  The height of this derivation is bounded by $\max(n,m) + 1$.
 \end{proof}
 
 % \bibliography{bib}
