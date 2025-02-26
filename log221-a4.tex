@@ -39,6 +39,20 @@ By inspection, the inversion lemma still holds for $\dVdash{n}{\ell}{k}{q}$.
   \end{itemize}
 \end{proof}
 
+\begin{lemma}
+  If $\dVdash{n}{\ell+1}{k}{q} \Gamma \Rightarrow \Delta$, then $\dVdash{n + 2}{\ell}{k}{q} \Gamma \Rightarrow \Delta$.
+\end{lemma}
+\begin{proof}
+  By induction on $n$; do a case analysis on the last applied rule.
+  The only interesting case is \rCut.
+\end{proof}
+
+\section*{Problem 1}
+\label{0001}
+
+Since $C$ is not atomic and the main connective of $C$ is not a quantifier, $\dRank{C} \geq 1$.
+The desired result follows immediately from \cref{0000} by setting $\ell = \dRank{C} - 1$, $k = \cRank{C}$, and $q = \qRank{C} + 1$.
+
 % \bibliography{bib}
 % \bibliographystyle{alpha}
 
