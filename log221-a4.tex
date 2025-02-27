@@ -46,7 +46,7 @@ By inspection, the inversion lemma still holds for $\dVdash{n}{\ell}{k}{q}$.
 \end{lemma}
 
 \begin{lemma}\label{0002}
-  If $\dVdash{n}{\ell + 1}{k}{q} \Gamma \Rightarrow \Delta$, then $\dVdash{n+1}{\ell}{k}{q} \Gamma \Rightarrow \Delta$.
+  If $\dVdash{n}{\ell + 1}{k}{q} \Gamma \Rightarrow \Delta$, then $\dVdash{2n}{\ell}{k}{q} \Gamma \Rightarrow \Delta$.
 \end{lemma}
 \begin{proof}
   We proceed by induction on $n$; and we do a case analysis on the last applied rule.
@@ -54,21 +54,23 @@ By inspection, the inversion lemma still holds for $\dVdash{n}{\ell}{k}{q}$.
   \begin{itemize}
   \item[\rId:] In this case, there is no cut formula; hence we have $\dVdash{n}{\ell}{k}{q} \Gamma \Rightarrow \Delta$.
   \item[\rLBot:] Analogous to \rId.
-  \item[\rRNot:] The induction hypothesis yields $\dVdash{n - 1 + 1}{\ell}{k}{q} \Gamma, A \Rightarrow \Delta$.
-    Then we obtain $\dVdash{n+1}{\ell}{k}{q} \Gamma \Rightarrow \lnot A, \Delta$ by applying \rRNot.
-  \item[\rLDis:] The induction hypothesis yields $\dVdash{n - 1 + 1}{\ell}{k}{q} \Gamma, A \Rightarrow \Delta$ and $\dVdash{n - 1 + 1}{\ell}{k}{q} \Gamma, B \Rightarrow \Delta$, then we obtain $\dVdash{n+1}{\ell}{k}{q} \Gamma, A \vee B \Rightarrow \Delta$ by applying \rLDis.
+  \item[\rRNot:] The induction hypothesis yields $\dVdash{2n - 2}{\ell}{k}{q} \Gamma, A \Rightarrow \Delta$.
+    Then we obtain $\dVdash{2n - 1}{\ell}{k}{q} \Gamma \Rightarrow \lnot A, \Delta$ by applying \rRNot.
+    This is clearly bounded by $2n$.
+  \item[\rLDis:] The induction hypothesis yields $\dVdash{2n - 2}{\ell}{k}{q} \Gamma, A \Rightarrow \Delta$ and $\dVdash{2n - 2}{\ell}{k}{q} \Gamma, B \Rightarrow \Delta$, then we obtain $\dVdash{2n - 1}{\ell}{k}{q} \Gamma, A \vee B \Rightarrow \Delta$ by applying \rLDis.
   \item[\rCut:] Let $C$ be the cut formula; there are two cases to consider: (1) $\dRank{C} < \ell + 1$, or (2) $\dRank{C} = \ell + 1$.
-    In the former case, we do not have to alter anything since we can afford this \rCut, while in the latter case, we apply \cref{0000}, yielding $\dVdash{n - 1 + 2}{\ell}{k}{q} \Gamma \Rightarrow \Delta$.
+    In the former case, we do not have to alter anything since we can afford this \rCut, while in the latter case, we apply \cref{0000}, yielding $\dVdash{n + 1}{\ell}{k}{q} \Gamma \Rightarrow \Delta$.
+    This is bounded by $2n$ provided $n \geq 1$.
   \end{itemize}
 \end{proof}
 
 \begin{lemma}\label{0003}
-  If $\dVdash{n}{\ell}{k}{q} \Gamma \Rightarrow \Delta$, then $\dVdash{n + \ell}{0}{k}{q} \Gamma \Rightarrow \Delta$.
+  If $\dVdash{n}{\ell}{k}{q} \Gamma \Rightarrow \Delta$, then $\dVdash{2^{\ell}n}{0}{k}{q} \Gamma \Rightarrow \Delta$.
 \end{lemma}
 \begin{proof}
   We proceed by induction on $\ell$.
   Suppose that $\ell = \ell' + 1$ and $\dVdash{n}{\ell' + 1}{k}{q} \Gamma \Rightarrow \Delta$.
-  By \cref{0002}, we have $\dVdash{n + 1}{\ell'}{k}{q} \Gamma \Rightarrow \Delta$; then the induction hypothesis yields $\dVdash{n + 1 + \ell'}{0}{k}{q} \Gamma \Rightarrow \Delta$.
+  By \cref{0002}, we have $\dVdash{2n}{\ell'}{k}{q} \Gamma \Rightarrow \Delta$; then the induction hypothesis yields $\dVdash{2^{\ell' + 1}n}{0}{k}{q} \Gamma \Rightarrow \Delta$.
 \end{proof}
 
 \begin{lemma}\label{0005}
@@ -82,7 +84,7 @@ By inspection, the inversion lemma still holds for $\dVdash{n}{\ell}{k}{q}$.
 \end{proof}
 
 \begin{corollary}
-  If $\dVdash{n}{0}{k}{q+1} \Gamma \Rightarrow \Delta$, then $\dVdash{\comment{2^n+k}}{0}{k}{q} \Gamma \Rightarrow \Delta$.
+  If $\dVdash{n}{0}{k}{q+1} \Gamma \Rightarrow \Delta$, then $\dVdash{\comment{2^{k+n}}}{0}{k}{q} \Gamma \Rightarrow \Delta$.
 \end{corollary}
 
 \section*{Problem 1}
