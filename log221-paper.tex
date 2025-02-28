@@ -12,8 +12,32 @@
 
 \maketitle
 
+\begin{abstract}
+  The Curry-Howard correspondence is the observation that proof systems and computational calculi, such as $\lambda$-calculi, are closely related.
+  This correspondence allows us to apply programming language theory techniques to study proof systems.
+  We introduce \emph{Tait's method of computability}, also known as \emph{logical relation}, and show that every intuitionistic natural deduction derivation can be fully simplified.
+\end{abstract}
+
 \section{Introduction}
 \label{sec:0000}
+
+\comment{
+  \begin{enumerate}
+  \item A brief introduction of typed $\lambda$-calculus.
+  \item A brief description of the Curry-Howard correspondence.
+  \item A brief description of detour conversion and the normalization problem.
+  \item A brief description of Tait's computability.
+  \end{enumerate}
+}
+
+The Curry-Howard correspondence establishes a translation between derivations and typed $\lambda$-terms.
+Under such a correspondence proof identifications become equational axioms in the $\lambda$-calculus; moreover, detour conversions give the $\lambda$-calculus computational meaning.
+
+It is almost a given that we can convert every derivation to a detour-free derivation; in fact, the reader probably already has an algorithm in mind, yet the standard proof-by-induction argument fails.
+The induction hypothesis is too weak to handle the elimination rules.
+
+Tait's method of computability strengthens the induction hypothesis by attaching additional semantic information to the syntax.
+
 
 \section{Curry-Howard correspondence}
 \label{sec:0001}
@@ -89,6 +113,8 @@
 
 \subsection{From proofs to programs}
 \label{sec:0002}
+
+
 
 \subsection{From programs to proofs}
 \label{sec:0003}

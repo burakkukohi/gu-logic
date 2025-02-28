@@ -12,6 +12,8 @@
 
 \maketitle
 
+\section*{Problem 1}\label{0001}
+
 \begin{lemma}\label{0000}
   If $\dVdash{n}{\ell}{k}{q} \Gamma \Rightarrow C,\Delta$ and $\dVdash{m}{\ell}{k}{q} \Lambda,C \Rightarrow \Pi$ with $\dRank{C} = \ell + 1$, $\cRank{C} < k$, and $\qRank{C} < q$, then $\dVdash{h}{\ell}{k}{q} \Gamma,\Lambda \Rightarrow \Delta,\Pi$, where $h \leq \max(n,m) + 2$.
 \end{lemma}
@@ -20,10 +22,10 @@
   Since $\dRank{C} \geq 1$, we do not have to consider atoms, $\bot$, and $Qx.A(x)$.
   \begin{itemize}
   \item[$\lnot A$:] By inversion, we have $\dVdash{n}{\ell}{k}{q} \Gamma,A \Rightarrow \Delta$ and $\dVdash{m}{\ell}{k}{q} \Gamma \Rightarrow A, \Delta$.
-    Since $\dRank{A} = \ell$, we can apply \rCut{} to obtain the required sequent.
+    Since $\dRank{A} = \ell$, we can afford using \rCut{} to obtain the required sequent.
     The height of this derivation is bounded by $\max(n,m) + 1$.
   \item[$A \wedge B$:] By inversion, we have $\dVdash{n}{\ell}{k}{q} \Gamma \Rightarrow A,\Delta$; $\dVdash{n}{\ell}{k}{q} \Gamma \Rightarrow B,\Delta$; and $\dVdash{m}{\ell}{k}{q} \Lambda,A,B \Rightarrow \Pi$.
-    Since $\dRank{A}$ and $\dRank{B}$ are bounded by $\ell$, we can apply two \rCut{}s to obtained the required sequent.
+    Since $\dRank{A}$ and $\dRank{B}$ are bounded by $\ell$, we can afford two \rCut{}s to obtained the required sequent.
     \[
       \ebrule{
         \hypo{\Gamma \Rightarrow A,\Delta}
@@ -34,9 +36,13 @@
       }
     \]
     The height of this derivation is bounded by $\max(n,m) + 2$.
-  \item[$A \vee B$:] This is analogous to the previous case: use inversion on both assumptions; and then apply two \rCut{}s.
+  \item[$A \vee B$:] This is analogous to the previous case: apply inversion on both assumptions; and then apply two \rCut{}s.
   \end{itemize}
 \end{proof}
+
+Observe that the proof of \cref{0000} goes through even if we weaken the assumption to allow $\cRank{C} = k$ since inversion yields strictly smaller formulas.
+
+\section*{Problem 2}\label{0009}
 
 \begin{lemma}\label{0004}
   If $\dVdash{n}{0}{k}{q} \Gamma \Rightarrow C,\Delta$ and $\dVdash{m}{0}{k}{q} \Lambda,C \Rightarrow \Pi$ with $\cRank{C} < k$ and $\qRank{C} = q$, then $\dVdash{h}{k}{k}{q} \Gamma,\Lambda \Rightarrow \Delta,\Pi$, where $h \leq n + m$.
@@ -45,27 +51,32 @@
   We proceed by induction on $n + m$; there are two cases to consider: (1) $C$ is principal in both assumptions, or (2) $C$ is not principal in at least one assumption.
 
   We treat the first case by case analysis on $C$.
-  Since $\dRank{C} = 0$, there are only three cases to consider:
+  Note that $\bot$ does not apply in the case since it does not have a right rule; there are only three cases to consider:
   \begin{itemize}
   \item[Atom:] In this case we have $C \in \Gamma$ and $C \in \Pi$; hence $\dVdash{0}{0}{k}{q} \Gamma,\Lambda \Rightarrow \Delta,\Pi$ is also an instance of \rId.
   \item[$\forall x.A(x)$:] By inversion, we have $\dVdash{n}{0}{k}{q} \Gamma \Rightarrow A(s),\Delta$ for any $s$.
-    Since we do not have left inversion, we need to handle implicit contraction correctly.
-    Since we have $\dVdash{m-1}{0}{k}{q} \Lambda,A(t),\forall x.A(x) \Rightarrow \Pi$, we can apply the induction hypothesis to eliminate $\forall x.A(x)$, yielding $\dVdash{n+m-1}{\cRank{\forall x.A(x)}}{k}{q} \Gamma,\Lambda,A(t) \Rightarrow \Delta,\Pi$.
-    Note that $\dRank{A(t)} \leq k$.
-    Since $\cRank{A(t)} < \cRank{\forall x.A(x)}$ and $\qRank{A(t)} < q$, we can use \rCut{} to derive $\dVdash{n+m}{\cRank{\forall x.A(x)}}{k}{q} \Gamma,\Lambda \Rightarrow \Delta,\Pi$.
+    The lack of left inversion means we must handle implicit contraction correctly.
+
+    We apply the induction hypothesis to $\dVdash{n}{0}{k}{q} \Gamma \Rightarrow \forall x.A(x), \Delta$ and $\dVdash{m-1}{0}{k}{q} \Lambda,A(t),\forall x.A(x) \Rightarrow \Pi$ to eliminate $\forall x.A(x)$.
+    This yields $\dVdash{n+m-1}{k}{k}{q} \Gamma,\Lambda,A(t) \Rightarrow \Delta,\Pi$.
+
+    Since $\qRank{A(t)} < q$, we can afford to use \rCut{} to remove $A(t)$.
+    Note that $\dRank{A(t)} \leq \cRank{\forall x.A(x)} < k$; hence the resulting derivation satisfies all the complexity bounds.
   \item[$\exists x.A(x)$:] Completely analogous to the previous case.
+    This time, we lack right inversion, so we handle implicit contraction by applying the induction hypothesis.
   \end{itemize}
-  In the latter case, we may assume without loss of generality that $C$ is not principal in the second assumption.
-  Consider the following general rule:
+  In the latter case, we may assume, by symmetry of the argument, that $C$ is not principal in the first assumption.
+  Every sequent calculus rule has the following general form:
   \begin{mathpar}
     \ebrule[*]{
-      \hypo{\Lambda_1 \Rightarrow \Pi_1}
-      \hypo{\Lambda_2 \Rightarrow \Pi_2}
-      \infer2{\Lambda \Rightarrow \Pi}
+      \hypo{\Gamma_1 \Rightarrow \Delta_1}
+      \hypo{\Gamma_2 \Rightarrow \Delta_2}
+      \infer2{\Gamma \Rightarrow \Delta}
     }
   \end{mathpar}
-  The induction hypothesis yields $\dVdash{n+m-1}{\cRank{C}}{k}{q} \Gamma,\Lambda_1 \Rightarrow \Delta,\Pi_1$ and $\dVdash{n+m-1}{\cRank{C}}{k}{q} \Gamma,\Lambda_2 \Rightarrow \Delta,\Pi_2$.
-  Then we get $\dVdash{n+m}{\cRank{C}}{k}{q} \Gamma,\Lambda \Rightarrow \Delta,\Pi$ by applying *.
+  Hence we have $\dVdash{n-1}{0}{k}{q} \Gamma_1 \Rightarrow C,\Delta_1$ and $\dVdash{n-1}{0}{k}{q} \Gamma_2 \Rightarrow C,\Delta_2$.
+  Then by the induction hypothesis, we have $\dVdash{n+m-1}{k}{k}{q} \Gamma,\Lambda_1 \Rightarrow \Delta,\Pi_1$ and $\dVdash{n+m-1}{k}{k}{q} \Gamma,\Lambda_2 \Rightarrow \Delta,\Pi_2$.
+  Now apply *.
 \end{proof}
 
 \begin{lemma}\label{0002}
@@ -74,8 +85,10 @@
 \begin{proof}
   We proceed by induction on $n$; and we do a case analysis on the last applied rule.
   Most cases are uninteresting: apply the induction hypothesis to the premise(es) and then the corresponding rule.
+  We present a few representative cases for completeness.
+  The only interesting case is \rCut.
   \begin{itemize}
-  \item[\rId:] In this case, there is no cut formula; hence we have $\dVdash{n}{\ell}{k}{q} \Gamma \Rightarrow \Delta$.
+  \item[\rId:] In this case, there is no cut formula; hence we already have $\dVdash{2n}{\ell}{k}{q} \Gamma \Rightarrow \Delta$.
   \item[\rLBot:] Analogous to \rId.
   \item[\rRNot:] The induction hypothesis yields $\dVdash{2n - 2}{\ell}{k}{q} \Gamma, A \Rightarrow \Delta$.
     Then we obtain $\dVdash{2n - 1}{\ell}{k}{q} \Gamma \Rightarrow \lnot A, \Delta$ by applying \rRNot.
@@ -88,36 +101,19 @@
   \end{itemize}
 \end{proof}
 
-\begin{lemma}\label{0003}
-  If $\dVdash{n}{\ell}{k}{q} \Gamma \Rightarrow \Delta$, then $\dVdash{2^{\ell}n}{0}{k}{q} \Gamma \Rightarrow \Delta$.
-\end{lemma}
-\begin{proof}
-\end{proof}
+By applying \cref{0002} recursively on $\ell$, we get \cref{0003}.
 
-\begin{remark}
-  If $\gVdash{n}{q} \Gamma \Rightarrow \Delta$, then the cut rank is bounded by $n$.
-  Clearly, $d$-rank is bounded by cut rank; hence we can instantiate \cref{0003} with $\ell = n$ and $k = n$, yielding $\dVdash{2^n \cdot n}{0}{n}{q} \Gamma \Rightarrow \Delta$.
-  By a simple induction on $n$, we see that
-  \[
-    2^n \cdot n \leq 2^{2n} \leq 2^n_2
-  \]
-  Hence we have $\dVdash{2^n_2}{0}{n}{q} \Gamma \Rightarrow \Delta$.
-\end{remark}
+\begin{corollary}\label{0003}
+  If $\dVdash{n}{\ell}{k}{q} \Gamma \Rightarrow \Delta$, then $\dVdash{2^{\ell}n}{0}{k}{q} \Gamma \Rightarrow \Delta$.
+\end{corollary}
 
 \begin{lemma}\label{0005}
-  If $\dVdash{n}{0}{k}{q+1} \Gamma \Rightarrow \Delta$, then $\dVdash{2^n}{k}{k}{q} \Gamma \Rightarrow \Delta$.
+  If $\dVdash{n}{0}{k}{q+1} \Gamma \Rightarrow \Delta$, then $\dVdash{(2^{k+1})^n}{k}{k}{q} \Gamma \Rightarrow \Delta$.
 \end{lemma}
 \begin{proof}
   Similar to \cref{0002}, most cases are uninteresting.
   We look at \rCut.
 \end{proof}
-
-\begin{corollary}\label{0007}
-  If $\gVdash{n}{q + 1} \Gamma \Rightarrow \Delta$, then $\dVdash{2^n_3}{n}{n}{q} \Gamma \Rightarrow \Delta$.
-\end{corollary}
-
-\section*{Problem 1}
-\label{0001}
 
 % \bibliography{bib}
 % \bibliographystyle{alpha}
