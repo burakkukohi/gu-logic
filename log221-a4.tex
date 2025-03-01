@@ -3,7 +3,7 @@
 
 \usepackage{preamble}
 \usepackage{log221-a4-macros}
-\usepackage{showkeys}
+\usepackage[final]{showkeys}
 
 \title{LOG 221 - A4}
 \author{Frank Tsai}
@@ -11,8 +11,6 @@
 \begin{document}
 
 \maketitle
-
-\section*{Problem 1}\label{0001}
 
 \begin{lemma}\label{0000}
   If $\dVdash{n}{\ell}{k}{q} \Gamma \Rightarrow C,\Delta$ and $\dVdash{m}{\ell}{k}{q} \Lambda,C \Rightarrow \Pi$ with $\dRank{C} = \ell + 1$, $\cRank{C} < k$, and $\qRank{C} < q$, then $\dVdash{h}{\ell}{k}{q} \Gamma,\Lambda \Rightarrow \Delta,\Pi$, where $h \leq \max(n,m) + 2$.
@@ -40,28 +38,38 @@
   \end{itemize}
 \end{proof}
 
-Observe that the proof of \cref{0000} goes through even if we weaken the assumption to allow $\cRank{C} = k$ since inversion yields strictly smaller formulas.
+\section*{Problem 1}\label{0001}
+\begin{proof}[Solution]
+  Observe that the proof of \cref{0000} goes through even if we weaken the assumption to allow $\cRank{C} = k$ since inversion yields strictly smaller formulas.
+\end{proof}
 
 \section*{Problem 2}\label{0009}
 
 \begin{lemma}\label{0004}
-  If $\dVdash{n}{0}{k}{q} \Gamma \Rightarrow C,\Delta$ and $\dVdash{m}{0}{k}{q} \Lambda,C \Rightarrow \Pi$ with $\cRank{C} < k$ and $\qRank{C} = q$, then $\dVdash{h}{k}{k}{q} \Gamma,\Lambda \Rightarrow \Delta,\Pi$, where $h \leq n + m$.
+  If $\dVdash{n}{0}{k}{q} \Gamma \Rightarrow C,\Delta$ and $\dVdash{m}{0}{k}{q} \Lambda,C \Rightarrow \Pi$ with $\cRank{C} < k$ and $\qRank{C} = q$, then $\dVdash{h}{k-1}{k-1}{q} \Gamma,\Lambda \Rightarrow \Delta,\Pi$, where $h \leq n + m$.
 \end{lemma}
 \begin{proof}
   We proceed by induction on $n + m$; there are two cases to consider: (1) $C$ is principal in both assumptions, or (2) $C$ is not principal in at least one assumption.
 
   We treat the first case by case analysis on $C$.
-  Note that $\bot$ does not apply in the case since it does not have a right rule; there are only three cases to consider:
+  Note that $\bot$ does not apply in this case since it does not have a right rule; hence there are only three cases to consider:
   \begin{itemize}
-  \item[Atom:] In this case we have $C \in \Gamma$ and $C \in \Pi$; hence $\dVdash{0}{0}{k}{q} \Gamma,\Lambda \Rightarrow \Delta,\Pi$ is also an instance of \rId.
+  \item[Atom:] In this case we have $C \in \Gamma$ and $C \in \Pi$; hence $\dVdash{0}{0}{0}{0} \Gamma,\Lambda \Rightarrow \Delta,\Pi$ by \rId.
   \item[$\forall x.A(x)$:] By inversion, we have $\dVdash{n}{0}{k}{q} \Gamma \Rightarrow A(s),\Delta$ for any $s$.
-    The lack of left inversion means we must handle implicit contraction correctly.
+    Unlike \cref{0000}, the lack of left inversion means we must handle implicit contraction correctly.
 
     We apply the induction hypothesis to $\dVdash{n}{0}{k}{q} \Gamma \Rightarrow \forall x.A(x), \Delta$ and $\dVdash{m-1}{0}{k}{q} \Lambda,A(t),\forall x.A(x) \Rightarrow \Pi$ to eliminate $\forall x.A(x)$.
-    This yields $\dVdash{n+m-1}{k}{k}{q} \Gamma,\Lambda,A(t) \Rightarrow \Delta,\Pi$.
+    This yields $\dVdash{n+m-1}{k-1}{k-1}{q} \Gamma,\Lambda,A(t) \Rightarrow \Delta,\Pi$.
 
-    Since $\qRank{A(t)} < q$, we can afford to use \rCut{} to remove $A(t)$.
-    Note that $\dRank{A(t)} \leq \cRank{\forall x.A(x)} < k$; hence the resulting derivation satisfies all the complexity bounds.
+    Since $\qRank{A(t)} < \qRank{\forall x.A(x)} < q$ and $\cRank{A(t)} < \cRank{\forall x.A(t)} < k$, we can afford to use \rCut{} to remove $A(t)$:
+    \[
+      \ebrule{
+        \hypo{\Gamma,\Lambda,A(t) \Rightarrow \Delta,\Pi}
+        \hypo{\Gamma \Rightarrow A(t),\Delta}
+        \infer2[\rCut]{\Gamma,\Lambda \Rightarrow \Delta,\Pi}
+      }
+    \]
+    Note that $d$-rank is bounded by the cut rank; hence the resulting derivation satisfies all complexity bounds.
   \item[$\exists x.A(x)$:] Completely analogous to the previous case.
     This time, we lack right inversion, so we handle implicit contraction by applying the induction hypothesis.
   \end{itemize}
@@ -75,7 +83,7 @@ Observe that the proof of \cref{0000} goes through even if we weaken the assumpt
     }
   \end{mathpar}
   Hence we have $\dVdash{n-1}{0}{k}{q} \Gamma_1 \Rightarrow C,\Delta_1$ and $\dVdash{n-1}{0}{k}{q} \Gamma_2 \Rightarrow C,\Delta_2$.
-  Then by the induction hypothesis, we have $\dVdash{n+m-1}{k}{k}{q} \Gamma,\Lambda_1 \Rightarrow \Delta,\Pi_1$ and $\dVdash{n+m-1}{k}{k}{q} \Gamma,\Lambda_2 \Rightarrow \Delta,\Pi_2$.
+  Then by the induction hypothesis, we have $\dVdash{n+m-1}{k-1}{k-1}{q} \Gamma,\Lambda_1 \Rightarrow \Delta,\Pi_1$ and $\dVdash{n+m-1}{k-1}{k-1}{q} \Gamma,\Lambda_2 \Rightarrow \Delta,\Pi_2$.
   Now apply *.
 \end{proof}
 
@@ -108,11 +116,53 @@ By applying \cref{0002} recursively on $\ell$, we get \cref{0003}.
 \end{corollary}
 
 \begin{lemma}\label{0005}
-  If $\dVdash{n}{0}{k}{q+1} \Gamma \Rightarrow \Delta$, then $\dVdash{(2^{k+1})^n}{k}{k}{q} \Gamma \Rightarrow \Delta$.
+  If $\dVdash{n}{0}{k}{q+1} \Gamma \Rightarrow \Delta$, then $\dVdash{2^{n \cdot k}}{k-1}{k-1}{q} \Gamma \Rightarrow \Delta$.
 \end{lemma}
 \begin{proof}
   Similar to \cref{0002}, most cases are uninteresting.
   We look at \rCut.
+  Let $C$ be the cut formula.
+  There are two cases to consider: (1) $\qRank{C} < q$, or (2) $\qRank{C} = q$.
+  In the former case, nothing needs to be done.
+  In the latter case, we apply the induction hypothesis on the two premises, yielding $\dVdash{2^{(n-1)k}}{k-1}{k-1}{q} \Gamma \Rightarrow C,\Delta$ and $\dVdash{2^{(n-1)k}}{k-1}{k-1}{q} \Gamma,C \Rightarrow \Delta$.
+  Then we apply \cref{0003} to eliminate inexpensive \rCut{}s; this gives $\dVdash{2^{k-1} \cdot 2^{(n-1)k}}{0}{k-1}{q} \Gamma,C \Rightarrow \Delta$ and $\dVdash{2^{k-1} \cdot 2^{(n-1)k}}{0}{k-1}{q} \Gamma \Rightarrow C,\Delta$.
+  Finally, we apply \cref{0004} to obtain $\dVdash{2^{n \cdot k}}{k-1}{k-1}{q} \Gamma \Rightarrow \Delta$.
+\end{proof}
+
+Combining \cref{0003,0005} yields \cref{0006}.
+
+\begin{corollary}\label{0006}
+  If $\dVdash{n}{\ell}{k}{q+1} \Gamma \Rightarrow \Delta$, then $\dVdash{h}{k-1}{k-1}{q} \Gamma \Rightarrow \Delta$ where $h = 2^{2^{\ell} \cdot n \cdot k}$.
+\end{corollary}
+
+\begin{lemma}\label{0007}
+  If $\gVdash{n}{q+1} \Gamma \Rightarrow \Delta$, then $\dVdash{h}{n-1}{n-1}{q} \Gamma \Rightarrow \Delta$ where $h = 2^n_3$.
+\end{lemma}
+\begin{proof}
+  In a gentle proof, the rank of every cut formula is bounded by the height $n$; hence we can instantiate \cref{0006} with $\ell = k = n$, resulting in $\dVdash{h}{n-1}{n-1}{q} \Gamma \Rightarrow \Delta$ where $h = 2^{2^{n} \cdot n^2}$.
+  It remains to show that $2^{2^n \cdot n^2} \leq 2^n_3$.
+  To this end, it suffices to show $2^n \cdot n^2 \leq 2^{2^n}$.
+  We manually verify that it is the case for $n = 0,1$; then we do an induction on $n$ to show that it holds for all $n \ge 2$.
+  In the induction step, we show the following chain of inequalities:
+  \[
+    2^{k+1} \cdot (k+1)^2 \leq 2^{k+1} \cdot (2k)^2 \leq 8 \cdot 2^k \cdot k^2 \leq 8 \cdot 2^{2^k} \leq (2^{2^k})^2 = 2^{2^{k+1}}
+  \]
+  This is evident by the induction hypothesis and the fact that $k \geq 2$.
+\end{proof}
+
+\section*{Problem 2}\label{0008}
+\begin{proof}[Solution]
+  Suppose that $\gVdash{n}{q} \Gamma \Rightarrow \Delta$.
+  Applying \cref{0007} recursively on $q$ yields $\dVdash{h}{-}{-}{0} \Gamma \Rightarrow \Delta$ where $h = 2^n_{3q}$; the omitted bounds are not important.
+  Since $\qRank{A} \geq 0$ for any formula $A$, we can conclude that the resulting derivation has no cut formulas, \ie $\vdash^h_0 \Gamma \Rightarrow \Delta$.
+\end{proof}
+
+\section*{Problem 3}\label{000A}
+\begin{proof}[Solution]
+  Eliminating quantified cut formulas is expensive because we do not have inversion at our disposal; we have to appeal to the induction hypothesis, \ie make an expensive recursive function call, to handle implicit contraction correctly.
+  
+  In the intuitionistic case, negation and disjunction lack inversion in addition to quantifiers, so we modify $q$-rank to additionally count negation and disjunction, \ie $\qRank{\lnot A} = \qRank{A} + 1$ and $\qRank{A \vee B} = \max(\qRank{A},\qRank{B}) + 1$.
+  Then we can prove the same statement in Problem 2.
 \end{proof}
 
 % \bibliography{bib}
