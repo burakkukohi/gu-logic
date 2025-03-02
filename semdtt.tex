@@ -17,201 +17,112 @@ Any mistake is my own.
 
 \section{Introduction}\label{sec:intro}
 
-Unlike simple types, dependent types, as the name suggests, depend on or vary with values.
-The quintessential example of a dependent type is the vector type.
-Similar to the list type, the vector type is a container of items; however, the length of the container is explicitly stored in the type.
+Last week, Gianluca talked about the syntactic aspect of type theory.
+Today, we will briefly review some typical types in dependent type theory, and introduce a semantic framework called \emph{category with families}.
 
-Semantics is a compositional assignment of mathematical objects to syntactic objects, and such a function is called an \emph{interpretation}.
-There are two main approaches to defining an interpretation function: one can define a partial function on pre-syntactic objects and prove that the function is total on actual syntactic objects that arise in the theory; the other approach is to define a function on derivations and show that various coherent conditions are satisfied.
+Semantics is a compositional assignment of mathematical objects to syntactic objects; syntactic objects are \emph{interpreted} as objects in the semantic domain.
 
-For each semantic domain, one has to define a non-trivial interpretation function.
-The aim of \cite{Hofmann1997} is to develop an abstract notion of semantics for which a single interpretation can be defined once and for all; then to show that a theory can be interpreted in a given semantic domain, one only has to show that the given semantic domain supports such abstract notion.
+A reasonable question that one may ask is: why do we care about semantics?
+Besides mathematical curiosity, semantic methods have been applied to show numerous independence results.
+On a more practical side, semantic methods can be applied to show syntactic properties such as normalization and decidability of type checking, the latter being crucial in any practical computer implementation of type theory.
 
-\section{Dependent type theory}\label{sec:dtt}
+For each semantic domain, we have to define an interpretation function, which is an onerous process.
+\cite{Hofmann1997} develops an abstract framework upon which a single interpretation function can be defined once and for all.
+Then to show that a theory can be interpreted in a given semantic domain, one shows that the given semantic domain fits in such a framework.
 
-A dependent type theory is presented by its \emph{judgments}; for instance, the typehood of $\sigma$ is expressed by the judgment $\typeJudg{\sigma}$ and the elementhood of $t$ in $\sigma$ is expressed by the judgment $t : \sigma$.
-The elementhood of an open term depends on the types of its open variables; for instance, we cannot make the judgment $x + y : \bN$ unless we already know that $x : \bN$ and $y : \bN$.
-Since types can depend on values, the typehood of an expression such as $\sigma(x)$ must also be made relative to a list of \emph{variable declarations}.
-Such lists of declarations are called \emph{contexts}.
+I will start off my presentation with the structural aspect of dependent type theory; in particular, we will discuss the notions of contexts, substitutions, and context extensions.
 
-More complex notions of context exist in the literature, but for our purpose, a context is a list of well-formed variable declarations of the form $x_1 : \sigma_1, x_2 : \sigma_2, \ldots, x_n : \sigma_n$ where each type $\sigma_i$ is a type in the context $x_1 : \sigma_1,\ldots, x_{i-1} : \sigma_{i-1}$.
-The judgment $\ctxJudg{\Gamma}$ expresses that $\Gamma$ is a well-formed context.
+% \section{Dependent type theory}\label{sec:dtt}
 
-Finally, we have a notion of \emph{definitional equality} built into the theory; for example, we'd like to regard $0 : \bN$ and $0 + 0 : \bN$ as definitionally equal terms and $\typeJudg{\sigma(0)}$ and $\typeJudg{\sigma(0+0)}$ as definitionally equal types.
-We express these equalities via the judgments $0 = 0 + 0 : \bN$ and $\typeJudg{\sigma(0) = \sigma(0+0)}$ respectively.
+% A dependent type theory is presented by its \emph{judgments}; for instance, the typehood of $\sigma$ is expressed by the judgment $\typeJudg{\sigma}$ and the elementhood of $t$ in $\sigma$ is expressed by the judgment $t : \sigma$.
+% The elementhood of an open term depends on the types of its open variables; for instance, we cannot make the judgment $x + y : \bN$ unless we already know that $x : \bN$ and $y : \bN$.
+% Since types can depend on values, the typehood of an expression such as $\sigma(x)$ must also be made relative to a list of \emph{variable declarations}.
+% Such lists of declarations are called \emph{contexts}.
 
-To summarize, there are six kinds of judgments:
-\begin{align*}
-  &\vdash \ctxJudg{\Gamma} && \text{$\Gamma$ is a well-formed context}&&\\
-  \Gamma &\vdash \typeJudg{\sigma} && \text{$\sigma$ is a type in context $\Gamma$}&&\\
-  \Gamma &\vdash t : \sigma && \text{$t$ is a term of type $\sigma$ in context $\Gamma$}&&\\
-  &\vdash \ctxJudg{\Gamma = \Delta} && \text{$\Gamma$ and $\Delta$ are definitionally equal contexts}&&\\
-  \Gamma &\vdash \typeJudg{\sigma = \tau} && \text{$\sigma$ and $\tau$ are definitionally equal types in context $\Gamma$}&&\\
-  \Gamma &\vdash t = s : \sigma && \text{$t$ and $s$ are definitionally equal terms of type $\sigma$ in context $\Gamma$}&&\\
-\end{align*}
+% More complex notions of context exist in the literature, but for our purpose, a context is a list of well-formed variable declarations of the form $x_1 : \sigma_1, x_2 : \sigma_2, \ldots, x_n : \sigma_n$ where each type $\sigma_i$ is a type in the context $x_1 : \sigma_1,\ldots, x_{i-1} : \sigma_{i-1}$.
+% The judgment $\ctxJudg{\Gamma}$ expresses that $\Gamma$ is a well-formed context.
 
-\subsection{Dependent product types}\label{sec:dpt}
+% Finally, we have a notion of \emph{definitional equality} built into the theory; for example, we'd like to regard $0 : \bN$ and $0 + 0 : \bN$ as definitionally equal terms and $\typeJudg{\sigma(0)}$ and $\typeJudg{\sigma(0+0)}$ as definitionally equal types.
+% We express these equalities via the judgments $0 = 0 + 0 : \bN$ and $\typeJudg{\sigma(0) = \sigma(0+0)}$ respectively.
 
-\begin{mathpar}
-  \ebrule[$\Pi$-F]{
-    \hypo{\Gamma, x : \sigma \vdash \typeJudg{\tau}}
-    \infer1{\Gamma \vdash \typeJudg{\Pi x : \sigma.\tau}}
-  }\and
-  \ebrule[$\Pi$-I]{
-    \hypo{\Gamma, x : \sigma \vdash t : \tau}
-    \infer1{\Gamma \vdash \lambda x : \sigma.t : \Pi x : \sigma.\tau}
-  }\and
-  \ebrule[$\Pi$-E]{
-    \hypo{\Gamma \vdash f : \Pi x : \sigma.\tau}
-    \hypo{\Gamma \vdash u : \sigma}
-    \infer2{\Gamma \vdash f(u) : \tau[u/x]}
-  }
-\end{mathpar}
-\begin{itemize}
-\item \emph{$\beta$-law}: $(\lambda x : \sigma.t)(u) = t[u/x] : \tau[u/x]$;
-\item \emph{$\eta$-law (optional)}: $f = \lambda x : \sigma.f(x) : \Pi x : \sigma.\tau$.
-\end{itemize}
+% To summarize, there are six kinds of judgments:
+% \begin{align*}
+%   &\vdash \ctxJudg{\Gamma} && \text{$\Gamma$ is a well-formed context}&&\\
+%   \Gamma &\vdash \typeJudg{\sigma} && \text{$\sigma$ is a type in context $\Gamma$}&&\\
+%   \Gamma &\vdash t : \sigma && \text{$t$ is a term of type $\sigma$ in context $\Gamma$}&&\\
+%   &\vdash \ctxJudg{\Gamma = \Delta} && \text{$\Gamma$ and $\Delta$ are definitionally equal contexts}&&\\
+%   \Gamma &\vdash \typeJudg{\sigma = \tau} && \text{$\sigma$ and $\tau$ are definitionally equal types in context $\Gamma$}&&\\
+%   \Gamma &\vdash t = s : \sigma && \text{$t$ and $s$ are definitionally equal terms of type $\sigma$ in context $\Gamma$}&&\\
+% \end{align*}
 
-\subsection{Dependent sum types}\label{sec:dst}
 
-\begin{mathpar}
-  \ebrule[$\Sigma$-F]{
-    \hypo{\Gamma, x : \sigma \vdash \typeJudg{\tau}}
-    \infer1{\Gamma \vdash \typeJudg{\Sigma x : \sigma.\tau}}
-  }\and
-  \ebrule[$\Sigma$-I]{
-    \hypo{\Gamma \vdash u : \sigma}
-    \hypo{\Gamma \vdash s : \tau[u/x]}
-    \infer2{\Gamma \vdash \synPair{u}{s} : \Sigma x : \sigma.\tau}
-  }\and
-  \ebrule[$\Sigma$-E]{
-    \hypo{
-      \begin{matrix}
-        \Gamma,z : \Sigma x : \sigma.\tau \vdash \typeJudg{\rho}\\
-        \Gamma,x : \sigma, y : \tau \vdash s : \rho[\synPair{x}{y}/z]\\
-        \Gamma \vdash u : \Sigma x : \sigma.\tau\\
-      \end{matrix}
-    }
-    \infer1{\Gamma \vdash \synIndSig(u,s) : \rho[u/z]}
-  }
-\end{mathpar}
-\begin{itemize}
-\item \emph{$\beta$-law}: $\synIndSig(\synPair{a}{b},s) = s[a/x,b/y] : \rho[\synPair{a}{b}/z]$;
-\item \emph{$\eta$-law (optional)}: $u = \synPair{\synIndSig(u,x)}{\synIndSig(u,y)} : \Sigma x : \sigma.\tau$.
-\end{itemize}
+\section{Context morphisms}\label{sec:pscm}
 
-\subsection{Identity types}\label{sec:it}
+In dependent type theory, judgments are made with respect to a context.
+For example, the judgment
+\[
+  \typeJudg{\synTypeId_{\NN}(x,y)}
+\]
+does not make sense without knowing that $x : \NN$ and $y : \NN$.
 
-\begin{mathpar}
-  \ebrule[$\synTypeId$-F]{
-    \hypo{\Gamma \vdash u : \sigma}
-    \hypo{\Gamma \vdash s : \sigma}
-    \infer2{\Gamma \vdash \typeJudg{\synTypeId_{\sigma}(u,s)}}
-  }\and
-  \ebrule[$\synTypeId$-I]{
-    \hypo{\Gamma \vdash a : \sigma}
-    \infer1{\Gamma \vdash \synRefl_{\sigma}(a) : \synTypeId_{\sigma}(a,a)}
-  }\and
-  \ebrule[$\synTypeId$-E]{
-    \hypo{
-      \begin{matrix}
-        \Gamma, x : \sigma, y : \sigma, p : \synTypeId_{\sigma}(x,y) \vdash \typeJudg{\rho}\\
-        \Gamma, z : \sigma \vdash s : \rho[z/x,z/y,\synRefl_{\sigma}(z)/p]\\
-        \Gamma \vdash a : \sigma \qquad \Gamma \vdash b : \sigma\\
-        \Gamma \vdash u : \synTypeId_{\sigma}(a,b)\\
-      \end{matrix}
-    }
-    \infer1{\Gamma \vdash \synIndId(u,s) : \rho[a/x,b/y,u/p]}
-  }
-\end{mathpar}
-\begin{itemize}
-\item \emph{$\beta$-law}: $\synIndId(\synRefl_{\sigma}(a),s) = s[a/z] : \rho[a/x,a/y,\synRefl_{\sigma}(a)/p]$.
-\end{itemize}
-Extensional type theory:
-\emph{$\eta$-law}: $p = \synRefl_{\sigma}(a) : \synTypeId(a,b)$.
-Note that the $\eta$-law does not type check without the \emph{equality reflection} rule:
-\begin{mathpar}
-  \ebrule{
-    \hypo{\Gamma \vdash p : \synTypeId_{\sigma}(a,b)}
-    \infer1{\Gamma \vdash a = b : \sigma}
-  }
-\end{mathpar}
+For us, a context is a finite list of variable declarations.
+Note that the order of variable declarations matters in dependent type theory since the type of a variable may depend on a variable declared earlier.
+We use the turnstile notation to denote judgments made relative to some context.
+The example above can be made under the context $x : \NN$, denoted as follows:
+\[
+  x : \NN \vdash \typeJudg{\synTypeId(x,1)}
+\]
 
-\subsection{Universes}\label{sec:u}
+The most fundamental operations that we can perform on variables is \emph{substitution}.
+Say, we have a term
+\[
+  z : \RR^{+} \vdash \lfloor z \rfloor : \NN
+\]
+We can substitute $\lfloor z \rfloor$ for $x$ in $\typeJudg{\synTypeId(x,1)}$, resulting in $\typeJudg{\synTypeId(\lfloor z \rfloor,1)}$.
+This judgment has to be made in an updated context.
+\[
+  z : \RR^+ \vdash \typeJudg{\synTypeId(\lfloor z \rfloor,1)}
+\]
+In this sense, we may regard the substitution along $\lfloor z \rfloor$ as a \emph{morphism} from $z : \RR^+$ to $x : \NN$.
 
-\begin{mathpar}
-  \ebrule[$U$-F]{
-    \infer0{\Gamma \vdash \typeJudg{U}}
-  }\and
-  \ebrule[$\El$-I]{
-    \hypo{\Gamma \vdash \sigma : U}
-    \infer1{\Gamma \vdash \typeJudg{\El(\sigma)}}
-  }
-\end{mathpar}
-
-\subsection{Logical framework}\label{sec:eott}
-
-Martin-L\"of's Logical Framework (LF) is a type theory with $\Pi$-types and a universe.
-Other theories can be defined as extensions of the LF by constants and equations.
-For instance, $\Sigma$-types can be encoded in LF as follows:
-
-\begin{align*}
-  &\vdash \objSig : \LFPi \sigma : \LFU. \LFPi \tau : \sigma \to \LFU. \LFU\\
-  &\vdash \objPair : \LFPi \sigma : \LFU. \LFPi \tau : \sigma \to \LFU.\LFPi x : \sigma. \tau(x) \to \objSig(\sigma,\tau)\\
-  &\vdash \objIndSig : \LFPi \sigma : \LFU. \LFPi \tau : \sigma \to \LFU. \LFPi \rho : \objSig(\sigma, \tau) \to \LFU.\\
-  &\qquad\prn{\LFPi x : \sigma. \LFPi y : \tau(x). \rho(\objPair(\sigma,\tau,x,y))} \to\\
-  &\qquad\LFPi z : \objSig(\sigma,\tau). \rho(z)\\
-  &\Gamma \vdash \objIndSig(\sigma,\tau,\rho,f,\objPair(\sigma,\tau,a,b)) = f(a)(b)
-\end{align*}
-where $\Gamma$ declares the variables used on the right-hand side.
-
-Compare this to the $\Sigma$-types defined in the hand-crafted formalism above; binding in the object language is represented as abstraction in the LF and substitution in the object language is represented as application in the LF.
-The burden of dealing with binding and substitution is shifted from the object language to the LF.
-
-\section{Pre-syntax and context morphisms}\label{sec:pscm}
-
-To give an abstract account of semantics, we begin by studying the structural aspect of type theory.
-
-\begin{definition}[Hofmann]
-  Let $\Gamma$ and $\Delta = x_1 : \sigma_1,\ldots,x_n : \sigma_n$ be well-formed contexts.
-  If $f = (t_1,\ldots,t_n)$ is a sequence of $n$ pre-terms we write
+\begin{definition}
+  Let $\Delta$ and $\Gamma = x_1 : \sigma_1,\ldots,x_n : \sigma_n$ be contexts.
+  If $f = (t_1,\ldots,t_n)$ is a sequence of $n$ terms we write
   \[
-    \Gamma \vdash f \Rightarrow \Delta
+    \Delta \vdash f : \Gamma
   \]
-  and say that $f$ is a \emph{context morphism} from $\Gamma$ to $\Delta$ if the following $n$ judgments hold:
+  and say that $f$ is a \emph{context morphism} from $\Delta$ to $\Gamma$ if the following $n$ judgments hold:
   \begin{align*}
-    \Gamma &\vdash t_1 : \sigma_1\\
-    \Gamma &\vdash t_2 : \sigma_2[t_1/x_1]\\
+    \Delta &\vdash t_1 : \sigma_1\\
+    \Delta &\vdash t_2 : \sigma_2[t_1/x_1]\\
     &\ldots\\
-    \Gamma &\vdash t_n : \sigma_n[t_1/x_1]\ldots[t_{n-1}/x_{n-1}]
+    \Delta &\vdash t_n : \sigma_n[t_1/x_1]\ldots[t_{n-1}/x_{n-1}]
   \end{align*}
 \end{definition}
 
-In plain English, a context morphism $\Gamma \vdash f \Rightarrow \Delta$ is a sequence of pre-terms in context $\Gamma$ that can be substituted into terms with variables declared in $\Delta$.
-
-If $\Gamma \vdash f \Rightarrow \Delta$ and $\sigma$ is a pre-type, we write $\sigma[f]$ for the simultaneous substitution of the $\Delta$-variables in $\sigma$ by the corresponding terms in $f$.
-This operation is defined analogously for pre-terms, pre-contexts, and judgments of the form $t : \sigma$, $\typeJudg{\sigma}$, $t = s : \sigma$, and $\typeJudg{\sigma = \tau}$.
-
-In the following examples, we use commutative diagrams informally; we do not assume that there is a category of pre-contexts and context morphisms.
+\begin{notation}
+  If $\Delta \vdash f : \Gamma$ is a context morphism and $\sigma$ is a type (respectively $t$ is a type), then we write $\sigma[f]$ (respectively $t[f]$) for the simultaneous substitution along $f$.
+\end{notation}
 
 \begin{example}
   For any context $\Gamma$, there exists a unique context morphism $()$ from $\Gamma$ to the empty context $\emptyCtx$.
 \end{example}
 
 \begin{example}
-  If $\Gamma := x_1 : \sigma_1,\ldots,x_{n} : \sigma_n$ is a context and $\Gamma \vdash \typeJudg{\sigma}$ and $x$ is a fresh variable, then $(x_1,\ldots,x_n)$ is a context morphism from $\Gamma, x : \sigma$ to $\Gamma$ which we denote by $\ctxExt(\Gamma,\sigma)$.
+  If $\Gamma = x_1 : \sigma_1,\ldots,x_{n} : \sigma_n$ is a context and $\Gamma \vdash \typeJudg{\sigma}$ and $x$ is a fresh variable, then $(x_1,\ldots,x_n)$ is a context morphism $\Gamma, x : \sigma \vdash \ctxExt(\Gamma,\sigma) : \Gamma$.
 \end{example}
 
 \begin{example}\label{eg:bar}
-  For any context $\Gamma = x_1 : \sigma_1,\ldots,x_n : \sigma_n$ and any term $\Gamma \vdash t : \sigma$ we can form a context morphism $\Gamma \vdash \ctxSec{t} \Rightarrow \Gamma, x : \sigma$ where $\ctxSec{t} = (x_1,\ldots,x_n,t)$.
+  For any context $\Gamma = x_1 : \sigma_1,\ldots,x_n : \sigma_n$ and any term $\Gamma \vdash t : \sigma$ we can form a context morphism $\Gamma \vdash (x_1,\ldots,x_n,t) : \Gamma, x : \sigma$.
+  We write $\ctxSec{t} := (x_1,\ldots,x_n,t)$.
 \end{example}
 
 \begin{example}
-  For any context $\Gamma = x_1 : \sigma_1,\ldots,x_n : \sigma_n$, we have the identity context morphism $\Gamma \vdash \id{\Gamma} \Rightarrow \Gamma$ given by $\id{\Gamma} = (x_1,\ldots,x_n)$.
+  For any context $\Gamma = x_1 : \sigma_1,\ldots,x_n : \sigma_n$, the identity context morphism $\Gamma \vdash \id{\Gamma} : \Gamma$ is given by $\id{\Gamma} = (x_1,\ldots,x_n)$.
 \end{example}
 
 \begin{example}\label{eg:weak}
-  Suppose $\Gamma \vdash f \Rightarrow \Delta$.
+  Let $\Gamma \vdash f : \Delta$.
   There is a context morphism $\ctxWkn(f,\sigma)$ in the following configuration:
   % https://q.uiver.app/#q=WzAsNCxbMCwxLCJcXEdhbW1hIl0sWzEsMSwiXFxEZWx0YSJdLFsxLDAsIlxcRGVsdGEseDpcXHNpZ21hIl0sWzAsMCwiXFxHYW1tYSx4Olxcc2lnbWFbZl0iXSxbMCwxLCJmIiwyXSxbMiwxLCJcXGN0eEV4dChcXERlbHRhLFxcc2lnbWEpIl0sWzMsMCwiXFxjdHhFeHQoXFxHYW1tYSxcXHNpZ21hW2ZdKSIsMl0sWzMsMiwiXFxjdHhXa24oZixcXHNpZ21hKSIsMCx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRvdHRlZCJ9fX1dXQ==
   \[\begin{tikzcd}
@@ -226,31 +137,35 @@ In the following examples, we use commutative diagrams informally; we do not ass
   In fact, the diagram commutes up to variable renaming.
 \end{example}
 
-If $\Gamma \vdash f \Rightarrow \Delta$ and $\Delta \vdash g \Rightarrow \Theta$ where $g = (t_1,\ldots,t_k)$ we can form the sequence $g \circ f = (t_1[f],\ldots,t_k[f])$.
-By a straightforward induction argument, one can show the following:
+\begin{definition}
+  Let $\Lambda \vdash g : \Delta$ and $\Delta \vdash f : \Gamma$, where $f = (t_1,\ldots,t_n)$, the composition $f \circ g$ is the tuple $(t_1[g],\ldots,t_n[g])$.
+  It is clear that $\Lambda \vdash f \circ g : \Gamma$.
+\end{definition}
 
 \begin{proposition}
-  Assume $B \vdash e \Rightarrow \Gamma$, $\Gamma \vdash f \Rightarrow \Delta$, and $\Delta \vdash g \Rightarrow \Theta$.
-  Furthermore, let $\Theta \vdash \typeJudg{\sigma}$ and $\Theta \vdash t : \sigma$; then the following equations hold (up to variable renaming).
+  Assume $\Pi \vdash h : \Lambda$, $\Lambda \vdash g : \Delta$, and $\Delta \vdash f : \Gamma$.
+  Furthermore, let $\Gamma \vdash \typeJudg{\sigma}$ and $\Gamma \vdash t : \sigma$; then the following equations hold (up to variable renaming).
   \begin{align*}
-    \Gamma \vdash g &\circ f \Rightarrow \Theta\\
-    \sigma[g \circ f] &= \sigma[g][f]\\
-    t[g \circ f] &= t[g][f]\\
-    (g \circ f) \circ e &= g \circ (f \circ e)
+    f \circ \id{\Delta} &= \id{\Gamma} \circ f = f\\
+    (f \circ g) \circ h &= f \circ (g \circ h)\\
+    \sigma[\id{\Gamma}] &= \sigma\\
+    \sigma[f \circ g] &= \sigma[f][g]\\
+    t[\id{\Gamma}] &= t\\
+    t[f \circ g] &= t[f][g]
   \end{align*}
 \end{proposition}
 
-\begin{proposition}
-  The followings hold (up to variable renaming):
-  \begin{enumerate}
-  \item If $\Gamma \vdash f \Rightarrow \Delta$, then $\id{\Delta} \circ f = f = f \circ \id{\Gamma}$.
-  \item If $\Gamma \vdash t : \sigma$, then $\ctxExt(\Gamma,\sigma) \circ \ctxSec{t} = \id{\Gamma}$.
-  \item If $\Gamma \vdash (f,t) \Rightarrow \Delta,x : \sigma$, then $\ctxExt(\Gamma,\sigma) \circ (f, t) = f$ and $x[(f,t)] = t$.
-  \item If $\Gamma \vdash f \Rightarrow \Delta$ and $\vdash \ctxJudg{\Delta,x : \sigma}$ then $\ctxExt(\Delta,\sigma) \circ \ctxWkn(f,x:\sigma) = f \circ \ctxExt(\Gamma,\sigma[f])$.
-  \item If $\Gamma \vdash f \Rightarrow \Delta$ and $\Delta \vdash t : \sigma$, then $\ctxSec{t} \circ f = \ctxWkn(f,x : \sigma) \circ \ctxSec{t[f]}$.
-  \item If $\Gamma \vdash \typeJudg{\sigma}$ and $x$ is fresh, then $\id{\Gamma,x:\sigma} = (\ctxExt(\Gamma,\sigma),x)$.
-  \end{enumerate}
-\end{proposition}
+% \begin{proposition}
+%   The followings hold (up to variable renaming):
+%   \begin{enumerate}
+%   \item If $\Gamma \vdash f \Rightarrow \Delta$, then $\id{\Delta} \circ f = f = f \circ \id{\Gamma}$.
+%   \item If $\Gamma \vdash t : \sigma$, then $\ctxExt(\Gamma,\sigma) \circ \ctxSec{t} = \id{\Gamma}$.
+%   \item If $\Gamma \vdash (f,t) \Rightarrow \Delta,x : \sigma$, then $\ctxExt(\Gamma,\sigma) \circ (f, t) = f$ and $x[(f,t)] = t$.
+%   \item If $\Gamma \vdash f \Rightarrow \Delta$ and $\vdash \ctxJudg{\Delta,x : \sigma}$ then $\ctxExt(\Delta,\sigma) \circ \ctxWkn(f,x:\sigma) = f \circ \ctxExt(\Gamma,\sigma[f])$.
+%   \item If $\Gamma \vdash f \Rightarrow \Delta$ and $\Delta \vdash t : \sigma$, then $\ctxSec{t} \circ f = \ctxWkn(f,x : \sigma) \circ \ctxSec{t[f]}$.
+%   \item If $\Gamma \vdash \typeJudg{\sigma}$ and $x$ is fresh, then $\id{\Gamma,x:\sigma} = (\ctxExt(\Gamma,\sigma),x)$.
+%   \end{enumerate}
+% \end{proposition}
 
 \section{Category with families}\label{sec:cwf}
 
@@ -619,6 +534,124 @@ Then a meta-term of type $\sigma$ at stage $(\Gamma,\gamma)$ is an element in $\
   Suppose that $\Gamma \dvdash{\cT} \typeJudg{\sigma}$.
   By assumption $\Hom{\Pr(\cT)}(\yon_{\Gamma},\yon_{\sigma})$ is not empty; hence $\Hom{\cT}(\Gamma,\sigma)$ is not empty by fullness.
 \end{proof}
+
+\subsection{Dependent product types}\label{sec:dpt}
+
+\begin{mathpar}
+  \ebrule[$\Pi$-F]{
+    \hypo{\Gamma, x : \sigma \vdash \typeJudg{\tau}}
+    \infer1{\Gamma \vdash \typeJudg{\Pi x : \sigma.\tau}}
+  }\and
+  \ebrule[$\Pi$-I]{
+    \hypo{\Gamma, x : \sigma \vdash t : \tau}
+    \infer1{\Gamma \vdash \lambda x : \sigma.t : \Pi x : \sigma.\tau}
+  }\and
+  \ebrule[$\Pi$-E]{
+    \hypo{\Gamma \vdash f : \Pi x : \sigma.\tau}
+    \hypo{\Gamma \vdash u : \sigma}
+    \infer2{\Gamma \vdash f(u) : \tau[u/x]}
+  }
+\end{mathpar}
+\begin{itemize}
+\item \emph{$\beta$-law}: $(\lambda x : \sigma.t)(u) = t[u/x] : \tau[u/x]$;
+\item \emph{$\eta$-law (optional)}: $f = \lambda x : \sigma.f(x) : \Pi x : \sigma.\tau$.
+\end{itemize}
+
+\subsection{Dependent sum types}\label{sec:dst}
+
+\begin{mathpar}
+  \ebrule[$\Sigma$-F]{
+    \hypo{\Gamma, x : \sigma \vdash \typeJudg{\tau}}
+    \infer1{\Gamma \vdash \typeJudg{\Sigma x : \sigma.\tau}}
+  }\and
+  \ebrule[$\Sigma$-I]{
+    \hypo{\Gamma \vdash u : \sigma}
+    \hypo{\Gamma \vdash s : \tau[u/x]}
+    \infer2{\Gamma \vdash \synPair{u}{s} : \Sigma x : \sigma.\tau}
+  }\and
+  \ebrule[$\Sigma$-E]{
+    \hypo{
+      \begin{matrix}
+        \Gamma,z : \Sigma x : \sigma.\tau \vdash \typeJudg{\rho}\\
+        \Gamma,x : \sigma, y : \tau \vdash s : \rho[\synPair{x}{y}/z]\\
+        \Gamma \vdash u : \Sigma x : \sigma.\tau\\
+      \end{matrix}
+    }
+    \infer1{\Gamma \vdash \synIndSig(u,s) : \rho[u/z]}
+  }
+\end{mathpar}
+\begin{itemize}
+\item \emph{$\beta$-law}: $\synIndSig(\synPair{a}{b},s) = s[a/x,b/y] : \rho[\synPair{a}{b}/z]$;
+\item \emph{$\eta$-law (optional)}: $u = \synPair{\synIndSig(u,x)}{\synIndSig(u,y)} : \Sigma x : \sigma.\tau$.
+\end{itemize}
+
+\subsection{Identity types}\label{sec:it}
+
+\begin{mathpar}
+  \ebrule[$\synTypeId$-F]{
+    \hypo{\Gamma \vdash u : \sigma}
+    \hypo{\Gamma \vdash s : \sigma}
+    \infer2{\Gamma \vdash \typeJudg{\synTypeId_{\sigma}(u,s)}}
+  }\and
+  \ebrule[$\synTypeId$-I]{
+    \hypo{\Gamma \vdash a : \sigma}
+    \infer1{\Gamma \vdash \synRefl_{\sigma}(a) : \synTypeId_{\sigma}(a,a)}
+  }\and
+  \ebrule[$\synTypeId$-E]{
+    \hypo{
+      \begin{matrix}
+        \Gamma, x : \sigma, y : \sigma, p : \synTypeId_{\sigma}(x,y) \vdash \typeJudg{\rho}\\
+        \Gamma, z : \sigma \vdash s : \rho[z/x,z/y,\synRefl_{\sigma}(z)/p]\\
+        \Gamma \vdash a : \sigma \qquad \Gamma \vdash b : \sigma\\
+        \Gamma \vdash u : \synTypeId_{\sigma}(a,b)\\
+      \end{matrix}
+    }
+    \infer1{\Gamma \vdash \synIndId(u,s) : \rho[a/x,b/y,u/p]}
+  }
+\end{mathpar}
+\begin{itemize}
+\item \emph{$\beta$-law}: $\synIndId(\synRefl_{\sigma}(a),s) = s[a/z] : \rho[a/x,a/y,\synRefl_{\sigma}(a)/p]$.
+\end{itemize}
+Extensional type theory:
+\emph{$\eta$-law}: $p = \synRefl_{\sigma}(a) : \synTypeId(a,b)$.
+Note that the $\eta$-law does not type check without the \emph{equality reflection} rule:
+\begin{mathpar}
+  \ebrule{
+    \hypo{\Gamma \vdash p : \synTypeId_{\sigma}(a,b)}
+    \infer1{\Gamma \vdash a = b : \sigma}
+  }
+\end{mathpar}
+
+\subsection{Universes}\label{sec:u}
+
+\begin{mathpar}
+  \ebrule[$U$-F]{
+    \infer0{\Gamma \vdash \typeJudg{U}}
+  }\and
+  \ebrule[$\El$-I]{
+    \hypo{\Gamma \vdash \sigma : U}
+    \infer1{\Gamma \vdash \typeJudg{\El(\sigma)}}
+  }
+\end{mathpar}
+
+\subsection{Logical framework}\label{sec:eott}
+
+Martin-L\"of's Logical Framework (LF) is a type theory with $\Pi$-types and a universe.
+Other theories can be defined as extensions of the LF by constants and equations.
+For instance, $\Sigma$-types can be encoded in LF as follows:
+
+\begin{align*}
+  &\vdash \objSig : \LFPi \sigma : \LFU. \LFPi \tau : \sigma \to \LFU. \LFU\\
+  &\vdash \objPair : \LFPi \sigma : \LFU. \LFPi \tau : \sigma \to \LFU.\LFPi x : \sigma. \tau(x) \to \objSig(\sigma,\tau)\\
+  &\vdash \objIndSig : \LFPi \sigma : \LFU. \LFPi \tau : \sigma \to \LFU. \LFPi \rho : \objSig(\sigma, \tau) \to \LFU.\\
+  &\qquad\prn{\LFPi x : \sigma. \LFPi y : \tau(x). \rho(\objPair(\sigma,\tau,x,y))} \to\\
+  &\qquad\LFPi z : \objSig(\sigma,\tau). \rho(z)\\
+  &\Gamma \vdash \objIndSig(\sigma,\tau,\rho,f,\objPair(\sigma,\tau,a,b)) = f(a)(b)
+\end{align*}
+where $\Gamma$ declares the variables used on the right-hand side.
+
+Compare this to the $\Sigma$-types defined in the hand-crafted formalism above; binding in the object language is represented as abstraction in the LF and substitution in the object language is represented as application in the LF.
+The burden of dealing with binding and substitution is shifted from the object language to the LF.
 
 \bibliography{semdtt}
 \bibliographystyle{alpha}
