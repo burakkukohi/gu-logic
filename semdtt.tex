@@ -309,6 +309,10 @@ Now, given a functor $F : \cC\op \to \Fam$ and a type $\sigma \in \Ty{\cC}(\Gamm
   Comprehension of $\sigma$ is given by the first projection of the disjoint union of $\sigma_{\gamma}$'s, i.e., the domain is the set $\setNotat{(\gamma,x) : \gamma \in \Gamma, x \in \sigma_{\gamma}}$ and the first projection maps $(\gamma,x)$ to $\gamma$.
 \end{example}
 
+\begin{example}
+  The category $\TT$ of truth values can be extended to a CwF.
+\end{example}
+
 \subsection{Terms and sections}\label{sec:tas}
 
 Given a CwF $\cC$.
@@ -600,17 +604,21 @@ For space reason, we suppress typing annotations when it is appropriate.
 Given a type theory $\cT$, we may take the term model as a presentation of $\cT$.
 We use the same notation, $\cT$, for the term model.
 We can embed $\cT$ into the \emph{meta}-language $\Pr(\cT)$.
-A meta-context $\fG$ is a presheaf $\cT\op \to \Set$ mapping each context $\Gamma$ in the object language to a set and each context morphism to a function.
- 
+A meta-context $\fG$ is a presheaf $\cT\op \to \Set$ that realizes each context $\Gamma$ in the object language as a set and each substitution as a function.
+We can compress this data into the so-called \emph{category of elements} $\El(\fG)$.
+
+A meta-type in the meta-context $\fG$ is a presheaf $\sigma : \El(\fG)\op \to \Set$ that maps each stage $(\Gamma,\gamma)$ to a set of meta-terms.
+Then a meta-term of type $\sigma$ at stage $(\Gamma,\gamma)$ is an element in $\sigma(\Gamma,\gamma)$.
+
 \subsection{Conservativity of the logical framework}\label{sec:cotlf}
-
-
 
 \begin{proposition}[Conservativity]
   If $\Gamma \dvdash{\cT} \typeJudg{\sigma}$ and $\Gamma \dvdash{\LF{\cT}} t : \sigma$ for some term $t$, then there exists a term $t'$ such that $\Gamma \dvdash{\cT} t' : \sigma$.
 \end{proposition}
-
-\section{Other notions of semantics}\label{sec:onos}
+\begin{proof}
+  Suppose that $\Gamma \dvdash{\cT} \typeJudg{\sigma}$.
+  By assumption $\Hom{\Pr(\cT)}(\yon_{\Gamma},\yon_{\sigma})$ is not empty; hence $\Hom{\cT}(\Gamma,\sigma)$ is not empty by fullness.
+\end{proof}
 
 \bibliography{semdtt}
 \bibliographystyle{alpha}
