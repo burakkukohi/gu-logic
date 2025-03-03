@@ -58,22 +58,22 @@ I will start off my presentation with the structural aspect of dependent type th
 
 \section{Context morphisms}\label{sec:pscm}
 
-In dependent type theory, judgments are made with respect to a context.
+In dependent type theory, judgments have to be made with respect to a context.
 For example, the judgment
 \[
-  \typeJudg{\synTypeId_{\NN}(x,y)}
+  \typeJudg{\synTypeId(x,1)}
 \]
-does not make sense without knowing that $x : \NN$ and $y : \NN$.
+does not make sense without knowing that $x : \NN$.
 
 For us, a context is a finite list of variable declarations.
 Note that the order of variable declarations matters in dependent type theory since the type of a variable may depend on a variable declared earlier.
-We use the turnstile notation to denote judgments made relative to some context.
+We use the turnstile notation to denote judgments made relative to a context.
 The example above can be made under the context $x : \NN$, denoted as follows:
 \[
   x : \NN \vdash \typeJudg{\synTypeId(x,1)}
 \]
 
-The most fundamental operations that we can perform on variables is \emph{substitution}.
+The most fundamental operation that we can perform on variables is \emph{substitution}.
 Say, we have a term
 \[
   z : \RR^{+} \vdash \lfloor z \rfloor : \NN
@@ -122,15 +122,15 @@ In this sense, we may regard the substitution along $\lfloor z \rfloor$ as a \em
 \end{example}
 
 \begin{example}\label{eg:weak}
-  Let $\Gamma \vdash f : \Delta$.
+  Let $\Delta \vdash f : \Gamma$.
   There is a context morphism $\ctxWkn(f,\sigma)$ in the following configuration:
-  % https://q.uiver.app/#q=WzAsNCxbMCwxLCJcXEdhbW1hIl0sWzEsMSwiXFxEZWx0YSJdLFsxLDAsIlxcRGVsdGEseDpcXHNpZ21hIl0sWzAsMCwiXFxHYW1tYSx4Olxcc2lnbWFbZl0iXSxbMCwxLCJmIiwyXSxbMiwxLCJcXGN0eEV4dChcXERlbHRhLFxcc2lnbWEpIl0sWzMsMCwiXFxjdHhFeHQoXFxHYW1tYSxcXHNpZ21hW2ZdKSIsMl0sWzMsMiwiXFxjdHhXa24oZixcXHNpZ21hKSIsMCx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRvdHRlZCJ9fX1dXQ==
+  % https://q.uiver.app/#q=WzAsNCxbMCwxLCJcXERlbHRhIl0sWzEsMSwiXFxHYW1tYSJdLFsxLDAsIlxcR2FtbWEseDpcXHNpZ21hIl0sWzAsMCwiXFxEZWx0YSx4Olxcc2lnbWFbZl0iXSxbMCwxLCJmIiwyXSxbMiwxLCJcXGN0eEV4dChcXEdhbW1hLFxcc2lnbWEpIl0sWzMsMCwiXFxjdHhFeHQoXFxEZWx0YSxcXHNpZ21hW2ZdKSIsMl0sWzMsMiwiXFxjdHhXa24oZixcXHNpZ21hKSIsMCx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRvdHRlZCJ9fX1dXQ==
   \[\begin{tikzcd}
-      {\Gamma,x:\sigma[f]} & {\Delta,x:\sigma} \\
-      \Gamma & \Delta
+      {\Delta,x:\sigma[f]} & {\Gamma,x:\sigma} \\
+      \Delta & \Gamma
       \arrow["{\ctxWkn(f,\sigma)}", dotted, from=1-1, to=1-2]
-      \arrow["{\ctxExt(\Gamma,\sigma[f])}"', from=1-1, to=2-1]
-      \arrow["{\ctxExt(\Delta,\sigma)}", from=1-2, to=2-2]
+      \arrow["{\ctxExt(\Delta,\sigma[f])}"', from=1-1, to=2-1]
+      \arrow["{\ctxExt(\Gamma,\sigma)}", from=1-2, to=2-2]
       \arrow["f"', from=2-1, to=2-2]
     \end{tikzcd}\]
   Explicitly, $\ctxWkn(f,\sigma)$ is given by $(f, x)$.
@@ -142,7 +142,7 @@ In this sense, we may regard the substitution along $\lfloor z \rfloor$ as a \em
   It is clear that $\Lambda \vdash f \circ g : \Gamma$.
 \end{definition}
 
-\begin{proposition}
+\begin{proposition}\label{0000}
   Assume $\Pi \vdash h : \Lambda$, $\Lambda \vdash g : \Delta$, and $\Delta \vdash f : \Gamma$.
   Furthermore, let $\Gamma \vdash \typeJudg{\sigma}$ and $\Gamma \vdash t : \sigma$; then the following equations hold (up to variable renaming).
   \begin{align*}
@@ -154,6 +154,8 @@ In this sense, we may regard the substitution along $\lfloor z \rfloor$ as a \em
     t[f \circ g] &= t[f][g]
   \end{align*}
 \end{proposition}
+
+The first two equations suggest that contexts and substitutions form a category and the remaining equations suggest that substitution is functorial.
 
 % \begin{proposition}
 %   The followings hold (up to variable renaming):
@@ -169,32 +171,105 @@ In this sense, we may regard the substitution along $\lfloor z \rfloor$ as a \em
 
 \section{Category with families}\label{sec:cwf}
 
-A category with families \emph{should} contain the following data:
-\begin{enumerate}
-\item a category $\cC$ of semantic contexts and context morphisms;
-\item for $\Gamma \in \cC$, a collection $\Ty{\cC}(\Gamma)$ of semantic types;
-\item for $\Gamma \in \cC$ and $\sigma \in \Ty{\cC}(\Gamma)$, a collection $\Tm{\cC}(\Gamma,\sigma)$ of semantic terms.
-\end{enumerate}
+Building upon \cref{0000}, we can consider any small category with a terminal object as a category of contexts and substitutions.
+The terminal object models the empty context.
 
-This is the most bare-metal definition; it only accounts for the structural rules common to all systems of dependent types.
+\begin{scholium}
+  A small category with a terminal object contains the data of contexts and substitutions of type theory.
+\end{scholium}
+
+To model the following two judgments.
+We need to specify a set of types $\Ty{}(\Gamma)$ for each context $\Gamma$ and set of terms $\Tm{}(\Gamma,\sigma)$ for each type $\sigma \in \Ty{}(\Gamma)$.
+\begin{mathpar}
+  \Gamma \vdash \typeJudg{\sigma}\and
+  \Gamma \vdash t : \sigma
+\end{mathpar}
+Moreover, these families of sets vary with substitutions: given a context morphism $\Delta \vdash f : \Gamma$, we must have $\sigma[f] \in \Ty{}(\Delta)$ and $t[f] \in \Tm{}(\Delta,\sigma[f])$.
+This models the following judgments:
+\begin{mathpar}
+  \Delta \vdash \typeJudg{\sigma[f]}\and
+  \Delta \vdash t[f] : \sigma[f]
+\end{mathpar}
+
+% A category with families \emph{should} contain the following data:
+% \begin{enumerate}
+% \item a category $\cC$ of semantic contexts and context morphisms;
+% \item for $\Gamma \in \cC$, a collection $\Ty{\cC}(\Gamma)$ of semantic types;
+% \item for $\Gamma \in \cC$ and $\sigma \in \Ty{\cC}(\Gamma)$, a collection $\Tm{\cC}(\Gamma,\sigma)$ of semantic terms.
+% \end{enumerate}
+
+% This is the most bare-metal definition; it only accounts for the structural rules common to all systems of dependent types.
 
 \begin{definition}
-  Let $\Fam$ be the category of families of sets.
-  An object of $\Fam$ is a pair $(B^0,B^1)$, where $B^0$ is a set and $B^1$ is an $B^0$-indexed family of sets $(B^1_b)_{b \in B^0}$; a morphism $(B^0,B^1) \to (C^0,C^1)$ is a pair $(f^0,f^1)$, where $f^0 : B^0 \to C^0$ is a function and $f^1$ is an $B^0$-indexed family of functions $(f^1_b : B^1_b \to C^1_{f^0(b)})_{b \in B^0}$.
+  The \emph{category $\Fam$ of families} has as objects pairs $(B^0,B^1)$, where $B^0$ is a set and $B^1$ is an $B^0$-indexed family of sets $(B^1_b)_{b \in B^0}$; and as morphisms $(B^0,B^1) \to (C^0,C^1)$ pairs $(f^0,f^1)$, where $f^0 : B^0 \to C^0$ is a function and $f^1$ is an $B^0$-indexed family of functions $(f^1_b : B^1_b \to C^1_{f^0(b)})_{b \in B^0}$.
 \end{definition}
 
-For each $\Gamma \in \cC$, we can form the slice category $\Sl{\cC}{\Gamma}$; it is helpful to think of the objects of $\Sl{\cC}{\Gamma}$ as ``extensions'' of $\Gamma$ and morphisms as compatible substitutions between two extensions. 
+\begin{scholium}
+  Given a category $\cC$ of contexts and substitutions.
+  Types, terms, and substitution are encoded by a single contravariant functor $F : \cC\op \to \Fam$.
+\end{scholium}
 
-Now, given a functor $F : \cC\op \to \Fam$ and a type $\sigma \in \Ty{\cC}(\Gamma)$, we can carve out a functor $F_{\Gamma,\sigma} : \prn{\Sl{\cC}{\Gamma}}\op \to \Set$ that maps each extension $f : \Delta \to \Gamma \in \Sl{\cC}{\Gamma}$ to the set $\Tm{\cC}(\Delta,\semSubst{\sigma}{f})$ and each compatible substitution $g : f' \to f$ to the function $\semSubst{-}{g} : \Tm{\cC}(\Delta,\semSubst{\sigma}{f}) \to \Tm{\cC}(\Delta',\semSubst{\sigma}{f'})$.
+\begin{notation}
+  We write $(\Ty{}, \Tm{}) : \cC\op \to \Fam$ to emphasize that for each context $\Gamma$, the components of $(\Ty{}(\Gamma), \Tm{}(\Gamma))$ are respectively a set of types and an indexed-set of terms.
+  We write $\semSubst{\sigma}{f}$ and $\semSubst{t}{f}$ rather than the more cumbersome notations $\Ty{}(f)(\sigma)$ and $\Tm{}(f)(t)$.
+\end{notation}
 
+The last missing ingredient is context extension: given a context $\Gamma$ and a type $\sigma \in \Ty{}(\Gamma)$ we need to specify a context $\Gamma.\sigma$ to model the variable declaration $\Gamma, x : \sigma$.
+We need a substitution $\ctxExt(\Gamma,\sigma) : \Gamma.\sigma \to \Gamma$, so we can extend the context $\Gamma$ with $\sigma$.
+Furthermore, we need a term $v \in \Tm{}(\Gamma.\sigma, \semSubst{\sigma}{\ctxExt(\Gamma,\sigma)})$ that plays the role of a variable, so we can model the variable rule:
+\[
+  \Gamma, x : \sigma \vdash x : \sigma
+\]
+A candidate for context extension is simply a substitution $f : \Delta \to \Gamma$ equipped with a term $t \in \Tm{}(\Delta, \semSubst{\sigma}{f})$.
+This assembles into a category.
+\begin{definition}\label{0001}
+  The \emph{category of comprehension candidates} $\El(F_{\Gamma,\sigma})$ has as objects pairs $(f, s)$, where $f : \Delta \to \Gamma$ is a substitution and $s \in \Tm{}(\Delta,\semSubst{\sigma}{f})$ and as morphisms $(f, s) \to (g, t)$ commuting triangles in the following configuration:
+  % https://q.uiver.app/#q=WzAsMyxbMSwwLCJcXERlbHRhIl0sWzAsMCwiXFxMYW1iZGEiXSxbMCwxLCJcXEdhbW1hIl0sWzEsMiwiZiIsMl0sWzAsMiwiZyJdLFsxLDAsImgiXV0=
+  \[\begin{tikzcd}
+      \Lambda & \Delta \\
+      \Gamma
+      \arrow["h", from=1-1, to=1-2]
+      \arrow["f"', from=1-1, to=2-1]
+      \arrow["g", from=1-2, to=2-1]
+    \end{tikzcd}\]
+  such that $\semSubst{t}{h} = s$.
+\end{definition}
+Among all candidates, we pick the universal one to model context extension.
 \begin{definition}
-  Let $\cC$ be a category and $F = (\Ty{\cC},\Tm{\cC}) : \cC\op \to \Fam$ be a functor.
-  Given $\Gamma \in \cC$ and $\sigma \in \Ty{\cC}(\Gamma)$, the type $\sigma$ has \emph{comprehension} if there is a universal extension, i.e., $F_{\Gamma,\sigma}$ is representable.
-  \[
-    F_{\Gamma,\sigma} \iso \Hom{\Sl{\cC}{\Gamma}}(-,\ctxExt(\sigma))
-  \]
-  We write $\Gamma.\sigma$ for the domain of $\ctxExt(\sigma)$.
+  Let $\sigma \in \Ty{}(\Gamma)$.
+  A \emph{comprehension for $\sigma$} is a choice of a terminal object in $\El(F_{\Gamma,\sigma})$.
+  Explicitly, this consists of a substitution $\ctxExt(\Gamma,\sigma) : \Gamma.\sigma \to \Gamma$ and a term $v \in \Tm{}(\Gamma.\sigma, \semSubst{\sigma}{\ctxExt(\Gamma,\sigma)})$ such that
+  \begin{enumerate}
+  \item for any substitution $f : \Delta \to \Gamma$ and any term $t \in \Tm{}(\Delta,\semSubst{\sigma}{f})$, there is a unique substitution $\semComp{f}{t}{} : \Delta \to \Gamma.\sigma$ such that the following diagram commutes:
+    % https://q.uiver.app/#q=WzAsMyxbMCwxLCJcXERlbHRhIl0sWzEsMSwiXFxHYW1tYSJdLFsxLDAsIlxcR2FtbWEuXFxzaWdtYSJdLFswLDEsImYiLDJdLFsyLDEsIlxcY3R4RXh0KFxcR2FtbWEsXFxzaWdtYSkiXSxbMCwyLCJcXHNlbUNvbXB7Zn17dH17fSIsMCx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRhc2hlZCJ9fX1dXQ==
+    \[\begin{tikzcd}
+	& {\Gamma.\sigma} \\
+	\Delta & \Gamma
+	\arrow["{\ctxExt(\Gamma,\sigma)}", from=1-2, to=2-2]
+	\arrow["{\semComp{f}{t}{}}", dashed, from=2-1, to=1-2]
+	\arrow["f"', from=2-1, to=2-2]
+      \end{tikzcd}\]
+  \item $\semSubst{v}{\semComp{f}{t}{}} = t$.
+  \end{enumerate}
 \end{definition}
+
+The reader familiar with the notion of a category of elements will recognize that \cref{0001} is the category of elements of some contravariant functor.
+\begin{exercise}
+  Find the contravariant functor $F_{\Gamma,\sigma}$ and deduce that $\sigma$ has a comprehension if and only if $F_{\Gamma,\sigma}$ is representable.
+\end{exercise}
+
+% For each $\Gamma \in \cC$, we can form the slice category $\Sl{\cC}{\Gamma}$; it is helpful to think of the objects of $\Sl{\cC}{\Gamma}$ as ``extensions'' of $\Gamma$ and morphisms as compatible substitutions between two extensions. 
+
+% Now, given a functor $F : \cC\op \to \Fam$ and a type $\sigma \in \Ty{\cC}(\Gamma)$, we can carve out a functor $F_{\Gamma,\sigma} : \prn{\Sl{\cC}{\Gamma}}\op \to \Set$ that maps each extension $f : \Delta \to \Gamma \in \Sl{\cC}{\Gamma}$ to the set $\Tm{\cC}(\Delta,\semSubst{\sigma}{f})$ and each compatible substitution $g : f' \to f$ to the function $\semSubst{-}{g} : \Tm{\cC}(\Delta,\semSubst{\sigma}{f}) \to \Tm{\cC}(\Delta',\semSubst{\sigma}{f'})$.
+
+% \begin{definition}
+%   Let $\cC$ be a category and $F = (\Ty{\cC},\Tm{\cC}) : \cC\op \to \Fam$ be a functor.
+%   Given $\Gamma \in \cC$ and $\sigma \in \Ty{\cC}(\Gamma)$, the type $\sigma$ has \emph{comprehension} if there is a universal extension, i.e., $F_{\Gamma,\sigma}$ is representable.
+%   \[
+%     F_{\Gamma,\sigma} \iso \Hom{\Sl{\cC}{\Gamma}}(-,\ctxExt(\sigma))
+%   \]
+%   We write $\Gamma.\sigma$ for the domain of $\ctxExt(\sigma)$.
+% \end{definition}
 
 \begin{definition}
   A \emph{category with families} (CwF) is given by the following data:
