@@ -238,25 +238,17 @@ Among all candidates, we pick the universal one to model context extension.
 \begin{definition}
   Let $\sigma \in \Ty{}(\Gamma)$.
   A \emph{comprehension for $\sigma$} is a choice of a terminal object in $\El(F_{\Gamma,\sigma})$.
-  Explicitly, this consists of a substitution $\ctxExt(\Gamma,\sigma) : \Gamma.\sigma \to \Gamma$ and a term $v \in \Tm{}(\Gamma.\sigma, \semSubst{\sigma}{\ctxExt(\Gamma,\sigma)})$ such that
-  \begin{enumerate}
-  \item for any substitution $f : \Delta \to \Gamma$ and any term $t \in \Tm{}(\Delta,\semSubst{\sigma}{f})$, there is a unique substitution $\semComp{f}{t}{} : \Delta \to \Gamma.\sigma$ such that the following diagram commutes:
-    % https://q.uiver.app/#q=WzAsMyxbMCwxLCJcXERlbHRhIl0sWzEsMSwiXFxHYW1tYSJdLFsxLDAsIlxcR2FtbWEuXFxzaWdtYSJdLFswLDEsImYiLDJdLFsyLDEsIlxcY3R4RXh0KFxcR2FtbWEsXFxzaWdtYSkiXSxbMCwyLCJcXHNlbUNvbXB7Zn17dH17fSIsMCx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRhc2hlZCJ9fX1dXQ==
-    \[\begin{tikzcd}
-	& {\Gamma.\sigma} \\
-	\Delta & \Gamma
-	\arrow["{\ctxExt(\Gamma,\sigma)}", from=1-2, to=2-2]
-	\arrow["{\semComp{f}{t}{}}", dashed, from=2-1, to=1-2]
-	\arrow["f"', from=2-1, to=2-2]
-      \end{tikzcd}\]
-  \item $\semSubst{v}{\semComp{f}{t}{}} = t$.
-  \end{enumerate}
+  Explicitly, this consists of a substitution $\ctxExt(\Gamma,\sigma) : \Gamma.\sigma \to \Gamma$ and a term $v \in \Tm{}(\Gamma.\sigma, \semSubst{\sigma}{\ctxExt(\Gamma,\sigma)})$ such that for any substitution $f : \Delta \to \Gamma$ and any term $t \in \Tm{}(\Delta,\semSubst{\sigma}{f})$, there is a unique substitution $\semComp{f}{t}{} : \Delta \to \Gamma.\sigma$ with $\ctxExt(\Gamma,\sigma) \circ \semComp{f}{t}{} = f$ and $\semSubst{v}{\semComp{f}{t}{}} = t$.
 \end{definition}
 
 The reader familiar with the notion of a category of elements will recognize that \cref{0001} is the category of elements of some contravariant functor.
 \begin{exercise}
   Find the contravariant functor $F_{\Gamma,\sigma}$ and deduce that $\sigma$ has a comprehension if and only if $F_{\Gamma,\sigma}$ is representable.
 \end{exercise}
+
+\begin{scholium}
+  The terminal object in $\El(F_{\Gamma,\sigma})$ models context extension.
+\end{scholium}
 
 % For each $\Gamma \in \cC$, we can form the slice category $\Sl{\cC}{\Gamma}$; it is helpful to think of the objects of $\Sl{\cC}{\Gamma}$ as ``extensions'' of $\Gamma$ and morphisms as compatible substitutions between two extensions. 
 
@@ -271,36 +263,71 @@ The reader familiar with the notion of a category of elements will recognize tha
 %   We write $\Gamma.\sigma$ for the domain of $\ctxExt(\sigma)$.
 % \end{definition}
 
+We are now ready to define the notion of a category with families.
+
 \begin{definition}
   A \emph{category with families} (CwF) is given by the following data:
   \begin{itemize}
-  \item a category $\cC$ with terminal object;
-  \item a functor $F = (\Ty{\cC},\Tm{\cC}) : \cC\op \to \Fam$;
-  \item a comprehension for each $\Gamma \in \cC$ and $\sigma \in \Ty{\cC}(\Gamma)$.
+  \item a category $\cC$ with a terminal object;
+  \item a functor $F : \cC\op \to \Fam$;
+  \item a comprehension for each $\Gamma \in \cC$ and $\sigma \in \Ty{}(\Gamma)$.
   \end{itemize}
 \end{definition}
 
-\begin{example}
-  The category of contexts and context morphisms (identified by definitional equality) can be extended to a CwF.
-  We define the functor $F$ by mapping each syntactic context $\Gamma$ to the family $([\Gamma \vdash \typeJudg{\sigma}], [\Gamma \vdash t : \sigma]_{\sigma})$, where $[\Gamma \vdash \typeJudg{\sigma}]$ denotes the set of all syntactic types $\sigma$ such that $\Gamma \vdash \typeJudg{\sigma}$ is derivable and similarly $[\Gamma \vdash t : \sigma]$ is the set of all terms $t$ such that $\Gamma \vdash t : \sigma$; and each syntactic context morphism $\Delta \vdash f \Rightarrow \Gamma$ is mapped to the syntactic substitution $-[f]$.
+\subsection{Examples of categories with families}\label{0003}
 
-  Comprehension of $\sigma$ is given by the context morphism
-  \[
-    \Gamma, x : \sigma \vdash (x_1,\ldots,x_n) \Rightarrow \Gamma
-  \]
-  where $\Gamma = x_1 : \sigma_1,\ldots,x_n : \sigma_n$.
+\begin{example}
+  The category of contexts and context morphisms, identified up to definitional equality, has a CwF structure in the following settings:
+  \begin{align*}
+    \Ty{}(\Gamma) &:= \setNotat{\sigma \mid \Gamma \vdash \typeJudg{\sigma}}\\
+    \Tm{}(\Gamma,\sigma) &:= \setNotat{t \mid \Gamma \vdash t : \sigma}
+  \end{align*}
+  Each context morphism $\Delta \vdash f : \Gamma$ is mapped to the usual substitution function $-[f]$.
+
+  The comprehension for $\sigma$ is given by the context morphism $\Gamma, x : \sigma \vdash (x_1,\ldots,x_n) : \Gamma$ where $\Gamma = x_1 : \sigma_1,\ldots,x_n : \sigma_n$ and the variable $\Gamma, x : \sigma \vdash x : \sigma$.
 \end{example}
 
 \begin{example}
-  The category $\Set$ can be extended to a CwF.
-  We define the functor $F$ by mapping each set $\Gamma$ to the family $\prn{\prn{\sigma_{\gamma}}_{\gamma \in \Gamma},\prn{\prod_{\gamma \in \Gamma}\tau_{\gamma}}_{\tau \in \prn{\sigma_{\gamma}}_{\gamma \in \Gamma}}}$.
-  Substitution is given by precomposition: for each function $f : \Delta \to \Gamma$ and each family of sets $\prn{\sigma_{\gamma}}_{\gamma \in \Gamma}$, $\prn{\semSubst{\sigma}{f}}_{\delta}$ is the set $\sigma_{f(\delta)}$; and for each $t \in \Pi_{\gamma \in \Gamma}\sigma_{\gamma}$, $\semSubst{t}{f}(\delta)$ is $t(f(\delta))$.
-
-  Comprehension of $\sigma$ is given by the first projection of the disjoint union of $\sigma_{\gamma}$'s, i.e., the domain is the set $\setNotat{(\gamma,x) : \gamma \in \Gamma, x \in \sigma_{\gamma}}$ and the first projection maps $(\gamma,x)$ to $\gamma$.
+  The category $\TT := \setNotat{\bff \leq \btt}$ of truth values has a CwF structure in the following settings:
+  \begin{align*}
+    \Ty{}(\bff) &= \Ty{}(\btt) = \setNotat{\bff,\btt}\\
+    \Tm{}(\Gamma,\sigma) &=
+                 \begin{cases}
+                   \termObj{\Set} & \text{if $\Gamma \leq \sigma$,}\\
+                   \initObj{\Set} & \text{otherwise.}
+                 \end{cases}
+  \end{align*}
+  The comprehension for $\sigma$ is given by $\Gamma \wedge \sigma \leq \Gamma$ and the variable is trivial.
 \end{example}
 
+\begin{example}\label{0002}
+  The category $\Set$ of sets and functions has a CwF structure.
+  We can consider a context $\Gamma$ as a set of \emph{stages}; then a type $\sigma$ is a $\Gamma$-indexed family of terms and a term of type $\sigma$ at stage $\gamma$ is an element of $\sigma_{\gamma}$.
+  \begin{align*}
+    \Ty{}(\Gamma) &:= \setNotat{\prn{\sigma_{\gamma}}_{\gamma \in \Gamma}, \prn{\tau_{\gamma}}_{\gamma \in \Gamma}, \ldots}\\
+    \Tm{}(\Gamma,\sigma) &:= \prn{\sigma_{\gamma}}_{\gamma \in \Gamma}
+  \end{align*}
+  Note that a term $t \in \Tm{}(\Gamma,\sigma)$ is a (set theoretic) dependent function $t : \prod_{\gamma \in \Gamma}\sigma_{\gamma}$.
+  Substitution is given by precomposition: for each function $f : \Delta \to \Gamma$, the type $\semSubst{\sigma}{f}$ is given component-wise by $\prn{\semSubst{\sigma}{f}}_{\delta} := \sigma_{f(\delta)}$ and the term $\semSubst{t}{f}$ is given by $\semSubst{t}{f}(\delta) = t(f(\delta))$.
+  
+  The comprehension for $\sigma$ is given by the first project $\setNotat{(\gamma,x) \mid \gamma \in \Gamma, x \in \sigma_{\gamma}} \to \Gamma$ and the variable $v : \prod_{(\gamma,x) \in \Gamma.\sigma}\sigma_{f(\gamma,x)}$ is defined by $v(\gamma,x) = x$.
+\end{example}
+
+In the set theoretic model, there is no non-trivial structure between any two stages because a context, in this case, is \emph{just} a set.
+
+Certain applications require contexts to have additional structures; for example, to study how an object type theory embeds into the Logical Framework, we may take a stage to be a context in the object type theory.
+In this scenario, we have to accommodate a \emph{category} of stages.
+
 \begin{example}
-  The category $\TT$ of truth values can be extended to a CwF.
+  Let $\cT$ be a small category of stages; the presheaf category $\Pr(\cT)$ has a CwF structure that generalizes the set-theoretic one in \cref{0002}.
+
+  Given a context $\Gamma : \cT\op \to \Set$, a type $\sigma$ is a ``$\Gamma$-indexed'' family.
+  To make sense of this, we compress $\Gamma$ into its category of elements $\El(\Gamma)$; then a type $\sigma$ is simply a presheaf of terms over $\El(\Gamma)$.
+  \begin{align*}
+    \Ty{}(\Gamma) &:= \setNotat{\prn{\sigma_{\gamma}}_{\gamma \in \El(\Gamma)}, \prn{\tau_{\gamma}}_{\gamma \in \El(\Gamma)}, \ldots}\\
+    \Tm{}(\Gamma,\sigma) &:= \prn{\sigma_{\gamma}}_{\gamma \in \El(\Gamma)}
+  \end{align*}
+  Substitution and comprehension are given analogously as in \cref{0002}.
 \end{example}
 
 \subsection{Terms and sections}\label{sec:tas}
