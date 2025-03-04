@@ -14,8 +14,8 @@
 
 \begin{abstract}
   The Curry-Howard correspondence is the observation that proof systems and computational calculi, such as $\lambda$-calculi, are closely related.
-  This correspondence allows us to apply programming language theory techniques to study proof systems.
-  We introduce \emph{Tait's method of computability}, also known as \emph{logical relation}, and show that every intuitionistic natural deduction derivation can be fully simplified.
+  This correspondence enables us to apply programming language theory techniques to study proof systems and \viceversa.
+  We introduce \emph{Tait's method of computability}, also known as \emph{logical relation}, to show that every intuitionistic natural deduction derivation can be fully simplified.
 \end{abstract}
 
 \section{Introduction}
@@ -41,6 +41,13 @@ Tait's method of computability strengthens the induction hypothesis by attaching
 
 \section{Curry-Howard correspondence}
 \label{sec:0001}
+
+The Curry-Howard correspondence was first observed by Curry \cite{Curry58} in the setting of combinatory logic: combinators are representations of proofs of certain propositions.
+The general correspondence between propositions and types was later explicated by Howard \cite{Howard80}.
+
+The correspondence follows closely the BHK interpretation of intuitionistic logic.
+For example, proof of an implication $A \wedge B$ consists of a proof of $A$ and a proof of $B$.
+When we replace ``proof'' with ``$\lambda$-term,'' the resulting type is the usual product type.
 
 \begin{figure}
   \centering
@@ -122,8 +129,49 @@ Tait's method of computability strengthens the induction hypothesis by attaching
 \subsection{Detour conversion and $\beta$-reduction}
 \label{sec:0005}
 
+\begin{mathpar}
+  \ebrule{
+    \hypo{[A]}
+    \ellipsis{$\cD_2$}{B}
+    \infer1[\rFunI]{A \to B}
+    \hypo{}
+    \ellipsis{$\cD_1$}{A}
+    \infer2[\rFunE]{B}
+  }\qquad=_{\beta}\qquad
+  \ebrule{
+    \hypo{}
+    \ellipsis{$\cD_1$}{A}
+    \ellipsis{$\cD_2$}{B}
+  }\and
+  \ebrule{
+    \hypo{}
+    \ellipsis{$\cD_1$}{A}
+    \hypo{}
+    \ellipsis{$\cD_2$}{B}
+    \infer2[\rProdI]{A \wedge B}
+    \infer1[\rProdEl]{A}
+  }\qquad=_{\beta}\qquad
+  \ebrule{
+    \hypo{}
+    \ellipsis{$\cD_1$}{A}
+  }
+\end{mathpar}
+
 \subsection{Normalization}
 \label{sec:0004}
+
+\begin{theorem}
+  If $\Gamma \vdash t : A$, then $t$ is normalizing.
+\end{theorem}
+\begin{proof}
+  We proceed by induction on the typing derivation $\Gamma \vdash t : A$.
+  \begin{itemize}
+  \item[\rVar:] Variables are irreducible.
+  \item[\rProdI:] We must show that $\tmPair{b}{c}\tpAnno{B \times C}$ is normalizing.
+    By the induction hypothesis, $b\tpAnno{B}$ and $c\tpAnno{C}$ are normalizing.
+    Let $b'$ and $c'$ be the normal forms of $b$ and $c$ respectively; then $\tmPair{b'}{c'}$ is irreducible and $\tmPair{b}{c} \bRed* \tmPair{b'}{c'}$.
+  \end{itemize}
+\end{proof}
 
 \section{Tait's method of computability}
 \label{sec:0006}
