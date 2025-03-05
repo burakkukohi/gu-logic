@@ -290,8 +290,8 @@ We are now ready to define the notion of a category with families.
 \begin{example}
   The category $\TT := \setNotat{\bff \leq \btt}$ of truth values has a CwF structure in the following settings:
   \begin{align*}
-    \Ty{}(\bff) &= \Ty{}(\btt) = \setNotat{\bff,\btt}\\
-    \Tm{}(\Gamma,\sigma) &=
+    \Ty{}(\bff) &:= \Ty{}(\btt) = \setNotat{\bff,\btt}\\
+    \Tm{}(\Gamma,\sigma) &:=
                  \begin{cases}
                    \termObj{\Set} & \text{if $\Gamma \leq \sigma$,}\\
                    \initObj{\Set} & \text{otherwise.}
@@ -330,25 +330,28 @@ In this scenario, we have to accommodate a \emph{category} of stages.
   Substitution and comprehension are given analogously as in \cref{0002}.
 \end{example}
 
-\subsection{Terms and sections}\label{sec:tas}
+\subsection{Terms, sections, and weakening}\label{sec:tas}
 
-Given a CwF $\cC$.
-If $t \in \Tm{\cC}(\Gamma,\sigma)$, then also $t \in \Tm{\cC}(\Gamma,\semSubst{\sigma}{\id{\Gamma}})$.
-Hence, we can define the semantic counterpart of \cref{eg:bar} as the unique section given by comprehension in the following configuration:
-% https://q.uiver.app/#q=WzAsMyxbMCwxLCJcXEdhbW1hIl0sWzEsMCwiXFxHYW1tYS5cXHNpZ21hIl0sWzEsMSwiXFxHYW1tYSJdLFswLDEsIlxcY3R4U2Vje3R9IiwwLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZGFzaGVkIn19fV0sWzAsMiwiIiwyLHsibGV2ZWwiOjIsInN0eWxlIjp7ImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbMSwyLCJcXGN0eEV4dChcXHNpZ21hKSJdXQ==
+The discussion in \cref{sec:pscm} gives us the impression that every term determines a substitution and every substitution of a particular kind corresponds to a term.
+We will expose this idea in greater detail in this section.
+
+Let $\cC$ be a CwF and $t \in \Tm{}(\Gamma,\sigma)$.
+Note that $t \in \Tm{}(\Gamma,\semSubst{\sigma}{\id{\Gamma}})$ by functoriality.
+Then comprehension yields a unique section $\ctxSec{t} := \semComp{\id{\Gamma}}{t}{}$ of the projection $\ctxExt(\Gamma,\sigma)$.
+
+% https://q.uiver.app/#q=WzAsMyxbMCwxLCJcXEdhbW1hIl0sWzEsMCwiXFxHYW1tYS5cXHNpZ21hIl0sWzEsMSwiXFxHYW1tYSJdLFswLDEsIlxcY3R4U2Vje3R9IiwwLHsic3R5bGUiOnsidGFpbCI6eyJuYW1lIjoibW9ubyJ9LCJib2R5Ijp7Im5hbWUiOiJkYXNoZWQifX19XSxbMCwyLCIiLDIseyJsZXZlbCI6Miwic3R5bGUiOnsiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFsxLDIsIlxcY3R4RXh0KFxcR2FtbWEsXFxzaWdtYSkiLDAseyJzdHlsZSI6eyJoZWFkIjp7Im5hbWUiOiJlcGkifX19XV0=
 \[\begin{tikzcd}
     & {\Gamma.\sigma} \\
     \Gamma & \Gamma
-    \arrow["{\ctxExt(\sigma)}", from=1-2, to=2-2]
-    \arrow["{\ctxSec{t}}", dashed, from=2-1, to=1-2]
+    \arrow["{\ctxExt(\Gamma,\sigma)}", two heads, from=1-2, to=2-2]
+    \arrow["{\ctxSec{t}}", dashed, tail, from=2-1, to=1-2]
     \arrow[equals, from=2-1, to=2-2]
   \end{tikzcd}\]
-Explicitly, $\ctxSec{t} = \semComp{\id{\Gamma}}{t}{\sigma}$.
 
-Conversely, if $f : \Gamma \to \Gamma.\sigma$ is a section of $\ctxExt(\sigma)$ then $\semSubst{v_{\sigma}}{f} \in \Tm{\cC}(\Gamma,\sigma)$.
-Since $\semSubst{v_{\sigma}}{\ctxSec{t}} = t$, one can establish that there is a bijective correspondence between $\Tm{\cC}(\Gamma,\sigma)$ and the set of sections of $\ctxExt(\sigma)$.
-
-\subsection{Weakening}\label{sec:w}
+Conversely, let $f : \Gamma \to \Gamma.\sigma$ be a section of $\ctxExt(\Gamma,\sigma)$.
+This section corresponds to a term $\semSubst{v}{f} \in \Tm{}(\Gamma,\sigma)$.
+Then comprehension yields a section $\ctxSec{\semSubst{v}{f}} : \Gamma \to \Gamma.\sigma$.
+By uniqueness, $f = \ctxSec{\semSubst{v}{f}}$; hence there is a bijective correspondence between terms and sections.
 
 Now, we establish the semantic counterpart of \cref{eg:weak}.
 Suppose that $f : \Delta \to \Gamma$ and $\sigma \in \Ty{\cC}(\Gamma)$.
@@ -367,37 +370,58 @@ Explicitly, $\ctxWkn(f,\sigma) = \semComp{f \circ \ctxExt(\semSubst{\sigma}{f})}
   Substitution along $\ctxExt(\sigma)$ or $\ctxWkn(f,\sigma)$ will not be spelled out explicitly; we write $\weaken{t}$ for $\semSubst{t}{\ctxExt(\sigma)}$ or $\semSubst{t}{\ctxWkn(f,\sigma)}$ when the correct substitution can be inferred from the context.
 \end{notation}
 
-\begin{proposition}
-  Let $\cC$ be a CwF, $f : B \to \Gamma$, and $\sigma \in \Ty{\cC}{\Gamma}$.
-  The following square is a pullback.
-  % https://q.uiver.app/#q=WzAsNCxbMCwxLCJCIl0sWzEsMSwiXFxHYW1tYSJdLFsxLDAsIlxcR2FtbWEuXFxzaWdtYSJdLFswLDAsIkIuXFxzZW1TdWJzdHtcXHNpZ21hfXtmfSJdLFswLDEsImYiLDJdLFszLDAsIlxcY3R4UChcXHNlbVN1YnN0e1xcc2lnbWF9e2Z9KSIsMl0sWzIsMSwiXFxjdHhQKFxcc2lnbWEpIl0sWzMsMiwiXFxjdHhRKGYsXFxzaWdtYSkiXSxbMywxLCIiLDEseyJzdHlsZSI6eyJuYW1lIjoiY29ybmVyIn19XV0=
-  \[\begin{tikzcd}
-      {B.\semSubst{\sigma}{f}} & {\Gamma.\sigma} \\
-      B & \Gamma
-      \arrow["{\ctxWkn(f,\sigma)}", from=1-1, to=1-2]
-      \arrow["{\ctxExt(\semSubst{\sigma}{f})}"', from=1-1, to=2-1]
-      \arrow["\lrcorner"{anchor=center, pos=0.125}, draw=none, from=1-1, to=2-2]
-      \arrow["{\ctxExt(\sigma)}", from=1-2, to=2-2]
-      \arrow["f"', from=2-1, to=2-2]
-    \end{tikzcd}\]
-\end{proposition}
+% \begin{proposition}
+%   Let $\cC$ be a CwF, $f : B \to \Gamma$, and $\sigma \in \Ty{\cC}{\Gamma}$.
+%   The following square is a pullback.
+%   % https://q.uiver.app/#q=WzAsNCxbMCwxLCJCIl0sWzEsMSwiXFxHYW1tYSJdLFsxLDAsIlxcR2FtbWEuXFxzaWdtYSJdLFswLDAsIkIuXFxzZW1TdWJzdHtcXHNpZ21hfXtmfSJdLFswLDEsImYiLDJdLFszLDAsIlxcY3R4UChcXHNlbVN1YnN0e1xcc2lnbWF9e2Z9KSIsMl0sWzIsMSwiXFxjdHhQKFxcc2lnbWEpIl0sWzMsMiwiXFxjdHhRKGYsXFxzaWdtYSkiXSxbMywxLCIiLDEseyJzdHlsZSI6eyJuYW1lIjoiY29ybmVyIn19XV0=
+%   \[\begin{tikzcd}
+%       {B.\semSubst{\sigma}{f}} & {\Gamma.\sigma} \\
+%       B & \Gamma
+%       \arrow["{\ctxWkn(f,\sigma)}", from=1-1, to=1-2]
+%       \arrow["{\ctxExt(\semSubst{\sigma}{f})}"', from=1-1, to=2-1]
+%       \arrow["\lrcorner"{anchor=center, pos=0.125}, draw=none, from=1-1, to=2-2]
+%       \arrow["{\ctxExt(\sigma)}", from=1-2, to=2-2]
+%       \arrow["f"', from=2-1, to=2-2]
+%     \end{tikzcd}\]
+% \end{proposition}
 
-\subsection{Interpretation of the syntax}\label{sec:iots}
-Let $\cC$ be a CwF, we define partial interpretation functions for pre-contexts, pre-terms, and pre-types simultaneously.
-The function is undefined if its argument is either ill-formed or underivable.
-\begin{align*}
-  \intp{\ctx}{\emptyCtx} &= \termObj{\cC}\\
-  \intp{\ctx}{\Gamma, x : \sigma} &= \intp{\ctx}{\Gamma}.\intp{\ty}{\Gamma;\sigma}\\
-  \intp{\tm}{\Gamma, x : \sigma; x} &= v_{\intp{\ty}{\Gamma;\sigma}}\\
-  \intp{\tm}{\Gamma, x : \sigma, y : \tau} &= \semSubst{\intp{\tm}{\Gamma, x : \sigma; x}}{\ctxExt(\intp{\ty}{\Gamma, x : \sigma; \tau})}
-\end{align*}
-To define $\intp{\ty}{-}$, $\cC$ must be equipped with appropriate constants.
+% \subsection{Interpretation of the syntax}\label{sec:iots}
+% Let $\cC$ be a CwF, we define partial interpretation functions for pre-contexts, pre-terms, and pre-types simultaneously.
+% The function is undefined if its argument is either ill-formed or underivable.
+% \begin{align*}
+%   \intp{\ctx}{\emptyCtx} &= \termObj{\cC}\\
+%   \intp{\ctx}{\Gamma, x : \sigma} &= \intp{\ctx}{\Gamma}.\intp{\ty}{\Gamma;\sigma}\\
+%   \intp{\tm}{\Gamma, x : \sigma; x} &= v_{\intp{\ty}{\Gamma;\sigma}}\\
+%   \intp{\tm}{\Gamma, x : \sigma, y : \tau} &= \semSubst{\intp{\tm}{\Gamma, x : \sigma; x}}{\ctxExt(\intp{\ty}{\Gamma, x : \sigma; \tau})}
+% \end{align*}
+% To define $\intp{\ty}{-}$, $\cC$ must be equipped with appropriate constants.
 
 \subsection{Semantic type formers}\label{sec:stf}
 
-To define $\intp{\ty}{-}$, $\cC$ must be equipped with appropriate constants.
+% To define $\intp{\ty}{-}$, $\cC$ must be equipped with appropriate constants.
 
-\subsubsection{Semantic $\Pi$-types}\label{sec:spi}
+\subsubsection{Dependent product types}\label{sec:spi}
+
+\begin{mathpar}
+  \ebrule[$\Pi$-F]{
+    \hypo{\Gamma, x : \sigma \vdash \typeJudg{\tau}}
+    \infer1{\Gamma \vdash \typeJudg{\Pi x : \sigma.\tau}}
+  }\and
+  \ebrule[$\Pi$-I]{
+    \hypo{\Gamma, x : \sigma \vdash t : \tau}
+    \infer1{\Gamma \vdash \lambda x : \sigma.t : \Pi x : \sigma.\tau}
+  }\and
+  \ebrule[$\Pi$-E]{
+    \hypo{\Gamma \vdash f : \Pi x : \sigma.\tau}
+    \hypo{\Gamma \vdash u : \sigma}
+    \infer2{\Gamma \vdash f(u) : \tau[u/x]}
+  }
+\end{mathpar}
+\begin{itemize}
+\item \emph{$\beta$-law}: $(\lambda x : \sigma.t)(u) = t[u/x] : \tau[u/x]$;
+\item \emph{$\eta$-law (optional)}: $f = \lambda x : \sigma.f(x) : \Pi x : \sigma.\tau$.
+\end{itemize}
+
 \begin{definition}\label{def:spi}
   A CwF $\cC$ supports $\Pi$-types if for any two types $\sigma \in \Ty{\cC}(\Gamma)$ and $\tau \in \Ty{\cC}(\Gamma.\sigma)$, we have the followings:
   \begin{itemize}
@@ -442,14 +466,14 @@ To define $\intp{\ty}{-}$, $\cC$ must be equipped with appropriate constants.
   \end{itemize}
 \end{definition}
 
-\begin{construction}
-  Given a CwF that supports $\Pi$-types, we extent the interpretation as follows:
-  \begin{align*}
-    \intp{\ty}{\Gamma;\Pi(\sigma,\tau)} &= \typePi(\intp{\ty}{\Gamma;\sigma},\intp{\ty}{\Gamma, x : \sigma;\tau})\\
-    \intp{\tm}{\Gamma;\lambda x : \sigma. t} &= \lam_{\intp{\ty}{\Gamma;\sigma},\intp{\ty}{\Gamma, x : \sigma;\tau}}(\intp{\tm}{\Gamma,x : \sigma;t})\\
-    \intp{\tm}{\Gamma;u(s)} &= \app_{\intp{\ty}{\Gamma;\sigma},\intp{\ty}{\Gamma, x : \sigma;\tau}} \circ \semComp{\ctxSec{\intp{\tm}{\Gamma;u}}}{\weaken{\intp{\tm}{\Gamma;s}}}{\weaken{\intp{\ty}{\Gamma;\Pi(\sigma,\tau)}}}
-  \end{align*}
-\end{construction}
+% \begin{construction}
+%   Given a CwF that supports $\Pi$-types, we extent the interpretation as follows:
+%   \begin{align*}
+%     \intp{\ty}{\Gamma;\Pi(\sigma,\tau)} &= \typePi(\intp{\ty}{\Gamma;\sigma},\intp{\ty}{\Gamma, x : \sigma;\tau})\\
+%     \intp{\tm}{\Gamma;\lambda x : \sigma. t} &= \lam_{\intp{\ty}{\Gamma;\sigma},\intp{\ty}{\Gamma, x : \sigma;\tau}}(\intp{\tm}{\Gamma,x : \sigma;t})\\
+%     \intp{\tm}{\Gamma;u(s)} &= \app_{\intp{\ty}{\Gamma;\sigma},\intp{\ty}{\Gamma, x : \sigma;\tau}} \circ \semComp{\ctxSec{\intp{\tm}{\Gamma;u}}}{\weaken{\intp{\tm}{\Gamma;s}}}{\weaken{\intp{\ty}{\Gamma;\Pi(\sigma,\tau)}}}
+%   \end{align*}
+% \end{construction}
 
 The reader may wonder why we presented the elimination form as a morphism rather than a combinator; this seemingly unnatural choice has made the definition somewhat obscure.
 However, this more economical definition is in fact equivalent to the natural one \cite[Proposition 3.16]{Hofmann1997}.
@@ -496,7 +520,33 @@ Under the lens of $\lambda$-calculus, the content of \cref{def:sspi} is precisel
   \end{align*}
 \end{example}
 
-\subsubsection{Semantic $\Sigma$-types}\label{sec:ssig}
+\subsubsection{Dependent sum types}\label{sec:ssig}
+
+\begin{mathpar}
+  \ebrule[$\Sigma$-F]{
+    \hypo{\Gamma, x : \sigma \vdash \typeJudg{\tau}}
+    \infer1{\Gamma \vdash \typeJudg{\Sigma x : \sigma.\tau}}
+  }\and
+  \ebrule[$\Sigma$-I]{
+    \hypo{\Gamma \vdash u : \sigma}
+    \hypo{\Gamma \vdash s : \tau[u/x]}
+    \infer2{\Gamma \vdash \synPair{u}{s} : \Sigma x : \sigma.\tau}
+  }\and
+  \ebrule[$\Sigma$-E]{
+    \hypo{
+      \begin{matrix}
+        \Gamma,z : \Sigma x : \sigma.\tau \vdash \typeJudg{\rho}\\
+        \Gamma,x : \sigma, y : \tau \vdash s : \rho[\synPair{x}{y}/z]\\
+        \Gamma \vdash u : \Sigma x : \sigma.\tau\\
+      \end{matrix}
+    }
+    \infer1{\Gamma \vdash \synIndSig(u,s) : \rho[u/z]}
+  }
+\end{mathpar}
+\begin{itemize}
+\item \emph{$\beta$-law}: $\synIndSig(\synPair{a}{b},s) = s[a/x,b/y] : \rho[\synPair{a}{b}/z]$;
+\item \emph{$\eta$-law (optional)}: $u = \synPair{\synIndSig(u,x)}{\synIndSig(u,y)} : \Sigma x : \sigma.\tau$.
+\end{itemize}
 
 \begin{definition}
   A CwF $\cC$ supports $\Sigma$-types if the following data are given for any two types $\sigma \in \Ty{\cC}(\Gamma)$ and $\tau \in \Ty{\cC}(\Gamma.\sigma)$:
@@ -565,129 +615,7 @@ For space reason, we suppress typing annotations when it is appropriate.
   Observe that $\pair_{\sigma,\tau}$ is a bijection; hence the set-theoretic model in fact supports strict $\Sigma$-types.
 \end{example}
 
-\subsubsection{Semantic (intensional) identity types}\label{sec:sid}
-
-\begin{definition}\label{def:sid}
-  A CwF $\cC$ supports (intensional) identity types if for every $\sigma \in \Ty{\cC}(\Gamma)$, the following data are given:
-  \begin{itemize}
-  \item \emph{formation}: a type $\typeId_{\sigma} \in \Ty{\cC}(\Gamma.\sigma.\weaken{\sigma})$;
-  \item \emph{introduction}: a morphism $\refl_{\sigma} : \Gamma.\sigma \to \Gamma.\sigma.\weaken{\sigma}.\typeId_{\sigma}$ in the following configuration:
-    % https://q.uiver.app/#q=WzAsMyxbMCwwLCJcXEdhbW1hLlxcc2lnbWEiXSxbMiwwLCJcXEdhbW1hLlxcc2lnbWEuXFx3ZWFrZW57XFxzaWdtYX0uXFx0eXBlSWRfe1xcc2lnbWF9Il0sWzAsMSwiXFxHYW1tYS5cXHNpZ21hLlxcd2Vha2Vue1xcc2lnbWF9Il0sWzAsMSwiXFxyZWZsX3tcXHNpZ21hfSIsMCx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRvdHRlZCJ9fX1dLFsxLDIsIlxcY3R4RXh0KFxcdHlwZUlkX3tcXHNpZ21hfSkiXSxbMCwyLCJcXGN0eFNlY3t2X3tcXHNpZ21hfX0iLDJdXQ==
-    \[\begin{tikzcd}
-	{\Gamma.\sigma} && {\Gamma.\sigma.\weaken{\sigma}.\typeId_{\sigma}} \\
-	{\Gamma.\sigma.\weaken{\sigma}}
-	\arrow["{\refl_{\sigma}}", dotted, from=1-1, to=1-3]
-	\arrow["{\ctxSec{v_{\sigma}}}"', from=1-1, to=2-1]
-	\arrow["{\ctxExt(\typeId_{\sigma})}", from=1-3, to=2-1]
-      \end{tikzcd}\]
-  \item \emph{elimination}: for each type $\tau \in \Ty{\cC}(\Gamma.\sigma.\weaken{\sigma}.\typeId_{\sigma})$, a function $\indId_{\sigma,\tau} : \Tm{\cC}(\Gamma.\sigma,\semSubst{\tau}{\refl_{\sigma}}) \to \Tm{\cC}(\Gamma.\sigma.\weaken{\sigma}.\typeId_{\sigma},\tau)$.
-  \end{itemize}
-  These data are required to be stable under substitution and additionally the following equation holds for every term $t \in \Tm{\cC}(\Gamma.\tau,\semSubst{\tau}{\refl_{\sigma}})$:
-  \begin{align*}
-    \semSubst{\indId_{\sigma,\tau}(t)}{\refl_{\sigma}} = t && \text{$\beta$-law}
-  \end{align*}
-\end{definition}
-
-\begin{construction}
-  We extend the interpretation function as follows:
-  \begin{align*}
-    \intp{\ty}{\Gamma;\synTypeId(u,s)} &= \semSubst{\typeId}{\semComp{\ctxSec{\intp{\tm}{\Gamma;u}}}{\weaken{\intp{\tm}{\Gamma;s}}}{}}\\
-    \intp{\tm}{\Gamma;\synRefl(a)} &= \refl \circ \ctxSec{\intp{\tm}{\Gamma;a}}\\
-    \intp{\tm}{\Gamma;\synIndId(u,s)} &= \semSubst{\indId(\intp{\tm}{\Gamma,z:\sigma;s})}{\semComp{-,-}{\weaken{\intp{\tm}{\Gamma;u}}}{}}
-  \end{align*}
-\end{construction}
-
-\begin{example}
-  The term model of intensional type theory supports identity types with the following settings:
-  \begin{align*}
-    \typeId_{\sigma} &:= \Gamma, x : \sigma, y : \sigma \vdash \typeJudg{\synTypeId_{\sigma}(x,y)}\\
-    \refl_{\sigma} &:= \Gamma, x : \sigma \vdash (\gamma,x,x,\synRefl_{\sigma}(x)) \Rightarrow \Gamma, x : \sigma, y : \sigma, p : \synTypeId_{\sigma}(x,x)\\
-    \indId_{\sigma,\tau}(t) &:= \synIndId(p,t)
-  \end{align*}
-  where $p$ is a free variable.
-\end{example}
-
-\begin{example}
-  The set-theoretic model supports identity types with the following settings:
-  \begin{align*}
-    \prn{\typeId_{\sigma}}_{(\gamma,x,y)} &:= [x = y]\\
-    \refl_{\sigma}(\gamma,x) &:= (\gamma,x,x,*)\\
-    \indId_{\sigma,\tau}(s)(\gamma,x,y,p) &:= s(\gamma,x)
-  \end{align*}
-\end{example}
-
-\subsubsection{The presheaf model}\label{sec:tpm}
-
-Given a type theory $\cT$, we may take the term model as a presentation of $\cT$.
-We use the same notation, $\cT$, for the term model.
-We can embed $\cT$ into the \emph{meta}-language $\Pr(\cT)$.
-A meta-context $\fG$ is a presheaf $\cT\op \to \Set$ that realizes each context $\Gamma$ in the object language as a set and each substitution as a function.
-We can compress this data into the so-called \emph{category of elements} $\El(\fG)$.
-
-A meta-type in the meta-context $\fG$ is a presheaf $\sigma : \El(\fG)\op \to \Set$ that maps each stage $(\Gamma,\gamma)$ to a set of meta-terms.
-Then a meta-term of type $\sigma$ at stage $(\Gamma,\gamma)$ is an element in $\sigma(\Gamma,\gamma)$.
-
-\subsection{Conservativity of the logical framework}\label{sec:cotlf}
-
-\begin{proposition}[Conservativity]
-  If $\Gamma \dvdash{\cT} \typeJudg{\sigma}$ and $\Gamma \dvdash{\LF{\cT}} t : \sigma$ for some term $t$, then there exists a term $t'$ such that $\Gamma \dvdash{\cT} t' : \sigma$.
-\end{proposition}
-\begin{proof}
-  Suppose that $\Gamma \dvdash{\cT} \typeJudg{\sigma}$.
-  By assumption $\Hom{\Pr(\cT)}(\yon_{\Gamma},\yon_{\sigma})$ is not empty; hence $\Hom{\cT}(\Gamma,\sigma)$ is not empty by fullness.
-\end{proof}
-
-\subsection{Dependent product types}\label{sec:dpt}
-
-\begin{mathpar}
-  \ebrule[$\Pi$-F]{
-    \hypo{\Gamma, x : \sigma \vdash \typeJudg{\tau}}
-    \infer1{\Gamma \vdash \typeJudg{\Pi x : \sigma.\tau}}
-  }\and
-  \ebrule[$\Pi$-I]{
-    \hypo{\Gamma, x : \sigma \vdash t : \tau}
-    \infer1{\Gamma \vdash \lambda x : \sigma.t : \Pi x : \sigma.\tau}
-  }\and
-  \ebrule[$\Pi$-E]{
-    \hypo{\Gamma \vdash f : \Pi x : \sigma.\tau}
-    \hypo{\Gamma \vdash u : \sigma}
-    \infer2{\Gamma \vdash f(u) : \tau[u/x]}
-  }
-\end{mathpar}
-\begin{itemize}
-\item \emph{$\beta$-law}: $(\lambda x : \sigma.t)(u) = t[u/x] : \tau[u/x]$;
-\item \emph{$\eta$-law (optional)}: $f = \lambda x : \sigma.f(x) : \Pi x : \sigma.\tau$.
-\end{itemize}
-
-\subsection{Dependent sum types}\label{sec:dst}
-
-\begin{mathpar}
-  \ebrule[$\Sigma$-F]{
-    \hypo{\Gamma, x : \sigma \vdash \typeJudg{\tau}}
-    \infer1{\Gamma \vdash \typeJudg{\Sigma x : \sigma.\tau}}
-  }\and
-  \ebrule[$\Sigma$-I]{
-    \hypo{\Gamma \vdash u : \sigma}
-    \hypo{\Gamma \vdash s : \tau[u/x]}
-    \infer2{\Gamma \vdash \synPair{u}{s} : \Sigma x : \sigma.\tau}
-  }\and
-  \ebrule[$\Sigma$-E]{
-    \hypo{
-      \begin{matrix}
-        \Gamma,z : \Sigma x : \sigma.\tau \vdash \typeJudg{\rho}\\
-        \Gamma,x : \sigma, y : \tau \vdash s : \rho[\synPair{x}{y}/z]\\
-        \Gamma \vdash u : \Sigma x : \sigma.\tau\\
-      \end{matrix}
-    }
-    \infer1{\Gamma \vdash \synIndSig(u,s) : \rho[u/z]}
-  }
-\end{mathpar}
-\begin{itemize}
-\item \emph{$\beta$-law}: $\synIndSig(\synPair{a}{b},s) = s[a/x,b/y] : \rho[\synPair{a}{b}/z]$;
-\item \emph{$\eta$-law (optional)}: $u = \synPair{\synIndSig(u,x)}{\synIndSig(u,y)} : \Sigma x : \sigma.\tau$.
-\end{itemize}
-
-\subsection{Identity types}\label{sec:it}
+\subsubsection{Intensional identity types}\label{sec:sid}
 
 \begin{mathpar}
   \ebrule[$\synTypeId$-F]{
@@ -713,9 +641,8 @@ Then a meta-term of type $\sigma$ at stage $(\Gamma,\gamma)$ is an element in $\
 \end{mathpar}
 \begin{itemize}
 \item \emph{$\beta$-law}: $\synIndId(\synRefl_{\sigma}(a),s) = s[a/z] : \rho[a/x,a/y,\synRefl_{\sigma}(a)/p]$.
+\item \emph{$\eta$-law (extensional type theory)}: $p = \synRefl_{\sigma}(a) : \synTypeId(a,b)$.
 \end{itemize}
-Extensional type theory:
-\emph{$\eta$-law}: $p = \synRefl_{\sigma}(a) : \synTypeId(a,b)$.
 Note that the $\eta$-law does not type check without the \emph{equality reflection} rule:
 \begin{mathpar}
   \ebrule{
@@ -724,36 +651,177 @@ Note that the $\eta$-law does not type check without the \emph{equality reflecti
   }
 \end{mathpar}
 
-\subsection{Universes}\label{sec:u}
+\begin{definition}\label{def:sid}
+  A CwF $\cC$ supports (intensional) identity types if for every $\sigma \in \Ty{\cC}(\Gamma)$, the following data are given:
+  \begin{itemize}
+  \item \emph{formation}: a type $\typeId_{\sigma} \in \Ty{\cC}(\Gamma.\sigma.\weaken{\sigma})$;
+  \item \emph{introduction}: a morphism $\refl_{\sigma} : \Gamma.\sigma \to \Gamma.\sigma.\weaken{\sigma}.\typeId_{\sigma}$ in the following configuration:
+    % https://q.uiver.app/#q=WzAsMyxbMCwwLCJcXEdhbW1hLlxcc2lnbWEiXSxbMiwwLCJcXEdhbW1hLlxcc2lnbWEuXFx3ZWFrZW57XFxzaWdtYX0uXFx0eXBlSWRfe1xcc2lnbWF9Il0sWzAsMSwiXFxHYW1tYS5cXHNpZ21hLlxcd2Vha2Vue1xcc2lnbWF9Il0sWzAsMSwiXFxyZWZsX3tcXHNpZ21hfSIsMCx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRvdHRlZCJ9fX1dLFsxLDIsIlxcY3R4RXh0KFxcdHlwZUlkX3tcXHNpZ21hfSkiXSxbMCwyLCJcXGN0eFNlY3t2X3tcXHNpZ21hfX0iLDJdXQ==
+    \[\begin{tikzcd}
+	{\Gamma.\sigma} && {\Gamma.\sigma.\weaken{\sigma}.\typeId_{\sigma}} \\
+	{\Gamma.\sigma.\weaken{\sigma}}
+	\arrow["{\refl_{\sigma}}", dotted, from=1-1, to=1-3]
+	\arrow["{\ctxSec{v_{\sigma}}}"', from=1-1, to=2-1]
+	\arrow["{\ctxExt(\typeId_{\sigma})}", from=1-3, to=2-1]
+      \end{tikzcd}\]
+  \item \emph{elimination}: for each type $\tau \in \Ty{\cC}(\Gamma.\sigma.\weaken{\sigma}.\typeId_{\sigma})$, a function $\indId_{\sigma,\tau} : \Tm{\cC}(\Gamma.\sigma,\semSubst{\tau}{\refl_{\sigma}}) \to \Tm{\cC}(\Gamma.\sigma.\weaken{\sigma}.\typeId_{\sigma},\tau)$.
+  \end{itemize}
+  These data are required to be stable under substitution and additionally the following equation holds for every term $t \in \Tm{\cC}(\Gamma.\tau,\semSubst{\tau}{\refl_{\sigma}})$:
+  \begin{align*}
+    \semSubst{\indId_{\sigma,\tau}(t)}{\refl_{\sigma}} = t && \text{$\beta$-law}
+  \end{align*}
+\end{definition}
+
+% \begin{construction}
+%   We extend the interpretation function as follows:
+%   \begin{align*}
+%     \intp{\ty}{\Gamma;\synTypeId(u,s)} &= \semSubst{\typeId}{\semComp{\ctxSec{\intp{\tm}{\Gamma;u}}}{\weaken{\intp{\tm}{\Gamma;s}}}{}}\\
+%     \intp{\tm}{\Gamma;\synRefl(a)} &= \refl \circ \ctxSec{\intp{\tm}{\Gamma;a}}\\
+%     \intp{\tm}{\Gamma;\synIndId(u,s)} &= \semSubst{\indId(\intp{\tm}{\Gamma,z:\sigma;s})}{\semComp{-,-}{\weaken{\intp{\tm}{\Gamma;u}}}{}}
+%   \end{align*}
+% \end{construction}
+
+\begin{example}
+  The term model of intensional type theory supports identity types with the following settings:
+  \begin{align*}
+    \typeId_{\sigma} &:= \Gamma, x : \sigma, y : \sigma \vdash \typeJudg{\synTypeId_{\sigma}(x,y)}\\
+    \refl_{\sigma} &:= \Gamma, x : \sigma \vdash (\gamma,x,x,\synRefl_{\sigma}(x)) \Rightarrow \Gamma, x : \sigma, y : \sigma, p : \synTypeId_{\sigma}(x,x)\\
+    \indId_{\sigma,\tau}(t) &:= \synIndId(p,t)
+  \end{align*}
+  where $p$ is a free variable.
+\end{example}
+
+\begin{example}
+  The set-theoretic model supports identity types with the following settings:
+  \begin{align*}
+    \prn{\typeId_{\sigma}}_{(\gamma,x,y)} &:= [x = y]\\
+    \refl_{\sigma}(\gamma,x) &:= (\gamma,x,x,*)\\
+    \indId_{\sigma,\tau}(s)(\gamma,x,y,p) &:= s(\gamma,x)
+  \end{align*}
+\end{example}
+
+\subsubsection{The unit type}\label{0004}
 
 \begin{mathpar}
-  \ebrule[$U$-F]{
-    \infer0{\Gamma \vdash \typeJudg{U}}
+  \ebrule[$\synTypeUnit$-F]{
+    \infer0{\vdash \typeJudg{\synTypeUnit}}
   }\and
-  \ebrule[$\El$-I]{
-    \hypo{\Gamma \vdash \sigma : U}
-    \infer1{\Gamma \vdash \typeJudg{\El(\sigma)}}
+  \ebrule[$\synTypeUnit$-I]{
+    \infer0{\vdash \star : \synTypeUnit}
+  }\and
+  \ebrule[$\synTypeUnit$-E]{
+    \hypo{\Gamma, x : \synTypeUnit \vdash \typeJudg{\rho}}
+    \hypo{\Gamma \vdash s : \rho[\star/x]}
+    \hypo{\Gamma \vdash u : \synTypeUnit}
+    \infer3{\Gamma \vdash \synIndUnit(u,s) : \rho[u/x]}
+  }
+\end{mathpar}
+\begin{itemize}
+\item \emph{$\beta$-law}: $\synIndUnit(\star,s) = s$.
+\item \emph{$\eta$-law (optional)}: $u = \star$.
+\end{itemize}
+
+\subsubsection{The empty type}\label{0005}
+
+\begin{mathpar}
+  \ebrule[$\synTypeEmpty$-F]{
+    \infer0{\vdash \typeJudg{\synTypeEmpty}}
+  }\and
+  \ebrule[$\synTypeEmpty$-E]{
+    \hypo{\Gamma, x : \synTypeEmpty \vdash \typeJudg{\rho}}
+    \hypo{\Gamma \vdash u : \synTypeEmpty}
+    \infer2{\Gamma \vdash \synIndEmpty(u) : \rho[u/x]}
   }
 \end{mathpar}
 
-\subsection{Logical framework}\label{sec:eott}
+\subsubsection{The natural number type}\label{0006}
 
-Martin-L\"of's Logical Framework (LF) is a type theory with $\Pi$-types and a universe.
-Other theories can be defined as extensions of the LF by constants and equations.
-For instance, $\Sigma$-types can be encoded in LF as follows:
+\begin{mathpar}
+  \ebrule[$\NN$-F]{
+    \infer0{\vdash \typeJudg{\NN}}
+  }\and
+  \ebrule[$\NN$-I$_z$]{
+    \infer0{\vdash 0 : \NN}
+  }\and
+  \ebrule[$\NN$-I$_{\synSuc}$]{
+    \hypo{\Gamma \vdash u : \NN}
+    \infer1{\Gamma \vdash \synSuc(u) : \NN}
+  }\and
+  \ebrule[$\NN$-E]{
+    \hypo{
+      \begin{matrix}
+        \Gamma, x : \NN \vdash \typeJudg{\rho}\\
+        \Gamma \vdash s : \rho[0/x]
+      \end{matrix}
+    }
+    \hypo{
+      \begin{matrix}
+        \Gamma, y : \NN, p : \rho[y/x] \vdash t : \rho[\synSuc(y)/x]\\
+        \Gamma \vdash n : \NN
+      \end{matrix}
+    }
+    \infer2{\Gamma \vdash \synIndN(n,s,t) : \rho[n/x]}
+  }
+\end{mathpar}
 
-\begin{align*}
-  &\vdash \objSig : \LFPi \sigma : \LFU. \LFPi \tau : \sigma \to \LFU. \LFU\\
-  &\vdash \objPair : \LFPi \sigma : \LFU. \LFPi \tau : \sigma \to \LFU.\LFPi x : \sigma. \tau(x) \to \objSig(\sigma,\tau)\\
-  &\vdash \objIndSig : \LFPi \sigma : \LFU. \LFPi \tau : \sigma \to \LFU. \LFPi \rho : \objSig(\sigma, \tau) \to \LFU.\\
-  &\qquad\prn{\LFPi x : \sigma. \LFPi y : \tau(x). \rho(\objPair(\sigma,\tau,x,y))} \to\\
-  &\qquad\LFPi z : \objSig(\sigma,\tau). \rho(z)\\
-  &\Gamma \vdash \objIndSig(\sigma,\tau,\rho,f,\objPair(\sigma,\tau,a,b)) = f(a)(b)
-\end{align*}
-where $\Gamma$ declares the variables used on the right-hand side.
+% \subsubsection{The presheaf model}\label{sec:tpm}
 
-Compare this to the $\Sigma$-types defined in the hand-crafted formalism above; binding in the object language is represented as abstraction in the LF and substitution in the object language is represented as application in the LF.
-The burden of dealing with binding and substitution is shifted from the object language to the LF.
+% Given a type theory $\cT$, we may take the term model as a presentation of $\cT$.
+% We use the same notation, $\cT$, for the term model.
+% We can embed $\cT$ into the \emph{meta}-language $\Pr(\cT)$.
+% A meta-context $\fG$ is a presheaf $\cT\op \to \Set$ that realizes each context $\Gamma$ in the object language as a set and each substitution as a function.
+% We can compress this data into the so-called \emph{category of elements} $\El(\fG)$.
+
+% A meta-type in the meta-context $\fG$ is a presheaf $\sigma : \El(\fG)\op \to \Set$ that maps each stage $(\Gamma,\gamma)$ to a set of meta-terms.
+% Then a meta-term of type $\sigma$ at stage $(\Gamma,\gamma)$ is an element in $\sigma(\Gamma,\gamma)$.
+
+% \subsection{Conservativity of the logical framework}\label{sec:cotlf}
+
+% \begin{proposition}[Conservativity]
+%   If $\Gamma \dvdash{\cT} \typeJudg{\sigma}$ and $\Gamma \dvdash{\LF{\cT}} t : \sigma$ for some term $t$, then there exists a term $t'$ such that $\Gamma \dvdash{\cT} t' : \sigma$.
+% \end{proposition}
+% \begin{proof}
+%   Suppose that $\Gamma \dvdash{\cT} \typeJudg{\sigma}$.
+%   By assumption $\Hom{\Pr(\cT)}(\yon_{\Gamma},\yon_{\sigma})$ is not empty; hence $\Hom{\cT}(\Gamma,\sigma)$ is not empty by fullness.
+% \end{proof}
+
+% \subsection{Dependent sum types}\label{sec:dst}
+
+
+
+% \subsection{Identity types}\label{sec:it}
+
+
+% \subsection{Universes}\label{sec:u}
+
+% \begin{mathpar}
+%   \ebrule[$U$-F]{
+%     \infer0{\Gamma \vdash \typeJudg{U}}
+%   }\and
+%   \ebrule[$\El$-I]{
+%     \hypo{\Gamma \vdash \sigma : U}
+%     \infer1{\Gamma \vdash \typeJudg{\El(\sigma)}}
+%   }
+% \end{mathpar}
+
+% \subsection{Logical framework}\label{sec:eott}
+
+% Martin-L\"of's Logical Framework (LF) is a type theory with $\Pi$-types and a universe.
+% Other theories can be defined as extensions of the LF by constants and equations.
+% For instance, $\Sigma$-types can be encoded in LF as follows:
+
+% \begin{align*}
+%   &\vdash \objSig : \LFPi \sigma : \LFU. \LFPi \tau : \sigma \to \LFU. \LFU\\
+%   &\vdash \objPair : \LFPi \sigma : \LFU. \LFPi \tau : \sigma \to \LFU.\LFPi x : \sigma. \tau(x) \to \objSig(\sigma,\tau)\\
+%   &\vdash \objIndSig : \LFPi \sigma : \LFU. \LFPi \tau : \sigma \to \LFU. \LFPi \rho : \objSig(\sigma, \tau) \to \LFU.\\
+%   &\qquad\prn{\LFPi x : \sigma. \LFPi y : \tau(x). \rho(\objPair(\sigma,\tau,x,y))} \to\\
+%   &\qquad\LFPi z : \objSig(\sigma,\tau). \rho(z)\\
+%   &\Gamma \vdash \objIndSig(\sigma,\tau,\rho,f,\objPair(\sigma,\tau,a,b)) = f(a)(b)
+% \end{align*}
+% where $\Gamma$ declares the variables used on the right-hand side.
+
+% Compare this to the $\Sigma$-types defined in the hand-crafted formalism above; binding in the object language is represented as abstraction in the LF and substitution in the object language is represented as application in the LF.
+% The burden of dealing with binding and substitution is shifted from the object language to the LF.
 
 \bibliography{semdtt}
 \bibliographystyle{alpha}
