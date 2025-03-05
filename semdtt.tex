@@ -396,9 +396,253 @@ Explicitly, $\ctxWkn(f,\sigma) = \semComp{f \circ \ctxExt(\semSubst{\sigma}{f})}
 % \end{align*}
 % To define $\intp{\ty}{-}$, $\cC$ must be equipped with appropriate constants.
 
-\subsection{Semantic type formers}\label{sec:stf}
+\subsection{Interpreting types}\label{sec:stf}
 
 % To define $\intp{\ty}{-}$, $\cC$ must be equipped with appropriate constants.
+
+\subsubsection{The empty type}\label{0005}
+
+\begin{mathpar}
+  \ebrule[$\synTypeEmpty$-F]{
+    \infer0{\vdash \typeJudg{\synTypeEmpty}}
+  }\and
+  \ebrule[$\synTypeEmpty$-E]{
+    \hypo{\Gamma, x : \synTypeEmpty \vdash \typeJudg{\rho}}
+    \infer1{\Gamma, u : \synTypeEmpty \vdash \synIndEmpty_{\rho}(u) : \rho[u/x]}
+  }
+\end{mathpar}
+
+\begin{definition}
+  A CwF $\cC$ supports the empty type if the following data are given:
+  \begin{itemize}
+  \item \emph{formation}: a type $\typeEmpty \in \Ty{}(\termObj{\cC})$;
+  \item \emph{elimination}: for each type $\rho \in \Ty{}(\Gamma.\typeEmpty)$, a term $\indEmpty_{\rho} \in \Tm{}(\Gamma.\typeEmpty,\rho)$.
+  \end{itemize}
+  The eliminator is required to be stable under substitution: for any $f : \Delta \to \Gamma$, $\indEmpty_{\semSubst{\rho}{f}} = \semSubst{\indEmpty_{\rho}}{f}$.
+\end{definition}
+
+\begin{example}
+  The term model supports the empty type with the following settings:
+  \begin{align*}
+    \typeEmpty &:= \synTypeEmpty\\
+    \indEmpty_{\rho} &:= \synIndEmpty_{\rho}(x)
+  \end{align*}
+  where $x : \synTypeEmpty$.
+\end{example}
+
+\begin{example}\label{000A}
+  The truth value model supports the empty type with the following settings:
+  \begin{align*}
+    \typeEmpty &:= \bff\\
+    \indEmpty_{\rho} &:= *
+  \end{align*}
+\end{example}
+
+\begin{remark}
+  This is the only possible interpretation of $\synTypeEmpty$ in the truth value model since we need to ensure that $\Tm{}(\Gamma.\typeEmpty,\rho)$ is nonempty for any $\rho$.
+\end{remark}
+
+\begin{example}
+  The set model supports the empty type with the following settings:
+  \begin{align*}
+    \typeEmpty_{\gamma} &:= \varnothing\\
+    \indEmpty_{\rho} &:= \bang
+  \end{align*}
+  where $\bang$ is the unique function of type $\varnothing \to \rho$.
+\end{example}
+
+\subsubsection{The unit type}\label{0004}
+
+\begin{mathpar}
+  \ebrule[$\synTypeUnit$-F]{
+    \infer0{\vdash \typeJudg{\synTypeUnit}}
+  }\and
+  \ebrule[$\synTypeUnit$-I]{
+    \infer0{\vdash \star : \synTypeUnit}
+  }\and
+  \ebrule[$\synTypeUnit$-E]{
+    \hypo{\Gamma, x : \synTypeUnit \vdash \typeJudg{\rho}}
+    \hypo{\Gamma \vdash s : \rho[\star/x]}
+    \infer2{\Gamma, u : \synTypeUnit \vdash \synIndUnit(u,s) : \rho[u/x]}
+  }\and
+  \ebrule[$\synTypeUnit$-$\beta$]{
+    \hypo{\Gamma, x : \synTypeUnit \vdash \typeJudg{\rho}}
+    \hypo{\Gamma \vdash s : \rho[\star/x]}
+    \infer2{\Gamma \vdash \synIndUnit(\star,s) = s : \rho[\star/x]}
+  }\and
+  \ebrule[$\synTypeUnit$-$\eta$]{
+    \hypo{\Gamma \vdash u : \synTypeUnit}
+    \infer1{\Gamma \vdash u = \star : \synTypeUnit}
+  }
+\end{mathpar}
+\begin{itemize}
+\item \emph{$\beta$-law}: $\synIndUnit(\star,s) = s$.
+\item \emph{$\eta$-law (optional)}: $u = \star$.
+\end{itemize}
+
+\begin{definition}
+  A CwF $\cC$ supports the unit type if the following data are given:
+  \begin{itemize}
+  \item \emph{formation}: a type $\typeUnit \in \Ty{}(\termObj{\cC})$;
+  \item \emph{introduction}: a term $\semStar \in \Tm{}(\termObj{\cC},\typeUnit)$;
+  \item \emph{elimination}: for each type $\rho \in \Ty{}(\Gamma.\typeUnit)$, a function $\indUnit_{\rho} : \Tm{}(\Gamma,\semSubst{\rho}{\ctxSec{\semStar}}) \to \Tm{}(\Gamma.\typeUnit,\rho)$.
+  \end{itemize}
+  These data are subject to the following equations:
+  \begin{itemize}
+  \item \emph{$\beta$-law}: $\semSubst{\indUnit(s)}{\ctxSec{\semStar}} = s$;
+  \item \emph{stability under substitution}: for any morphism $f : \Delta \to \Gamma$, $\semSubst{\indUnit_{\rho}(s)}{f} = \indUnit_{\semSubst{\rho}{f}}(\semSubst{s}{f})$.
+  \end{itemize}
+\end{definition}
+
+\begin{example}
+  The term model supports the unit type with the following settings:
+  \begin{align*}
+    \typeUnit &:= \synTypeUnit\\
+    \semStar &:= \star\\
+    \indUnit_{\rho}(s) &:= \synIndUnit(u,s)
+  \end{align*}
+  where $u : \synTypeUnit$ is a variable.
+\end{example}
+
+\begin{example}\label{0009}
+  The truth value model supports the unit type with the following settings:
+  \begin{align*}
+    \typeUnit &:= \btt\\
+    \semStar &:= *\\
+    \indUnit_{\rho}(s) &:= \id{}
+  \end{align*}
+\end{example}
+
+\begin{remark}
+  This is the only interpretation of the unit type in the truth value model since we need to ensure that $\Tm{}(\termObj{\TT},\typeUnit)$ is nonempty.
+\end{remark}
+
+\begin{example}
+  The set model supports the unit type with the following settings:
+  \begin{align*}
+    \typeUnit_{\gamma} &:= \termObj{\Set}\\
+    \semStar &:= \id{\termObj{\Set}}\\
+    \indUnit_{\rho}(s)(\gamma,*) &:= *
+  \end{align*}
+  where $*$ is the unique element of $\termObj{\Set}$.
+\end{example}
+
+\subsubsection{The natural number type}\label{0006}
+
+\begin{mathpar}
+  \ebrule[$\NN$-F]{
+    \infer0{\vdash \typeJudg{\NN}}
+  }\and
+  \ebrule[$\NN$-I$_z$]{
+    \infer0{\vdash 0 : \NN}
+  }\and
+  \ebrule[$\NN$-I$_{\synSuc}$]{
+    \hypo{\Gamma \vdash u : \NN}
+    \infer1{\Gamma \vdash \synSuc(u) : \NN}
+  }\and
+  \ebrule[$\NN$-E]{
+    \hypo{
+      \begin{matrix}
+        \Gamma, x : \NN \vdash \typeJudg{\rho}\\
+        \Gamma \vdash s : \rho[0/x]
+      \end{matrix}
+    }
+    \hypo{\Gamma, y : \NN, p : \rho[y/x] \vdash t : \rho[\synSuc(y)/x]}
+    \infer2{\Gamma, n : \NN \vdash \synIndN(n,s,t) : \rho[n/x]}
+  }\and
+  \ebrule[$\NN$-$\beta_1$]{
+    \hypo{\Gamma, x : \NN \vdash \typeJudg{\rho}}
+    \hypo{\Gamma \vdash s : \rho[0/x]}
+    \hypo{\Gamma, y : \NN, p : \rho[y/x] \vdash t : \rho[\synSuc(y)/x]}
+    \infer3{\Gamma \vdash \synIndN(0,s,t) = s : \rho[0/x]}
+  }\and
+  \ebrule[$\NN$-$\beta_2$]{
+    \hypo{\Gamma, x : \NN \vdash \typeJudg{\rho}}
+    \hypo{\Gamma \vdash s : \rho[0/x]}
+    \hypo{\Gamma, y : \NN, p : \rho[y/x] \vdash t : \rho[\synSuc(y)/x]}
+    \infer3{\Gamma, n : \NN \vdash \synIndN(\synSuc(n),s,t) = t[n/y,\synIndN(n,s,t)/p] : \rho[\synSuc(n)/x]}
+  }
+\end{mathpar}
+
+\begin{definition}
+  A CwF $\cC$ supports the natural number type if the following data are given:
+  \begin{itemize}
+  \item \emph{formation}: $\typeN \in \Ty{}(\termObj{\cC})$;
+  \item \emph{introduction}: a term $\zero \in \Tm{}(\termObj{\cC}, \typeN)$ together with a function $\semSuc_{\Gamma} : \Tm{}(\Gamma, \typeN) \to \Tm{}(\Gamma, \typeN)$;
+  \item \emph{elimination}: for each $\rho \in \Ty{}(\Gamma.\typeN)$, a function
+    \[
+      \indN_{\rho} : \Tm{}(\Gamma,\semSubst{\rho}{\ctxSec{\zero}}) \times
+      \Tm{}(\Gamma.\typeN.\rho,\semSubst{\rho}{\ctxSec{\semSuc(v_{\typeN})}}) \to
+      \Tm{}(\Gamma.\typeN, \semSubst{\rho}{\ctxSec{v}})
+    \]
+  \end{itemize}
+\end{definition}
+
+\begin{example}
+  The truth value model supports the natural number type with the following settings:
+  \begin{align*}
+    \typeN &:= \btt\\
+    \zero &:= *\\
+    \semSuc &:= \id{}\\
+    \indN_{\rho} &:= \bang
+  \end{align*}
+\end{example}
+
+\subsubsection{Universes}\label{0007}
+
+\begin{mathpar}
+  \ebrule[$\cU$-F]{
+    \infer0{\vdash \typeJudg{\cU}}
+  }\and
+  \ebrule[$\El$-F]{
+    \hypo{\Gamma \vdash t : \cU}
+    \infer1{\Gamma \vdash \typeJudg{\El(t)}}
+  }
+\end{mathpar}
+
+\begin{definition}
+  A universe is \emph{closed under $\synTypeEmpty$ and $\synTypeUnit$} if we additionally have the following rules:
+  \begin{mathpar}
+    \ebrule[$\synTypeEmpty$-$\cU$]{
+      \infer0{\vdash \hat{\synTypeEmpty} : \cU}
+    }\and
+    \ebrule[$\synTypeUnit$-$\cU$]{
+      \infer0{\vdash \hat{\synTypeUnit} : \cU}
+    }\and
+    \ebrule[$\synTypeEmpty$-$\El$]{
+      \infer0{\vdash \typeJudg{\El(\hat{\synTypeEmpty}) = \synTypeEmpty}}
+    }\and
+    \ebrule[$\synTypeUnit$-$\El$]{
+      \infer0{\vdash \typeJudg{\El(\hat{\synTypeUnit}) = \synTypeUnit}}
+    }
+  \end{mathpar}
+\end{definition}
+
+\begin{definition}
+  Let $\cC$ be a CwF supporting $\synTypeEmpty$ and $\synTypeUnit$.
+  $\cC$ supports a universe closed under $\synTypeEmpty$ and $\synTypeUnit$ if the following data are given:
+  \begin{itemize}
+  \item \emph{formation}: $\typeU \in \Ty{}(\termObj{\cC})$;
+  \item \emph{decoding function}: for each $\Gamma$, a function $\semEl_{\Gamma} : \Tm{}(\Gamma,\typeU) \to \Ty{}(\Gamma)$.
+  \item \emph{the empty type}: $\hat{\typeEmpty} \in \Tm{}(\termObj{\cC}, \typeU)$;
+  \item \emph{the unit type}: $\hat{\typeUnit} \in \Tm{}(\termObj{\cC}, \typeU)$.
+  \end{itemize}
+  These data are required to be stable under substitution and the following equations must hold:
+  \begin{align*}
+    \semEl(\hat{\typeEmpty}) &= \typeEmpty\\
+    \semEl(\hat{\typeUnit}) &= \typeUnit
+  \end{align*}
+\end{definition}
+
+\begin{proposition}\label{0008}
+  The truth value model does not support a universe closed under $\synTypeEmpty$ and $\synTypeUnit$.
+\end{proposition}
+\begin{proof}
+  Suppose that it does, then we have $\hat{\typeEmpty} = \hat{\typeUnit}$ since $\Tm{}(\termObj{\TT}, \typeU)$ is a singleton set; hence $\typeEmpty = \typeUnit$.
+  By \cref{000A,0009}, this implies that $\bff = \btt$, which is not the case.
+\end{proof}
+
+The set model supports a universe closed under more than $\synTypeEmpty$ and $\synTypeUnit$; for instance, we can take the usual Grothendieck universe.
 
 \subsubsection{Dependent product types}\label{sec:spi}
 
@@ -520,6 +764,91 @@ Under the lens of $\lambda$-calculus, the content of \cref{def:sspi} is precisel
   \end{align*}
 \end{example}
 
+\subsubsection{Intensional identity types}\label{sec:sid}
+
+\begin{mathpar}
+  \ebrule[$\synTypeId$-F]{
+    \hypo{\Gamma \vdash u : \sigma}
+    \hypo{\Gamma \vdash s : \sigma}
+    \infer2{\Gamma \vdash \typeJudg{\synTypeId_{\sigma}(u,s)}}
+  }\and
+  \ebrule[$\synTypeId$-I]{
+    \hypo{\Gamma \vdash a : \sigma}
+    \infer1{\Gamma \vdash \synRefl_{\sigma}(a) : \synTypeId_{\sigma}(a,a)}
+  }\and
+  \ebrule[$\synTypeId$-E]{
+    \hypo{
+      \begin{matrix}
+        \Gamma, x : \sigma, y : \sigma, p : \synTypeId_{\sigma}(x,y) \vdash \typeJudg{\rho}\\
+        \Gamma, z : \sigma \vdash s : \rho[z/x,z/y,\synRefl_{\sigma}(z)/p]\\
+        \Gamma \vdash a : \sigma \qquad \Gamma \vdash b : \sigma\\
+        \Gamma \vdash u : \synTypeId_{\sigma}(a,b)\\
+      \end{matrix}
+    }
+    \infer1{\Gamma \vdash \synIndId(u,s) : \rho[a/x,b/y,u/p]}
+  }
+\end{mathpar}
+\begin{itemize}
+\item \emph{$\beta$-law}: $\synIndId(\synRefl_{\sigma}(a),s) = s[a/z] : \rho[a/x,a/y,\synRefl_{\sigma}(a)/p]$.
+\item \emph{$\eta$-law (extensional type theory)}: $p = \synRefl_{\sigma}(a) : \synTypeId(a,b)$.
+\end{itemize}
+Note that the $\eta$-law does not type check without the \emph{equality reflection} rule:
+\begin{mathpar}
+  \ebrule{
+    \hypo{\Gamma \vdash p : \synTypeId_{\sigma}(a,b)}
+    \infer1{\Gamma \vdash a = b : \sigma}
+  }
+\end{mathpar}
+
+\begin{definition}\label{def:sid}
+  A CwF $\cC$ supports (intensional) identity types if for every $\sigma \in \Ty{\cC}(\Gamma)$, the following data are given:
+  \begin{itemize}
+  \item \emph{formation}: a type $\typeId_{\sigma} \in \Ty{\cC}(\Gamma.\sigma.\weaken{\sigma})$;
+  \item \emph{introduction}: a morphism $\refl_{\sigma} : \Gamma.\sigma \to \Gamma.\sigma.\weaken{\sigma}.\typeId_{\sigma}$ in the following configuration:
+    % https://q.uiver.app/#q=WzAsMyxbMCwwLCJcXEdhbW1hLlxcc2lnbWEiXSxbMiwwLCJcXEdhbW1hLlxcc2lnbWEuXFx3ZWFrZW57XFxzaWdtYX0uXFx0eXBlSWRfe1xcc2lnbWF9Il0sWzAsMSwiXFxHYW1tYS5cXHNpZ21hLlxcd2Vha2Vue1xcc2lnbWF9Il0sWzAsMSwiXFxyZWZsX3tcXHNpZ21hfSIsMCx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRvdHRlZCJ9fX1dLFsxLDIsIlxcY3R4RXh0KFxcdHlwZUlkX3tcXHNpZ21hfSkiXSxbMCwyLCJcXGN0eFNlY3t2X3tcXHNpZ21hfX0iLDJdXQ==
+    \[\begin{tikzcd}
+	{\Gamma.\sigma} && {\Gamma.\sigma.\weaken{\sigma}.\typeId_{\sigma}} \\
+	{\Gamma.\sigma.\weaken{\sigma}}
+	\arrow["{\refl_{\sigma}}", dotted, from=1-1, to=1-3]
+	\arrow["{\ctxSec{v_{\sigma}}}"', from=1-1, to=2-1]
+	\arrow["{\ctxExt(\typeId_{\sigma})}", from=1-3, to=2-1]
+      \end{tikzcd}\]
+  \item \emph{elimination}: for each type $\tau \in \Ty{\cC}(\Gamma.\sigma.\weaken{\sigma}.\typeId_{\sigma})$, a function $\indId_{\sigma,\tau} : \Tm{\cC}(\Gamma.\sigma,\semSubst{\tau}{\refl_{\sigma}}) \to \Tm{\cC}(\Gamma.\sigma.\weaken{\sigma}.\typeId_{\sigma},\tau)$.
+  \end{itemize}
+  These data are required to be stable under substitution and additionally the following equation holds for every term $t \in \Tm{\cC}(\Gamma.\tau,\semSubst{\tau}{\refl_{\sigma}})$:
+  \begin{align*}
+    \semSubst{\indId_{\sigma,\tau}(t)}{\refl_{\sigma}} = t && \text{$\beta$-law}
+  \end{align*}
+\end{definition}
+
+% \begin{construction}
+%   We extend the interpretation function as follows:
+%   \begin{align*}
+%     \intp{\ty}{\Gamma;\synTypeId(u,s)} &= \semSubst{\typeId}{\semComp{\ctxSec{\intp{\tm}{\Gamma;u}}}{\weaken{\intp{\tm}{\Gamma;s}}}{}}\\
+%     \intp{\tm}{\Gamma;\synRefl(a)} &= \refl \circ \ctxSec{\intp{\tm}{\Gamma;a}}\\
+%     \intp{\tm}{\Gamma;\synIndId(u,s)} &= \semSubst{\indId(\intp{\tm}{\Gamma,z:\sigma;s})}{\semComp{-,-}{\weaken{\intp{\tm}{\Gamma;u}}}{}}
+%   \end{align*}
+% \end{construction}
+
+\begin{example}
+  The term model of intensional type theory supports identity types with the following settings:
+  \begin{align*}
+    \typeId_{\sigma} &:= \Gamma, x : \sigma, y : \sigma \vdash \typeJudg{\synTypeId_{\sigma}(x,y)}\\
+    \refl_{\sigma} &:= \Gamma, x : \sigma \vdash (\gamma,x,x,\synRefl_{\sigma}(x)) \Rightarrow \Gamma, x : \sigma, y : \sigma, p : \synTypeId_{\sigma}(x,x)\\
+    \indId_{\sigma,\tau}(t) &:= \synIndId(p,t)
+  \end{align*}
+  where $p$ is a free variable.
+\end{example}
+
+\begin{example}
+  The set-theoretic model supports identity types with the following settings:
+  \begin{align*}
+    \prn{\typeId_{\sigma}}_{(\gamma,x,y)} &:= [x = y]\\
+    \refl_{\sigma}(\gamma,x) &:= (\gamma,x,x,*)\\
+    \indId_{\sigma,\tau}(s)(\gamma,x,y,p) &:= s(\gamma,x)
+  \end{align*}
+\end{example}
+
 \subsubsection{Dependent sum types}\label{sec:ssig}
 
 \begin{mathpar}
@@ -615,154 +944,11 @@ For space reason, we suppress typing annotations when it is appropriate.
   Observe that $\pair_{\sigma,\tau}$ is a bijection; hence the set-theoretic model in fact supports strict $\Sigma$-types.
 \end{example}
 
-\subsubsection{Intensional identity types}\label{sec:sid}
+\section{Peano axiom 4}\label{000B}
 
-\begin{mathpar}
-  \ebrule[$\synTypeId$-F]{
-    \hypo{\Gamma \vdash u : \sigma}
-    \hypo{\Gamma \vdash s : \sigma}
-    \infer2{\Gamma \vdash \typeJudg{\synTypeId_{\sigma}(u,s)}}
-  }\and
-  \ebrule[$\synTypeId$-I]{
-    \hypo{\Gamma \vdash a : \sigma}
-    \infer1{\Gamma \vdash \synRefl_{\sigma}(a) : \synTypeId_{\sigma}(a,a)}
-  }\and
-  \ebrule[$\synTypeId$-E]{
-    \hypo{
-      \begin{matrix}
-        \Gamma, x : \sigma, y : \sigma, p : \synTypeId_{\sigma}(x,y) \vdash \typeJudg{\rho}\\
-        \Gamma, z : \sigma \vdash s : \rho[z/x,z/y,\synRefl_{\sigma}(z)/p]\\
-        \Gamma \vdash a : \sigma \qquad \Gamma \vdash b : \sigma\\
-        \Gamma \vdash u : \synTypeId_{\sigma}(a,b)\\
-      \end{matrix}
-    }
-    \infer1{\Gamma \vdash \synIndId(u,s) : \rho[a/x,b/y,u/p]}
-  }
-\end{mathpar}
-\begin{itemize}
-\item \emph{$\beta$-law}: $\synIndId(\synRefl_{\sigma}(a),s) = s[a/z] : \rho[a/x,a/y,\synRefl_{\sigma}(a)/p]$.
-\item \emph{$\eta$-law (extensional type theory)}: $p = \synRefl_{\sigma}(a) : \synTypeId(a,b)$.
-\end{itemize}
-Note that the $\eta$-law does not type check without the \emph{equality reflection} rule:
-\begin{mathpar}
-  \ebrule{
-    \hypo{\Gamma \vdash p : \synTypeId_{\sigma}(a,b)}
-    \infer1{\Gamma \vdash a = b : \sigma}
-  }
-\end{mathpar}
-
-\begin{definition}\label{def:sid}
-  A CwF $\cC$ supports (intensional) identity types if for every $\sigma \in \Ty{\cC}(\Gamma)$, the following data are given:
-  \begin{itemize}
-  \item \emph{formation}: a type $\typeId_{\sigma} \in \Ty{\cC}(\Gamma.\sigma.\weaken{\sigma})$;
-  \item \emph{introduction}: a morphism $\refl_{\sigma} : \Gamma.\sigma \to \Gamma.\sigma.\weaken{\sigma}.\typeId_{\sigma}$ in the following configuration:
-    % https://q.uiver.app/#q=WzAsMyxbMCwwLCJcXEdhbW1hLlxcc2lnbWEiXSxbMiwwLCJcXEdhbW1hLlxcc2lnbWEuXFx3ZWFrZW57XFxzaWdtYX0uXFx0eXBlSWRfe1xcc2lnbWF9Il0sWzAsMSwiXFxHYW1tYS5cXHNpZ21hLlxcd2Vha2Vue1xcc2lnbWF9Il0sWzAsMSwiXFxyZWZsX3tcXHNpZ21hfSIsMCx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRvdHRlZCJ9fX1dLFsxLDIsIlxcY3R4RXh0KFxcdHlwZUlkX3tcXHNpZ21hfSkiXSxbMCwyLCJcXGN0eFNlY3t2X3tcXHNpZ21hfX0iLDJdXQ==
-    \[\begin{tikzcd}
-	{\Gamma.\sigma} && {\Gamma.\sigma.\weaken{\sigma}.\typeId_{\sigma}} \\
-	{\Gamma.\sigma.\weaken{\sigma}}
-	\arrow["{\refl_{\sigma}}", dotted, from=1-1, to=1-3]
-	\arrow["{\ctxSec{v_{\sigma}}}"', from=1-1, to=2-1]
-	\arrow["{\ctxExt(\typeId_{\sigma})}", from=1-3, to=2-1]
-      \end{tikzcd}\]
-  \item \emph{elimination}: for each type $\tau \in \Ty{\cC}(\Gamma.\sigma.\weaken{\sigma}.\typeId_{\sigma})$, a function $\indId_{\sigma,\tau} : \Tm{\cC}(\Gamma.\sigma,\semSubst{\tau}{\refl_{\sigma}}) \to \Tm{\cC}(\Gamma.\sigma.\weaken{\sigma}.\typeId_{\sigma},\tau)$.
-  \end{itemize}
-  These data are required to be stable under substitution and additionally the following equation holds for every term $t \in \Tm{\cC}(\Gamma.\tau,\semSubst{\tau}{\refl_{\sigma}})$:
-  \begin{align*}
-    \semSubst{\indId_{\sigma,\tau}(t)}{\refl_{\sigma}} = t && \text{$\beta$-law}
-  \end{align*}
-\end{definition}
-
-% \begin{construction}
-%   We extend the interpretation function as follows:
-%   \begin{align*}
-%     \intp{\ty}{\Gamma;\synTypeId(u,s)} &= \semSubst{\typeId}{\semComp{\ctxSec{\intp{\tm}{\Gamma;u}}}{\weaken{\intp{\tm}{\Gamma;s}}}{}}\\
-%     \intp{\tm}{\Gamma;\synRefl(a)} &= \refl \circ \ctxSec{\intp{\tm}{\Gamma;a}}\\
-%     \intp{\tm}{\Gamma;\synIndId(u,s)} &= \semSubst{\indId(\intp{\tm}{\Gamma,z:\sigma;s})}{\semComp{-,-}{\weaken{\intp{\tm}{\Gamma;u}}}{}}
-%   \end{align*}
-% \end{construction}
-
-\begin{example}
-  The term model of intensional type theory supports identity types with the following settings:
-  \begin{align*}
-    \typeId_{\sigma} &:= \Gamma, x : \sigma, y : \sigma \vdash \typeJudg{\synTypeId_{\sigma}(x,y)}\\
-    \refl_{\sigma} &:= \Gamma, x : \sigma \vdash (\gamma,x,x,\synRefl_{\sigma}(x)) \Rightarrow \Gamma, x : \sigma, y : \sigma, p : \synTypeId_{\sigma}(x,x)\\
-    \indId_{\sigma,\tau}(t) &:= \synIndId(p,t)
-  \end{align*}
-  where $p$ is a free variable.
-\end{example}
-
-\begin{example}
-  The set-theoretic model supports identity types with the following settings:
-  \begin{align*}
-    \prn{\typeId_{\sigma}}_{(\gamma,x,y)} &:= [x = y]\\
-    \refl_{\sigma}(\gamma,x) &:= (\gamma,x,x,*)\\
-    \indId_{\sigma,\tau}(s)(\gamma,x,y,p) &:= s(\gamma,x)
-  \end{align*}
-\end{example}
-
-\subsubsection{The unit type}\label{0004}
-
-\begin{mathpar}
-  \ebrule[$\synTypeUnit$-F]{
-    \infer0{\vdash \typeJudg{\synTypeUnit}}
-  }\and
-  \ebrule[$\synTypeUnit$-I]{
-    \infer0{\vdash \star : \synTypeUnit}
-  }\and
-  \ebrule[$\synTypeUnit$-E]{
-    \hypo{\Gamma, x : \synTypeUnit \vdash \typeJudg{\rho}}
-    \hypo{\Gamma \vdash s : \rho[\star/x]}
-    \hypo{\Gamma \vdash u : \synTypeUnit}
-    \infer3{\Gamma \vdash \synIndUnit(u,s) : \rho[u/x]}
-  }
-\end{mathpar}
-\begin{itemize}
-\item \emph{$\beta$-law}: $\synIndUnit(\star,s) = s$.
-\item \emph{$\eta$-law (optional)}: $u = \star$.
-\end{itemize}
-
-\subsubsection{The empty type}\label{0005}
-
-\begin{mathpar}
-  \ebrule[$\synTypeEmpty$-F]{
-    \infer0{\vdash \typeJudg{\synTypeEmpty}}
-  }\and
-  \ebrule[$\synTypeEmpty$-E]{
-    \hypo{\Gamma, x : \synTypeEmpty \vdash \typeJudg{\rho}}
-    \hypo{\Gamma \vdash u : \synTypeEmpty}
-    \infer2{\Gamma \vdash \synIndEmpty(u) : \rho[u/x]}
-  }
-\end{mathpar}
-
-\subsubsection{The natural number type}\label{0006}
-
-\begin{mathpar}
-  \ebrule[$\NN$-F]{
-    \infer0{\vdash \typeJudg{\NN}}
-  }\and
-  \ebrule[$\NN$-I$_z$]{
-    \infer0{\vdash 0 : \NN}
-  }\and
-  \ebrule[$\NN$-I$_{\synSuc}$]{
-    \hypo{\Gamma \vdash u : \NN}
-    \infer1{\Gamma \vdash \synSuc(u) : \NN}
-  }\and
-  \ebrule[$\NN$-E]{
-    \hypo{
-      \begin{matrix}
-        \Gamma, x : \NN \vdash \typeJudg{\rho}\\
-        \Gamma \vdash s : \rho[0/x]
-      \end{matrix}
-    }
-    \hypo{
-      \begin{matrix}
-        \Gamma, y : \NN, p : \rho[y/x] \vdash t : \rho[\synSuc(y)/x]\\
-        \Gamma \vdash n : \NN
-      \end{matrix}
-    }
-    \infer2{\Gamma \vdash \synIndN(n,s,t) : \rho[n/x]}
-  }
-\end{mathpar}
+\begin{proposition}
+  The type $\synTypeId(0,\synSuc(0)) \to \synTypeEmpty$ is not inhabited in a type theory without universes.
+\end{proposition}
 
 % \subsubsection{The presheaf model}\label{sec:tpm}
 
