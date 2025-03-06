@@ -1,0 +1,47 @@
+\documentclass[a4paper]{article}
+\usepackage[margin=1in]{geometry}
+
+\usepackage{preamble}
+\usepackage{log221-a5-macros}
+\usepackage{showkeys}
+
+\title{LOG 221 - A5}
+\author{Frank Tsai}
+
+\begin{document}
+
+\maketitle
+
+\begin{lemma}\label{0000}
+  Every basic axiom of arithmetic is derivable in $\PAo$ with height at most 2.
+\end{lemma}
+\begin{proof}
+  \begin{mathpar}
+    \ebrule[A1]{
+      \hypo{0' = 0 \Rightarrow \bot}
+      \infer1[\rRImp]{\Rightarrow \lnot(0' = 0)}
+      \hypo{\ldots}
+      \hypo{n' = 0 \Rightarrow \bot}
+      \infer1[\rRImp]{\Rightarrow \lnot(n' = 0)}
+      \hypo{\ldots}
+      \infer4[\rRo]{\Rightarrow \forall x.\lnot(x' = 0)}
+    }
+  \end{mathpar}
+\end{proof}
+
+\section*{Problem 1}\label{0001}
+
+We show that if $\PAd \Gamma \Rightarrow \Delta$, then there are $k, n < \omega$ such that for any closing substitution $\Theta$, there is an ordinal $\alpha < \omega \cdot n$ such that $\PAod{\alpha}{k} \Gamma[\Theta] \Rightarrow \Delta[\Theta]$.
+
+\begin{proof}[Solution]
+  We proceed by induction on the height of the derivation; we do a case analysis on the last applied rule.
+
+  If $\Gamma \Rightarrow \Delta$ is an initial sequent, then there are three cases to consider: (1) the initial sequent is an instance of \rLBot, (2) the initial sequent is an instance of id, and (3) the initial sequent is a basic axiom.
+
+  The only rule that requires us to fiddle with the cut rank $k$ is \rCut.
+\end{proof}
+
+% \bibliography{bib}
+% \bibliographystyle{alpha}
+
+\end{document}
