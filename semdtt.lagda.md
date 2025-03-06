@@ -1,69 +1,49 @@
 ```agda
-{-# OPTIONS --safe #-}
+{-# OPTIONS --safe --without-K #-}
 module semdtt where
 ```
-
-Dependent sum types
+# Empty
 ```agda
-data Σ (A : Set) (B : A → Set) : Set where
-  _,_ : (x : A) → B x → Σ A B
-
-ind-Σ : {A : Set} {B : A → Set}
-        (C : Σ A B → Set)
-      → (z : Σ A B)
-      → ((x : A) (y : B x) → C (x , y)) → C z
-ind-Σ C (z₁ , z₂) s = s z₁ z₂
+data 𝟘 : Set where
 ```
 
-Identity types
+# Unit
 ```agda
-data id {A : Set} : A → A → Set where
-  refl : (a : A) → id a a
-
-ind-id : {A : Set}
-       → (B : (x y : A) → id x y → Set)
-       → (a b : A)
-       → (u : id a b)
-       → ((z : A) → B z z (refl z))
-       → B a b u
-ind-id B a .a (refl .a) s = s a
-```
-<<<<<<< HEAD
-=======
-
-Identity types
-```agda
-data id {A : Set} : A → A → Set where
-  refl : (a : A) → id a a
-
-ind-id : {A : Set}
-       → (B : (x y : A) → id x y → Set)
-       → (s : (z : A) → B z z (refl z))
-       → (a b : A)
-       → (u : id a b)
-       → B a b u
-ind-id B s a .a (refl .a) = s a
+data 𝟙 : Set where
+  ⋆ : 𝟙
 ```
 
-id is symmetric
+# Nat
 ```agda
-id-symm : {A : Set} (a b : A) → id a b → id b a
-id-symm a .a (refl .a) = refl a
+data ℕ : Set where
+  z : ℕ
+  suc : ℕ → ℕ
 ```
 
-id is transitive
+# Id
 ```agda
-id-trans : {A : Set} (a b c : A) → id a b → id b c → id a c
-id-trans a .a c (refl .a) = λ x → x
+data Id {A : Set} : A → A → Set where
+  refl : (a : A) → Id a a
 ```
 
-Action on path
+# Peano axiom 4
 ```agda
-ap : {A B : Set}
-     (f : A → B)
-   → (a a' : A)
-   → id a a'
-   → id (f a) (f a')
-ap f a .a (refl .a) = refl (f a)
+pa-4[not-MLTT] : Id z (suc z) → 𝟘
+pa-4[not-MLTT] ()
+
+_≡_ : ℕ → ℕ → Set
+z ≡ z = 𝟙
+z ≡ suc n = 𝟘
+suc m ≡ z = 𝟘
+suc m ≡ suc n = m ≡ n
+
+id-gives-≡ : (m n : ℕ) → Id m n → m ≡ n
+id-gives-≡ z .z (refl .z) = ⋆
+id-gives-≡ (suc m) .(suc m) (refl .(suc m)) = id-gives-≡ m m (refl m)
+
+pa-4 : Id z (suc z) → 𝟘
+pa-4 p = I (id-gives-≡ z (suc z) p) where
+  I : 𝟘 → 𝟘
+  I = λ x → x
+  
 ```
->>>>>>> dev
