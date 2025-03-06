@@ -1,5 +1,5 @@
 default:
-	@latexmk --pdfxe $(tex)
+	@latexmk --pdfxe --shell-escape $(tex)
 
 dr:
 	@git clean -dfXn

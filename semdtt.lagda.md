@@ -42,8 +42,5 @@ id-gives-≡ z .z (refl .z) = ⋆
 id-gives-≡ (suc m) .(suc m) (refl .(suc m)) = id-gives-≡ m m (refl m)
 
 pa-4 : Id z (suc z) → 𝟘
-pa-4 p = I (id-gives-≡ z (suc z) p) where
-  I : 𝟘 → 𝟘
-  I = λ x → x
-  
+pa-4 p = id-gives-≡ z (suc z) p
 ```
