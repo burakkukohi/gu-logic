@@ -13,25 +13,24 @@
 
 \maketitle
 
-These are my personal notes on \cite{Hofmann1997}.
+These are my personal notes on and expositions of \cite{Hofmann1997}.
 Any mistake is my own.
 
 \section{Introduction}\label{sec:intro}
 
-Last week, Gianluca talked about the syntactic aspect of type theory.
-Today, we will briefly review some typical types in dependent type theory, and introduce a semantic framework called \emph{category with families}.
+% Last week, Gianluca talked about the syntactic aspect of type theory.
+% Today, we will briefly review some typical types in dependent type theory, and introduce a semantic framework called \emph{category with families}.
 
 Semantics is a compositional assignment of mathematical objects to syntactic objects; syntactic objects are \emph{interpreted} as objects in the semantic domain.
 A reasonable question that one may ask is: why do we care about semantics?
 Besides mathematical curiosity, semantic methods have been applied to show numerous independence results.
 On a more practical side, semantic methods can be applied to show syntactic properties such as normalization and decidability of type checking.
-One can argue that decidability of type checking is nonnegotiable in any practical computer implementation of type theory.
+Indeed, one can argue that the latter property is nonnegotiable in any practical computer implementation of type theory.
 
-To interpret a type theory into a semantic domain, we need to define an interpretation function.
-Hofmann \cite{Hofmann1997} developed an abstract framework upon which a single interpretation function can be defined once and for all.
-Then to show that a theory can be interpreted in a given semantic domain, one shows that the given semantic domain fits in such a framework.
+Hofmann \cite{Hofmann1997} developed an abstract semantic framework --- called \emph{category with families} --- upon which a single interpretation function can be defined once and for all.
+Then, to show that a theory can be interpreted in a given semantic domain, one shows that the given semantic domain fits in such a framework.
 
-I will start off my presentation with the structural aspect of dependent type theory; in particular, we will discuss the notions of contexts, substitutions, and context extensions.
+% I will start off my presentation with the structural aspect of dependent type theory; in particular, we will discuss the notions of contexts, substitutions, and context extensions.
 
 % \section{Dependent type theory}\label{sec:dtt}
 
@@ -84,25 +83,22 @@ This judgment has to be made in an updated context.
 \[
   z : \RR^+ \vdash \typeJudg{\synTypeId(\lfloor z \rfloor,1)}
 \]
-In this sense, we may regard the substitution along $\lfloor z \rfloor$ as a \emph{morphism} from $z : \RR^+$ to $x : \NN$.
+We may regard the substitution along the term $\lfloor z \rfloor$ as a \emph{morphism} from $z : \RR^+$ to $x : \NN$.
 
 \begin{definition}
   Let $\Delta$ and $\Gamma = x_1 : \sigma_1,\ldots,x_n : \sigma_n$ be contexts.
-  If $f = (t_1,\ldots,t_n)$ is a sequence of $n$ terms we write
-  \[
-    \Delta \vdash f : \Gamma
-  \]
-  and say that $f$ is a \emph{substitution} from $\Delta$ to $\Gamma$ if the following $n$ judgments hold:
+  A \emph{substitution} from $\Delta$ to $\Gamma$ is a sequence of $n$ terms $(t_1,\ldots,t_n)$ such that the following $n$ judgments hold:
   \begin{align*}
     \Delta &\vdash t_1 : \sigma_1\\
     \Delta &\vdash t_2 : \sigma_2[t_1/x_1]\\
-    &\ldots\\
+      &\ldots\\
     \Delta &\vdash t_n : \sigma_n[t_1/x_1]\ldots[t_{n-1}/x_{n-1}]
   \end{align*}
 \end{definition}
 
 \begin{notation}
-  If $\Delta \vdash f : \Gamma$ is a substitution and $\sigma$ is a type (respectively $t$ is a type), then we write $\sigma[f]$ (respectively $t[f]$) for the simultaneous substitution along $f$.
+  Let $\Gamma = x_1 : \sigma_1,\ldots,x_n : \sigma_n$ be a context and $f = (t_1,\ldots,t_n)$ be a substitution.
+  If $\Gamma \vdash \typeJudg{\sigma}$ (respectively $\Gamma \vdash t : \sigma$), then we write $\sigma[f]$ (respectively $t[f]$) for the simultaneous substitution $\sigma[t_1/x_1,\ldots,t_n/x_n]$.
 \end{notation}
 
 \begin{example}
@@ -122,6 +118,13 @@ In this sense, we may regard the substitution along $\lfloor z \rfloor$ as a \em
   For any context $\Gamma = x_1 : \sigma_1,\ldots,x_n : \sigma_n$, the identity substitution $\Gamma \vdash \id{\Gamma} : \Gamma$ is given by $\id{\Gamma} = (x_1,\ldots,x_n)$.
 \end{example}
 
+\begin{example}
+  Substitutions can be composed in the usual way.
+  Let $\Lambda \vdash g : \Delta$ and $\Delta \vdash f : \Gamma$, where $f = (t_1,\ldots,t_n)$.
+  The composition $f \circ g$ is the tuple $(t_1[g],\ldots,t_n[g])$.
+  It is clear that $\Lambda \vdash f \circ g : \Gamma$.
+\end{example}
+
 \begin{example}\label{eg:weak}
   Let $\Delta \vdash f : \Gamma$.
   There is a substitution $\ctxWkn(f,\sigma)$ in the following configuration:
@@ -135,13 +138,8 @@ In this sense, we may regard the substitution along $\lfloor z \rfloor$ as a \em
       \arrow["f"', from=2-1, to=2-2]
     \end{tikzcd}\]
   Explicitly, $\ctxWkn(f,\sigma)$ is given by $(f, x)$.
-  In fact, the diagram commutes up to variable renaming.
+  The diagram commutes, meaning $\ctxExt(\Gamma,\sigma) \circ \ctxWkn(f,\sigma) = f \circ \ctxExt(\Delta,\sigma[f])$, up to variable renaming.
 \end{example}
-
-\begin{definition}
-  Let $\Lambda \vdash g : \Delta$ and $\Delta \vdash f : \Gamma$, where $f = (t_1,\ldots,t_n)$, the composition $f \circ g$ is the tuple $(t_1[g],\ldots,t_n[g])$.
-  It is clear that $\Lambda \vdash f \circ g : \Gamma$.
-\end{definition}
 
 \begin{proposition}\label{0000}
   Assume $\Pi \vdash h : \Lambda$, $\Lambda \vdash g : \Delta$, and $\Delta \vdash f : \Gamma$.
@@ -156,7 +154,7 @@ In this sense, we may regard the substitution along $\lfloor z \rfloor$ as a \em
   \end{align*}
 \end{proposition}
 
-The first two equations suggest that contexts and substitutions form a category and the remaining equations suggest that substitution is functorial.
+The first two equations suggest that contexts and substitutions form a category, while the remaining equations suggest that substitution is functorial.
 
 % \begin{proposition}
 %   The followings hold (up to variable renaming):
@@ -201,18 +199,21 @@ This models the following judgments:
 
 % This is the most bare-metal definition; it only accounts for the structural rules common to all systems of dependent types.
 
+Hence if $\cC$ is a category of contexts and substitutions, the set of types and the set of terms form a $\cC$-indexed family.
+To formalize this idea, we define the category $\Fam$.
+
 \begin{definition}
-  The \emph{category $\Fam$ of families} has as objects pairs $(B^0,B^1)$, where $B^0$ is a set and $B^1$ is an $B^0$-indexed family of sets $(B^1_b)_{b \in B^0}$; and as morphisms $(B^0,B^1) \to (C^0,C^1)$ pairs $(f^0,f^1)$, where $f^0 : B^0 \to C^0$ is a function and $f^1$ is an $B^0$-indexed family of functions $(f^1_b : B^1_b \to C^1_{f^0(b)})_{b \in B^0}$.
+  The \emph{category $\Fam$ of families} has, as objects, pairs $(B^0,B^1)$, where $B^0$ is a set and $B^1$ is an $B^0$-indexed family of sets $(B^1_b)_{b \in B^0}$; and, as morphisms, $(B^0,B^1) \to (C^0,C^1)$ pairs $(f^0,f^1)$, where $f^0 : B^0 \to C^0$ is a function and $f^1$ is an $B^0$-indexed family of functions $(f^1_b : B^1_b \to C^1_{f^0(b)})_{b \in B^0}$.
 \end{definition}
 
 \begin{scholium}
   Given a category $\cC$ of contexts and substitutions.
-  Types, terms, and substitution are encoded by a single contravariant functor $F : \cC\op \to \Fam$.
+  The $\cC$-indexed family of types and terms is specified by a contravariant functor $F : \cC\op \to \Fam$.
 \end{scholium}
 
 \begin{notation}
   We write $(\Ty{}, \Tm{}) : \cC\op \to \Fam$ to emphasize that for each context $\Gamma$, the components of $(\Ty{}(\Gamma), \Tm{}(\Gamma))$ are respectively a set of types and an indexed-set of terms.
-  We write $\semSubst{\sigma}{f}$ and $\semSubst{t}{f}$ rather than the more cumbersome notations $\Ty{}(f)(\sigma)$ and $\Tm{}(f)(t)$.
+  We write $\semSubst{\sigma}{f}$ and $\semSubst{t}{f}$ rather than the more cumbersome notations $\Ty{}(f)(\sigma)$ and $\Tm{}(f)_{\semSubst{\sigma}{f}}(t)$.
 \end{notation}
 
 The last missing ingredient is context extension: given a context $\Gamma$ and a type $\sigma \in \Ty{}(\Gamma)$ we need to specify a context $\Gamma.\sigma$ to model the variable declaration $\Gamma, x : \sigma$.
@@ -222,9 +223,8 @@ Furthermore, we need a term $v \in \Tm{}(\Gamma.\sigma, \semSubst{\sigma}{\ctxEx
   \Gamma, x : \sigma \vdash x : \sigma
 \]
 A candidate for context extension is simply a substitution $f : \Delta \to \Gamma$ equipped with a term $t \in \Tm{}(\Delta, \semSubst{\sigma}{f})$.
-This assembles into a category.
 \begin{definition}\label{0001}
-  The \emph{category of comprehension candidates} $\El(F_{\Gamma,\sigma})$ has as objects pairs $(f, s)$, where $f : \Delta \to \Gamma$ is a substitution and $s \in \Tm{}(\Delta,\semSubst{\sigma}{f})$ and as morphisms $(f, s) \to (g, t)$ commuting triangles in the following configuration:
+  The \emph{category of comprehension candidates} $\El(F_{\Gamma,\sigma})$ has, as objects, pairs $(f, s)$, where $f : \Delta \to \Gamma$ is a substitution and $s \in \Tm{}(\Delta,\semSubst{\sigma}{f})$; and, as morphisms, $(f, s) \to (g, t)$ commuting triangles in the following configuration:
   % https://q.uiver.app/#q=WzAsMyxbMSwwLCJcXERlbHRhIl0sWzAsMCwiXFxMYW1iZGEiXSxbMCwxLCJcXEdhbW1hIl0sWzEsMiwiZiIsMl0sWzAsMiwiZyJdLFsxLDAsImgiXV0=
   \[\begin{tikzcd}
       \Lambda & \Delta \\
@@ -241,6 +241,10 @@ Among all candidates, we pick the universal one to model context extension.
   A \emph{comprehension for $\sigma$} is a choice of a terminal object in $\El(F_{\Gamma,\sigma})$.
   Explicitly, this consists of a substitution $\ctxExt(\Gamma,\sigma) : \Gamma.\sigma \to \Gamma$ and a term $v \in \Tm{}(\Gamma.\sigma, \semSubst{\sigma}{\ctxExt(\Gamma,\sigma)})$ such that for any substitution $f : \Delta \to \Gamma$ and any term $t \in \Tm{}(\Delta,\semSubst{\sigma}{f})$, there is a unique substitution $\semComp{f}{t}{} : \Delta \to \Gamma.\sigma$ with $\ctxExt(\Gamma,\sigma) \circ \semComp{f}{t}{} = f$ and $\semSubst{v}{\semComp{f}{t}{}} = t$.
 \end{definition}
+
+\begin{notation}
+  We write $\ctxExt(\sigma)$ for $\ctxExt(\Gamma,\sigma)$ when $\Gamma$ is obvious.
+\end{notation}
 
 The reader familiar with the notion of a category of elements will recognize that \cref{0001} is the category of elements of some contravariant functor.
 \begin{exercise}
@@ -275,6 +279,10 @@ We are now ready to define the notion of a category with families.
   \end{itemize}
 \end{definition}
 
+\begin{terminology}
+  We refer to the action on morphisms of $F$ as \emph{substitution} as well.
+\end{terminology}
+
 \subsection{Examples of categories with families}\label{0003}
 
 \begin{example}
@@ -285,11 +293,11 @@ We are now ready to define the notion of a category with families.
   \end{align*}
   Each substitution $\Delta \vdash f : \Gamma$ is mapped to the usual substitution function $-[f]$.
 
-  The comprehension for $\sigma$ is given by the substitution $\Gamma, x : \sigma \vdash (x_1,\ldots,x_n) : \Gamma$ where $\Gamma = x_1 : \sigma_1,\ldots,x_n : \sigma_n$ and the variable $\Gamma, x : \sigma \vdash x : \sigma$.
+  The comprehension for $\sigma$ is given by the substitution $\Gamma, x : \sigma \vdash (x_1,\ldots,x_n) : \Gamma$, where $\Gamma = x_1 : \sigma_1,\ldots,x_n : \sigma_n$, and the variable $\Gamma, x : \sigma \vdash x : \sigma$.
 \end{example}
 
 \begin{example}
-  The category $\TT := \setNotat{\bff \leq \btt}$ of truth values has a CwF structure in the following settings:
+  The category $\TT := \setNotat{\bff \leq \btt}$ of truth values has a CwF structure with the following settings:
   \begin{align*}
     \Ty{}(\bff) &:= \Ty{}(\btt) = \setNotat{\bff,\btt}\\
     \Tm{}(\Gamma,\sigma) &:=
@@ -298,23 +306,24 @@ We are now ready to define the notion of a category with families.
                    \initObj{\Set} & \text{otherwise.}
                  \end{cases}
   \end{align*}
-  The comprehension for $\sigma$ is given by $\Gamma \wedge \sigma \leq \Gamma$ and the variable is trivial.
+  The comprehension for $\sigma$ is given by $\Gamma \wedge \sigma \leq \Gamma$ and the variable is the trivial element.
 \end{example}
 
 \begin{example}\label{0002}
   The category $\Set$ of sets and functions has a CwF structure.
-  We can consider a context $\Gamma$ as a set of \emph{stages}; then a type $\sigma$ is a $\Gamma$-indexed family of terms and a term of type $\sigma$ at stage $\gamma$ is an element of $\sigma_{\gamma}$.
+  We can consider a context $\Gamma$ as a set of \emph{stages}; then a type $\sigma$ is a $\Gamma$-indexed set of terms and a term of type $\sigma$ at stage $\gamma$ is an element of $\sigma_{\gamma}$.
   \begin{align*}
     \Ty{}(\Gamma) &:= \setNotat{\prn{\sigma_{\gamma}}_{\gamma \in \Gamma}, \prn{\tau_{\gamma}}_{\gamma \in \Gamma}, \ldots}\\
-    \Tm{}(\Gamma,\sigma) &:= \prn{\sigma_{\gamma}}_{\gamma \in \Gamma}
+    \Tm{}(\Gamma,\sigma) &:= \prod_{\gamma \in \Gamma}\sigma_{\gamma}
   \end{align*}
-  Note that a term $t \in \Tm{}(\Gamma,\sigma)$ is a (set theoretic) dependent function $t : \prod_{\gamma \in \Gamma}\sigma_{\gamma}$.
+  Here, $\prod_{\gamma \in \Gamma}\sigma_{\gamma}$ is the set-theoretic dependent function space; an element $t \in \prod_{\gamma \in \Gamma}\sigma_{\gamma}$ is a function mapping each $\gamma \in \Gamma$ to an element of $\sigma_{\gamma}$.
+  
   Substitution is given by precomposition: for each function $f : \Delta \to \Gamma$, the type $\semSubst{\sigma}{f}$ is given component-wise by $\prn{\semSubst{\sigma}{f}}_{\delta} := \sigma_{f(\delta)}$ and the term $\semSubst{t}{f}$ is given by $\semSubst{t}{f}(\delta) = t(f(\delta))$.
   
-  The comprehension for $\sigma$ is given by the first project $\setNotat{(\gamma,x) \mid \gamma \in \Gamma, x \in \sigma_{\gamma}} \to \Gamma$ and the variable $v : \prod_{(\gamma,x) \in \Gamma.\sigma}\sigma_{f(\gamma,x)}$ is defined by $v(\gamma,x) = x$.
+  The comprehension for $\sigma$ is given by the first project $\setNotat{(\gamma,x) \mid \gamma \in \Gamma, x \in \sigma_{\gamma}} \to \Gamma$ and the variable $v \in \prod_{(\gamma,x) \in \Gamma.\sigma}\sigma_{f(\gamma,x)}$ is defined by $v(\gamma,x) = x$.
 \end{example}
 
-In the set theoretic model, there is no non-trivial structure between any two stages because a context, in this case, is \emph{just} a set.
+In the set model, there is no non-trivial structure between any two stages because a context, in this case, is \emph{just} a set.
 
 Certain applications require contexts to have additional structures; for example, to study how an object type theory embeds into the Logical Framework, we may take a stage to be a context in the object type theory.
 In this scenario, we have to accommodate a \emph{category} of stages.
@@ -325,10 +334,9 @@ In this scenario, we have to accommodate a \emph{category} of stages.
   Given a context $\Gamma : \cT\op \to \Set$, a type $\sigma$ is a ``$\Gamma$-indexed'' family.
   To make sense of this, we compress $\Gamma$ into its category of elements $\El(\Gamma)$; then a type $\sigma$ is simply a presheaf of terms over $\El(\Gamma)$.
   \begin{align*}
-    \Ty{}(\Gamma) &:= \setNotat{\prn{\sigma_{\gamma}}_{\gamma \in \El(\Gamma)}, \prn{\tau_{\gamma}}_{\gamma \in \El(\Gamma)}, \ldots}\\
-    \Tm{}(\Gamma,\sigma) &:= \prn{\sigma_{\gamma}}_{\gamma \in \El(\Gamma)}
+    \Ty{}(\Gamma) &:= \setNotat{\prn{\sigma_{\gamma}}_{\gamma \in \El(\Gamma)}, \prn{\tau_{\gamma}}_{\gamma \in \El(\Gamma)}, \ldots}
   \end{align*}
-  Substitution and comprehension are given analogously as in \cref{0002}.
+  Terms, substitution, and comprehensions are given analogously as in \cref{0002}.
 \end{example}
 
 \subsection{Terms, sections, and weakening}\label{sec:tas}
@@ -338,7 +346,7 @@ We will expose this idea in greater detail in this section.
 
 Let $\cC$ be a CwF and $t \in \Tm{}(\Gamma,\sigma)$.
 Note that $t \in \Tm{}(\Gamma,\semSubst{\sigma}{\id{\Gamma}})$ by functoriality.
-Then comprehension yields a unique section $\ctxSec{t} := \semComp{\id{\Gamma}}{t}{}$ of the projection $\ctxExt(\Gamma,\sigma)$.
+Then comprehension yields a unique section $\ctxSec{t} := \semComp{\id{\Gamma}}{t}{}$ of the projection $\ctxExt(\Gamma,\sigma)$ such that $\semSubst{v}{\ctxSec{t}} = t$.
 
 % https://q.uiver.app/#q=WzAsMyxbMCwxLCJcXEdhbW1hIl0sWzEsMCwiXFxHYW1tYS5cXHNpZ21hIl0sWzEsMSwiXFxHYW1tYSJdLFswLDEsIlxcY3R4U2Vje3R9IiwwLHsic3R5bGUiOnsidGFpbCI6eyJuYW1lIjoibW9ubyJ9LCJib2R5Ijp7Im5hbWUiOiJkYXNoZWQifX19XSxbMCwyLCIiLDIseyJsZXZlbCI6Miwic3R5bGUiOnsiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFsxLDIsIlxcY3R4RXh0KFxcR2FtbWEsXFxzaWdtYSkiLDAseyJzdHlsZSI6eyJoZWFkIjp7Im5hbWUiOiJlcGkifX19XV0=
 \[\begin{tikzcd}
@@ -372,7 +380,7 @@ Since we want to leave $x : \sigma$ unchanged, we take the variable $v_{\semSubs
 %   \end{tikzcd}\]
 
 \begin{notation}
-  To keep the notations clean, we will not spell out substitutions along weakening substitutions such as $\ctxExt(\sigma)$ and $\ctxWkn(f,\sigma)$ explicitly.
+  To keep the notations clean, we will not spell out substitutions along weakening substitutions, such as $\ctxExt(\sigma)$ and $\ctxWkn(f,\sigma)$, explicitly.
 \end{notation}
 
 % \begin{proposition}
@@ -406,7 +414,7 @@ Since we want to leave $x : \sigma$ unchanged, we take the variable $v_{\semSubs
 % To define $\intp{\ty}{-}$, $\cC$ must be equipped with appropriate constants.
 
 So far, we have only defined how to interpret contexts and substitutions, which is insufficient for any interesting type theory, \ie a type theory with types.
-In this section, we will define the interpretations of types common in (Martin-L\"of) type theories.
+In this section, we will define the interpretations of types common found in Martin-L\"of type theories.
 
 \subsubsection{The empty type}\label{0005}
 
@@ -435,7 +443,7 @@ In this section, we will define the interpretations of types common in (Martin-L
     \typeEmpty &:= \synTypeEmpty\\
     \indEmpty_{\tau} &:= \synIndEmpty_{\tau}(x)
   \end{align*}
-  where $x : \synTypeEmpty$.
+  where $x : \synTypeEmpty$ is a free variable.
 \end{example}
 
 \begin{example}\label{000A}
@@ -505,7 +513,7 @@ In this section, we will define the interpretations of types common in (Martin-L
     \semStar &:= \star\\
     \indUnit_{\tau}(s) &:= \synIndUnit(x,s)
   \end{align*}
-  where $x : \synTypeUnit$ is a variable.
+  where $x : \synTypeUnit$ is a free variable.
 \end{example}
 
 \begin{example}\label{0009}
@@ -580,10 +588,10 @@ In this section, we will define the interpretations of types common in (Martin-L
       \Tm{}(\Gamma.\typeN, \semSubst{\tau}{v_{\typeN}})
     \]
   \end{itemize}
-  These data are required to be stable under substitution and the following equations hold:
+  These data are required to be stable under substitution and the following equations must hold:
   \begin{align*}
     \semSubst{\indN_{\tau}(s,t)}{\zero} &= s\\
-    \semSubst{\indN_{\tau}(s,t)}{\semSuc(n)} &= \semSubst{t}{n,\indN(s,t)}
+    \semSubst{\indN_{\tau}(s,t)}{\semSuc(n)} &= \semSubst{\semSubst{t}{n}}{\indN(s,t)}
   \end{align*}
 \end{definition}
 
@@ -765,7 +773,7 @@ The set model supports a universe closed under more than $\synTypeEmpty$ and $\s
   \[
     \Gamma,y : \sigma, z : \Pi x : \sigma.\tau \vdash (\gamma,z(y)) : \Gamma, x : \sigma, w : \tau
   \]
-  Moreover, if the underlying type theory has $\eta$-law for $\Pi$-types, then the term model supports them strictly.
+  % Moreover, if the underlying type theory has $\eta$-law for $\Pi$-types, then the term model supports them strictly.
 \end{example}
 
 \begin{example}\label{000E}
@@ -778,7 +786,7 @@ The set model supports a universe closed under more than $\synTypeEmpty$ and $\s
 \end{example}
 
 \begin{example}
-  The set-theoretic model supports strict $\Pi$-types with the following settings:
+  The set-theoretic model supports $\Pi$-types with the following settings:
   \begin{align*}
     \typePi(\sigma,\tau)_{\gamma} &:= \prod_{x \in \sigma_{\gamma}}\tau_{(\gamma,x)}\\
     \lam_{\sigma,\tau}(t) &:= \lambda\gamma \in \Gamma.\lambda x \in \sigma_{\gamma}.t(\gamma,x)\\
@@ -974,7 +982,7 @@ The set model supports a universe closed under more than $\synTypeEmpty$ and $\s
     \pair_{\sigma,\tau} &:= \Gamma, x : \sigma, y : \tau \vdash (\gamma, \synPair{u}{s}) : \Gamma, z : \Sigma x : \sigma.\tau\\
     \indSig_{\sigma,\tau,\rho}(s) &:= \synIndSig(x,s)
   \end{align*}
-  where $x$ is an open variable of type $\Sigma x : \sigma.\tau$.
+  where $x : \Sigma x : \sigma.\tau$ is a free variable.
 \end{example}
 
 \begin{example}\label{000C}
@@ -987,7 +995,7 @@ The set model supports a universe closed under more than $\synTypeEmpty$ and $\s
 \end{example}
 
 \begin{example}
-  The set-theoretic model supports $\Sigma$-types in the following settings:
+  The set model supports $\Sigma$-types with the following settings:
   \begin{align*}
     \typeSig(\sigma,\tau)_{\gamma \in \Gamma} &:= \setNotat{(x,y) : x \in \sigma_{\gamma}, y \in \tau_{(\gamma,x)}}\\
     \pair_{\sigma,\tau}(\gamma,x,y) &:= (\gamma,(x,y))\\
@@ -996,11 +1004,11 @@ The set model supports a universe closed under more than $\synTypeEmpty$ and $\s
   % Observe that $\pair_{\sigma,\tau}$ is a bijection; hence the set-theoretic model in fact supports strict $\Sigma$-types.
 \end{example}
 
-\section{An application of semantic methods}\label{000B}
+\section{Peano's 4th axiom}\label{000B}
 
 A famous example in an introduction to type theory course is to show that $0$ is not $1$, \ie the type $\synTypeId(0,\synSuc(0)) \to \synTypeEmpty$ is inhabited.
 The proof (in Agda) usually goes as follows.
-First, we define the following function:
+First, we define the following function that essentially characterizes equality on the natural numbers:
 
 \begin{minted}{agda}
   eq : nat -> nat -> Set
@@ -1026,14 +1034,20 @@ And finally, we can now easily find a term of type $\synTypeId(0,\synSuc(0)) \to
   pa4 p = complete 0 (suc 0) p
 \end{minted}
 
-In hindsight, it is not clear whether the universe is dispensable.
+\begin{remark}
+  Doing a pattern match on \mintinline{agda}{p} is cheating.
+\end{remark}
+
+In hindsight, it is not clear why we need to bother with the function \mintinline{agda}{eq}.
 The following proposition shows that it is necessary.
 
 \begin{proposition}
-  The type $\synTypeId(0,\synSuc(0)) \to \synTypeEmpty$ is not inhabited in a (Martin-L\"of) type theory without universes.
+  The type $\synTypeId(0,\synSuc(0)) \to \synTypeEmpty$ is not inhabited in a Martin-L\"of type theory $\cT$ without universes.
 \end{proposition}
 \begin{proof}
-  Since the given type theory has no universes, it can be interpreted into the truth value model; hence it suffices to show that $\Tm{}(\termObj{\TT}, \semSubst{\typeId_{\typeN}}{\zero, \semSuc(\zero)} \to \typeEmpty)$ is empty, but the latter type is interpreted as the exponential $\btt \to \bff$, \ie $\bff$.
+  If the type is inhabited, then $\Tm{}(\termObj{\cC}, \semSubst{\typeId_{\typeN}}{\zero, \semSuc(\zero)} \to \typeEmpty)$ is not empty for all CwF $\cC$ that supports $\cT$.
+  
+  Since $\cT$ has no universes, it can be interpreted into the truth value model; but $\Tm{}(\termObj{\TT}, \semSubst{\typeId_{\typeN}}{\zero, \semSuc(\zero)} \to \typeEmpty)$ is empty because the latter type is interpreted as the exponential $\btt \to \bff$, \ie $\bff$.
 \end{proof}
 
 % \subsubsection{The presheaf model}\label{sec:tpm}
