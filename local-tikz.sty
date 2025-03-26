@@ -18,10 +18,6 @@
 \tikzset{
   desc/.style={sloped, fill=white,inner sep=2pt},
   upright desc/.style={fill=white,inner sep=2pt},
-  morphism/.style = {
-    auto=left,
-    node font=\scriptsize,
-  },
   phantom/.style = {
     commutative diagrams/phantom,
     node font=\scriptsize,
@@ -93,7 +89,13 @@
     line width = .5pt,
     every node/.append style = {
       commutative diagrams/every cell,
-    }
+    },
+    every edge/.append style = {
+      auto = left,
+    },
+    every path/.append style = {
+      auto = left,
+    },
   },
   fibration/.style = {
     -{Triangle[open]}
@@ -243,13 +245,13 @@
 
   glue~target .tl_set:N = \l_jon_tikz_glue_target,
 
-  north/style .code:n = {\tikzset{square/north/.style = {morphism,#1}}},
+  north/style .code:n = {\tikzset{square/north/.style = {#1}}},
   north/node/style .code:n = {\tikzset{square/north/node/.style = {#1}}},
-  south/style .code:n = {\tikzset{square/south/.style = {morphism,#1}}},
+  south/style .code:n = {\tikzset{square/south/.style = {#1}}},
   south/node/style .code:n = {\tikzset{square/south/node/.style = {#1}}},
-  west/style .code:n = {\tikzset{square/west/.style = {morphism,#1}}},
+  west/style .code:n = {\tikzset{square/west/.style = {#1}}},
   west/node/style .code:n = {\tikzset{square/west/node/.style = {#1}}},
-  east/style .code:n = {\tikzset{square/east/.style = {morphism,#1}}},
+  east/style .code:n = {\tikzset{square/east/.style = {#1}}},
   east/node/style .code:n = {\tikzset{square/east/node/.style = {#1}}},
 
   draft .meta:n = {

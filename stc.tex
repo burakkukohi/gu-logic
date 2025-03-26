@@ -27,9 +27,9 @@ The Yoneda model is the \emph{generic} model in the sense that any other topos m
     \node (1) {$\cT$};
     \node (2) [right = of 1] {$\Sh(\bY)$};
     \node (3) [below = of 1] {$\Sh(\bT)$};
-    \draw [morphism,->] (1) to node [swap] {$\yon_{\cT}$} (3);
-    \draw [morphism,->] (1) to node {$M$} (2);
-    \draw [morphism,->,exists] (3) to node [swap] {$\invImg{\chi_{M}}$} (2);
+    \draw [->] (1) to node [swap] {$\yon_{\cT}$} (3);
+    \draw [->] (1) to node {$M$} (2);
+    \draw [->,exists] (3) to node [swap] {$\invImg{\chi_{M}}$} (2);
   \end{tikzpicture}
 \end{center}
 
@@ -74,12 +74,54 @@ Given a category of contexts and atomic substitutions $\cA$ together with a figu
       west/style = {open immersion},
     }
     \node (1) [left = of sw] {$\bA$};
-    \draw [morphism, closed immersion] (1) to node {$\closed$} (sw);
-    \draw [morphism, closed immersion, bend right] (1) to node [swap] {$i$} (se);
+    \draw [closed immersion] (1) to node {$\closed$} (sw);
+    \draw [closed immersion, bend right] (1) to node [swap] {$i$} (se);
   \end{tikzpicture}
 \end{center}
 
-We can equivalently express the same construction in the language of $\Logoi$ as follows:
+We can equivalently express the same construction in the language of $\Logoi$ as the following pullback diagram:
+\begin{center}
+  \DiagramSquare{
+    nw = {\Sh(\bG)},
+    nw/style = {pullback},
+    ne = {\Pr(\cT)},
+    se = {\Pr(\cA)},
+    sw = {\Pr(\cA)^{\to}},
+    north = {\invImg{j}},
+    east = {\invImg{\alpha}},
+    south = {\cod},
+  }
+\end{center}
+
+A computability structure is a sheaf over $\bG$.
+Explicitly, a computability structure consists of a presheaf $E \in \Pr(\cT)$ and a natural transformation $A \twoto \invImg{\alpha}E$ for some $A \in \Pr(\cA)$.
+
+Since $\alpha$ is essential, the closed immersion $i$ admits an additional left adjoint $\essential{i} \adj \invImg{i} \adj \dirImg{i}$, computed as follows:
+\begin{align*}
+  \essential{i} &: \Pr(\cA) \to \Sh(\bG)\\
+  \essential{i} &: A \mapsto (\essential{\alpha}A, \eta_A : A \twoto \invImg{\alpha}\essential{\alpha}A)
+\end{align*}
+
+\subsection{The syntactic algebra}
+
+The direct image $\dirImg{j} : \Pr(\cT) \to \Sh(\bG)$ induces a Henkin $\cT$-model over $\Sh(\bG)$.
+This is the syntactic algebra of $\cT$.
+We set $M := \dirImg{j}\yon_{\cT}$.
+
+\subsection{The normalization algebra}
+
+The normalization algebra $N : \cT \to \Sh(\bG)$ is a $\cT$-model whose syntactic component is the syntactic model.
+
+\begin{center}
+  \begin{tikzpicture}[diagram]
+    \node (1) {$\cT$};
+    \node (2) [right = of 1] {$\Sh(\bG)$};
+    \node (3) [below = of 2] {$\Pr(\cT)$};
+    \draw [->] (1) to node {$N$} (2);
+    \draw [->] (1) to node [swap] {$\yon_{\cT}$} (3);
+    \draw [->] (2) to node {$\invImg{j}$} (3);
+  \end{tikzpicture}
+\end{center}
 
 \section{Internal type theory}
 
