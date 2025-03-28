@@ -123,6 +123,57 @@ The normalization algebra $N : \cT \to \Sh(\bG)$ is a $\cT$-model whose syntacti
   \end{tikzpicture}
 \end{center}
 
+Every atomic context $\Gamma \in \cA$ evinces two computability structures.
+We define $\atomic{\Gamma} := \essential{i}(\yon_{\cA}(\Gamma))$ and $\canonical{\Gamma} := N(\alpha(\Gamma))$.
+
+\begin{lemma}\label{0000}
+  For any computability structure $X \in \Sh(\bG)$ and atomic context $\Gamma \in \cA$, there is a natural bijection
+  \[
+    \Hom{\Sh(\bG)}(\atomic{\Gamma},X) \iso (\invImg{i}X)(\Gamma)
+  \]
+\end{lemma}
+\begin{proof}
+  By adjunction and the Yoneda lemma.
+\end{proof}
+
+We assume that there is a vertical natural transformation $\uparrow : \atomic{-} \to \canonical{-}$.
+It is vertical in the sense that for any $\Gamma$, the syntactic component of $\uparrow_{\Gamma}$ is the identity.
+
+For each $T \in \cT$, we wish to construct a vertical morphism $M(T) \to N(T)$.
+That is, we want to evaluate the syntactic algebra in the normalization algebra.
+
+\begin{proposition}
+  For every computability structure $X \in \Sh(\bG)$, there is a canonical computability structure $X_{can}$ whose syntactic component coincides with that of $X$, and the semantics component is the
+  the nerve functor $\Hom{\Sh(\bG)}(\canonical{-},X)$.
+  Moreover, there is a vertical morphism $X_{can} \to X$.
+\end{proposition}
+\begin{proof}
+  We construct the required family $\Hom{\Sh(\bG)}(\canonical{-},X) \twoto \invImg{\alpha}\invImg{j}X$ as follows:
+  \begin{align*}
+    \Hom{\Sh(\bG)}(\canonical{-},X) &\twoto \Hom{\Sh(\bG)}(\atomic{-},X) && \text{by $- \circ \uparrow$}\\
+                                    &= \Hom{\Sh(\bG)}(\essential{i}\yon_{\cA},X)
+                                                                         && \text{by definition}\\
+                                    &\twoto \Hom{\Sh(\bG)}(\essential{i}\yon_{\cA},\dirImg{j}\invImg{j}X) && \text{by $\eta \circ -$}\\
+                                    &\iso \Hom{\Pr(\cA)}(\yon_{\cA},\invImg{i}\dirImg{j}\invImg{j}X) && \essential{i} \adj \invImg{i}\\
+                                    &\iso \Hom{\Pr(\cA)}(\yon_{\cA},\invImg{\alpha}\invImg{j}X) && \text{by Yoneda extension}\\
+                                    &\iso \invImg{\alpha}\invImg{j}X && \text{by the Yoneda lemma}
+  \end{align*}
+  The vertical morphism is defined by taking the restriction of the vertical natural transformation $\uparrow$.
+\end{proof}
+
+Every computability structure of the form $M(T)$ can be evaluated in $N(T)_{can}$, \ie there is a vertical morphism $M(T) \to N(T)_{can}$.
+
+\begin{center}
+  \begin{tikzpicture}[diagram]
+    \node (1) {$M(T)$};
+    \node (2) [right = of 1] {$N(T)_{can}$};
+    \node (3) [right = of 2] {$N(T)$};
+    \draw [->] (1) to node {} (2);
+    \draw [->] (2) to node {} (3);
+    \draw [->,bend right] (1) to node {} (3);
+  \end{tikzpicture}
+\end{center}
+
 \section{Internal type theory}
 
 Internal to each logos $\cE$ is a dependent type theory.

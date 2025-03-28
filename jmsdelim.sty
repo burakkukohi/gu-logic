@@ -35,6 +35,7 @@
 \RequirePackage{xparse}
 \RequirePackage{ifluatex}
 \RequirePackage{scalerel}
+\RequirePackage{stmaryrd}
 \ProvidesExplPackage {jmsdelim} {2020/11/02} {0.2.0}
   {Compositional delimiter sizing}
 \keys_define:nn { jmsdelim } {
@@ -217,6 +218,9 @@
 }
 \NewDocumentCommand\DelimVert{m}{
   \jmsdelim_surround:nnn {|} {|} {#1}
+}
+\NewDocumentCommand\DelimPrrn{m}{
+  \jmsdelim_surround:nnn {\llparenthesis} {\rrparenthesis} {#1}
 }
 \ProcessKeysPackageOptions {jmsdelim}
 \endinput
