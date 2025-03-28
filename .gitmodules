@@ -1,3 +1,6 @@
 [submodule "private"]
 	path = private
 	url = https://github.com/burakkukohi/gu-logic-private.git
+[submodule "thesis"]
+	path = thesis
+	url = https://github.com/burakkukohi/gu-thesis.git
