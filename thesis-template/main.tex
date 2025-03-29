@@ -1,0 +1,40 @@
+\documentclass[oneside]{memoir}
+
+\usepackage{lipsum}
+\usepackage{preamble}
+\usepackage{guthesis}
+
+
+\settitle{Ao no Hako}
+\setsubtitle{A memoir of bittersweet teenage memories} % Optional
+\setauthor{Chouno~Hina}
+\setdepartment{Department of Sports, Arts, and Culture}
+\setschool{Eimei Senior High School}
+\setplace{Kawagoe, Saitama}
+\setchair{Inomata Taiki}
+\setmembers{Kano Chinatsu \\ Moriya Ayame \\ Kasahara Kyo}
+\setdegree{High School Diploma}
+\setlogo{logo.pdf}
+
+\addbibresource{bib.bib}
+
+\begin{document}
+\frontmatter
+\thetitlepage
+\import{chapters/}{abstract}
+\import{chapters/}{acknowledgments}
+\begin{KeepFromToc} % \tableofcontents* does not work for some reason
+  \tableofcontents
+\end{KeepFromToc}
+
+\mainmatter
+\part{Mathematical background}
+\import{chapters/}{topoi}
+
+\appendix
+\appendixpage
+
+\backmatter
+\printbibliography
+
+\end{document}
