@@ -158,7 +158,11 @@
 \newcommand{\dom}{\operatorname{dom}}
 \newcommand{\cod}{\operatorname{cod}}
 
-\newcommand{\comment}[1]{\textcolor{magenta}{#1}}
+\ifdefined\comment
+\else
+  \newcommand{\comment}[1]{\textcolor{magenta}{#1}}
+\fi
+  
 % Delimiters
 
 %\newcommand{\prn}[1]{\mathopen{}\left(#1\right)\mathclose{}}
