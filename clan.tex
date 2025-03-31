@@ -1,0 +1,84 @@
+\documentclass[a4paper]{article}
+\usepackage[margin=1in]{geometry}
+
+\usepackage{showkeys}
+\usepackage{clan-macros}
+\usepackage{preamble}
+
+\title{Clans}
+\author{Frank Tsai}
+
+\addbibresource{bib.bib}
+
+\begin{document}
+\maketitle
+
+Personal notes on~\cite{Frey25}.
+
+\section{Clans, models of clans, and WFS on models}
+
+\begin{definition}
+  A \emph{clan} is a small category $\cT$ equipped with a class $\cT_{\dag}$ of distinguished morphisms called \emph{display maps}, subject to the following conditions:
+  \begin{enumerate}
+  \item the pullback of a display map $p : \Gamma' \display \Gamma$ along an arbitrary map $s : \Delta \to \Gamma$ exists, and is a display map
+    \begin{center}
+      \DiagramSquare{
+        nw = {\Delta'},
+        nw/style = {pullback},
+        ne = {\Gamma'},
+        se = {\Gamma},
+        sw = {\Delta},
+        north = {s'},
+        east = {p},
+        east/style = {display},
+        south = {s},
+        west = {p'},
+        west/style = {display},
+      }
+    \end{center}
+  \item all isomorphisms are display maps;
+  \item display maps are stable under composition;
+  \item $\cT$ has a terminal object, and the unique morphism $\Gamma \to \termObj{\cT}$ is a display map for all $\Gamma \in \cT$.
+  \end{enumerate}
+\end{definition}
+
+\begin{definition}
+  Let $\cT$ and $\cQ$ be clans.
+  A \emph{morphism of clans} $F : \cT \to \cQ$ is a functor $F : \cT \to \cQ$ from the underlying category of $\cT$ to the underlying category of $\cQ$ preserving display maps, pullbacks of display maps, and the terminal object.
+  Clans, clan morphisms, and natural transformations between them assemble into a 2-category $\Clan$.
+\end{definition}
+
+\begin{remark}
+  Although a clan is \emph{defined} to be a small category, we sometimes use large clans to simplify some definitions.
+\end{remark}
+
+\begin{definition}
+  Let $\cT$ be a clan.
+  A \emph{model} of $\cT$ is a morphism of clans $\cT \to \Set$, where $\Set$ is equipped with the finite limit clan structure, \ie every morphism is a display map.
+\end{definition}
+
+For any two models $F, G : \cT \to \Set$, we consider any natural transformation as a homomorphism of models; hence the category of models $\Mod(\cT)$ is the full subcategory of the functor category $\funCat{\cT}{\Set}$ spanned by models.
+
+\subsection{Categorical properties of $\Mod(\cT)$}
+
+Every clan $\cT$ is evidently a finite-limit sketch; hence $\Mod(\cT)$ is a reflective subcategory of $\funCat{\cT}{\Set}$, the inclusion functor $\Mod(\cT) \into \funCat{\cT}{\Set}$ creates filtered colimits, and in particular, $\Mod(\cT)$ is locally finitely presentable.
+Since representable functors $\Hom{\cT}(\Gamma,-) : \cT \to \Set$ preserve limits, the image of the Yoneda embedding $\yon : \cT\op \to \funCat{\cT}{\Set}$ lands in $\Mod(\cT)$.
+In other words, the Yoneda embedding $\yon$ restricts to a functor $H : \cT\op \to \Mod(\cT)$ in the following configuration:
+\begin{center}
+  \begin{tikzpicture}[diagram]
+    \node (1) {$\cT\op$};
+    \node (2) [right = of 1] {$\funCat{\cT}{\Set}$};
+    \node (3) [above = of 2] {$\Mod(\cT)$};
+    \draw [embedding] (1) to node [swap] {$\yon$} (2);
+    \draw [embedding] (3) to node {} (2);
+    \draw [exists,->] (1) to node {$H$} (3);
+  \end{tikzpicture}
+\end{center}
+Moreover, $H(\Gamma)$ is finitely presentable since filtered colimits in $\Mod(\cT)$ are computed pointwise in $\funCat{\cT}{\Set}$.
+
+\subsection{The WFS on models}
+
+Since non-equivalent clans may have the same model, we cannot hope for a duality theorem \'a la Gabriel-Ulmer.
+
+\printbibliography
+\end{document}
