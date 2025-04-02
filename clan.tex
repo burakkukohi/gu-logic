@@ -78,7 +78,41 @@ Moreover, $H(\Gamma)$ is finitely presentable since filtered colimits in $\Mod(\
 
 \subsection{The WFS on models}
 
-Since non-equivalent clans may have the same model, we cannot hope for a duality theorem \'a la Gabriel-Ulmer.
+Since nonequivalent clans may have the same model, we cannot hope for a duality theorem \ala Gabriel-Ulmer without further modification.
+
+\begin{definition}
+  Let $\cT$ be a clan.
+  \begin{enumerate}
+  \item A map $f : A \to B$ in $\Mod(\cT)$ is \emph{full} if it has the right lifting property against all maps $H(p)$ for $p$ a display map.
+  \item A map $f : A \to B$ in $\Mod(\cT)$ is an \emph{extension} if it has the left lifting property against all full maps.
+  \item An model $A \in \Mod(\cT)$ is a \emph{$0$-extension} if the unique morphism $\initObj{\Mod(\cT)} \to A$ is an extension.
+  \end{enumerate}
+\end{definition}
+
+\begin{remark}
+  Let $E$ and $F$ be the class of extensions and full maps respectively.
+  By the small object argument, $(E,F)$ is a weak factorization system.
+\end{remark}
+
+\begin{notation}
+  We use the notation $\extension$ for extensions.
+\end{notation}
+
+\section{$(E,F)$-categories and the biadjunction}
+
+\begin{definition}
+  An $(E,F)$-category is a locally finitely presentable category $\cL$ with a weak factorization system $(E,F)$ whose maps are called \emph{extensions} and \emph{full maps}.
+  A morphism of $(E,F)$-categories is a functor $F : \cL \to \cQ$ preserving small limits, filtered colimits, and full maps.
+\end{definition}
+
+\section{Quillen's small object argument}
+
+Let $(L,R)$ be a weak factorization system.
+One can show that $L$ is closed under isomorphisms, composition, and pushouts; and $R$ is closed under isomorphisms, composition, and pullbacks.
+
+\begin{theorem}
+  Let $E$ be a set of morphisms in a locally finitely presentable category $\cC$; then $(...,...)$ is a weak factorization system on $\cC$.
+\end{theorem}
 
 \printbibliography
 \end{document}
