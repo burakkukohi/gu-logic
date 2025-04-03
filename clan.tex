@@ -22,8 +22,9 @@
 
 Personal notes on~\cite{Frey25}.
 
-\section{Clans, models of clans, and WFS on models}
+\section{Clans, models of clans, and a weak factorization system on models}
 
+\subsection{The definition of clans}
 \begin{definition}
   A \emph{clan} is a small category $\cT$ equipped with a class $\cT_{\dag}$ of distinguished morphisms called \emph{display maps}, subject to the following conditions:
   \begin{enumerate}
@@ -55,50 +56,75 @@ Personal notes on~\cite{Frey25}.
   Clans, clan morphisms, and natural transformations between them assemble into a 2-category $\Clan$.
 \end{definition}
 
+\begin{example}
+  Let $\cT$ be a small finitely complete category.
+  There is a canonical clan structure, called the finite limit clan structure, on $\cT$: every morphism is a display map.
+\end{example}
+
+\begin{example}
+  Let $\cT$ be a small category with finite products.
+  The finite product clan structure on $\cT$ consists of all product projections as display maps.
+\end{example}
+
 \begin{remark}
   Although a clan is \emph{defined} to be a small category, we sometimes use large clans to simplify some definitions.
 \end{remark}
 
+\subsection{Models and representable models}
 \begin{definition}
   Let $\cT$ be a clan.
   A \emph{model} of $\cT$ is a morphism of clans $\cT \to \Set$, where $\Set$ is equipped with the finite limit clan structure, \ie every morphism is a display map.
 \end{definition}
 
-For any two models $F, G : \cT \to \Set$, we consider any natural transformation as a homomorphism of models; hence the category of models $\Mod(\cT)$ is the full subcategory of the functor category $\funCat{\cT}{\Set}$ spanned by models.
+\begin{remark}
+  For any two models $F, G : \cT \to \Set$, we consider any natural transformation as a homomorphism of models; hence the category of models $\Mod(\cT)$ is the full subcategory of the functor category $\funCat{\cT}{\Set}$ spanned by models.
+\end{remark}
 
-\subsection{Categorical properties of $\Mod(\cT)$}
+\begin{remark}
+  Let $\cT$ be a clan.
+  The category $\cT$ has a canonical limit sketch structure.
+  Hence, as a category of models of a limit sketch, $\Mod(\cT)$ is locally finitely presentable, and the inclusion functor $\Mod(\cT) \into \funCat{\cT}{\Set}$ creates filtered colimits.
+\end{remark}
 
-Every clan $\cT$ is evidently a finite-limit sketch; hence $\Mod(\cT)$ is a reflective subcategory of $\funCat{\cT}{\Set}$, the inclusion functor $\Mod(\cT) \into \funCat{\cT}{\Set}$ creates filtered colimits, and in particular, $\Mod(\cT)$ is locally finitely presentable.
-Since representable functors $\Hom{\cT}(\Gamma,-) : \cT \to \Set$ preserve limits, the image of the Yoneda embedding $\yon : \cT\op \to \funCat{\cT}{\Set}$ lands in $\Mod(\cT)$.
-In other words, the Yoneda embedding $\yon$ restricts to a functor $H : \cT\op \to \Mod(\cT)$ in the following configuration:
-\begin{center}
-  \begin{tikzpicture}[diagram]
-    \node (1) {$\cT\op$};
-    \node (2) [right = of 1] {$\funCat{\cT}{\Set}$};
-    \node (3) [above = of 2] {$\Mod(\cT)$};
-    \draw [embedding] (1) to node [swap] {$\yon$} (2);
-    \draw [embedding] (3) to node {} (2);
-    \draw [exists,->] (1) to node {$H$} (3);
-  \end{tikzpicture}
-\end{center}
-Moreover, $H(\Gamma)$ is finitely presentable since filtered colimits in $\Mod(\cT)$ are computed pointwise in $\funCat{\cT}{\Set}$.
+\begin{remark}
+  Let $\cT$ be a clan.
+  For any object $\Gamma \in \cT$, the representable functor $\Hom{\cT}(\Gamma,-) : \cT \to \Set$ preserves all limits in $\cT$; hence it is a model of $\cT$.
+  This means that the Yoneda embedding $\yon : \cT\op \to \funCat{\cT}{\Set}$ restricts along the inclusion as follows:
+  \begin{center}
+    \begin{tikzpicture}[diagram]
+      \node (1) {$\cT\op$};
+      \node (2) [right = of 1] {$\funCat{\cT}{\Set}$};
+      \node (3) [above = of 2] {$\Mod(\cT)$};
+      \draw [embedding] (1) to node [swap] {$\yon$} (2);
+      \draw [embedding] (3) to node {} (2);
+      \draw [exists,->] (1) to node {$H$} (3);
+    \end{tikzpicture}
+  \end{center}
+\end{remark}
 
-\subsection{The WFS on models}
+\begin{lemma}
+  Let $\cT$ be a clan.
+  For any object $\Gamma \in \cT$, the representable model $H(\Gamma)$ is finitely presentable.
+\end{lemma}
+\begin{proof}
+  By the Yoneda lemma, the functor $\Hom{\Mod(\cT)}(H(\Gamma),-) : \Mod(\cT) \to \Set$ is isomorphic to the evaluation functor at $\Gamma$.
+  Since filtered colimits in $\Mod(\cT)$ are computed pointwise, this functor preserves filtered colimits.
+\end{proof}
 
-Since nonequivalent clans may have the same model, we cannot hope for a duality theorem \ala Gabriel-Ulmer without further modification.
-
+\subsection{A weak factorization system}
 \begin{definition}
   Let $\cT$ be a clan.
   \begin{enumerate}
   \item A map $f : A \to B$ in $\Mod(\cT)$ is \emph{full} if it has the right lifting property against all maps $H(p)$ for $p$ a display map.
   \item A map $f : A \to B$ in $\Mod(\cT)$ is an \emph{extension} if it has the left lifting property against all full maps.
-  \item An model $A \in \Mod(\cT)$ is a \emph{$0$-extension} if the unique morphism $\initObj{\Mod(\cT)} \to A$ is an extension.
+  \item A model $A \in \Mod(\cT)$ is a \emph{$0$-extension} if the unique morphism $\initObj{\Mod(\cT)} \to A$ is an extension.
   \end{enumerate}
 \end{definition}
 
 \begin{remark}
-  Let $E$ and $F$ be the class of extensions and full maps respectively.
-  By the small object argument, $(E,F)$ is a weak factorization system.
+  Let $\cT$ be a clan, and let $G = \{H(p) \mid p \in \cT_{\dag}\}$.
+  The class of full maps is precisely $\rLift{G}$, and the class of extensions is precisely $\lLift{(\rLift{G})}$.
+  By Quillen's small object argument, $(\lLift{(\rLift{G})},\rLift{G})$ is a weak factorization system on $\Mod(\cT)$.
 \end{remark}
 
 \begin{notation}
@@ -106,6 +132,8 @@ Since nonequivalent clans may have the same model, we cannot hope for a duality 
 \end{notation}
 
 \section{$(E,F)$-categories and the biadjunction}
+For any clan $\cT$, we can equip $\Mod(\cT)$ with a weak factorization system.
+To make this association functorial, we define $(E,F)$-categories and their morphisms.
 
 \begin{definition}
   An $(E,F)$-category is a locally finitely presentable category $\cL$ with a weak factorization system $(E,F)$ whose maps are called \emph{extensions} and \emph{full maps}.
@@ -149,10 +177,18 @@ There is an idempotent pseudomonad on $\EFCat$.
   An $(E,F)$-category $\cL$ is called \emph{clan-algebraic} if
   \begin{enumerate}
   \item[(D)] the inclusion $j : \fC(\cL) \into \cL$ is dense;
-  \item[(CG)] the weak factorization is cofibrantly generated by $E \cap \sC(\cL)$;
+  \item[(CG)] the weak factorization is cofibrantly generated by $E \cap \fC(\cL)$;
   \item[(FQ)] equivalence relations $(p,q) : R \mono A \times A$ in $\cL$ with \emph{full} components $p, q$ are effective, and have \emph{full} coequalizers.
   \end{enumerate}
 \end{definition}
+
+\begin{theorem}
+  If $\cL$ is clan-algebraic, then $J_N : \cL \to \Mod(\fC(\cL)\op)$ is an equivalence.
+\end{theorem}
+
+\begin{theorem}
+  The contravariant biadjunction between clans and $(E,F)$-categories restricts to a contravariant biequivalence between Cauchy-complete clans and clan-algebraic categories.
+\end{theorem}
 
 \section{Quillen's small object argument}
 
