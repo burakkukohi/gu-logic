@@ -67,7 +67,7 @@ Personal notes on~\cite{Frey25}.
 \end{example}
 
 \begin{remark}
-  Although a clan is \emph{defined} to be a small category, we sometimes use large clans to simplify some definitions.
+  Although a clan is \emph{defined} to be a small category, we consider some \emph{large} clans to simplify some definitions.
 \end{remark}
 
 \subsection{Models and representable models}
@@ -134,6 +134,35 @@ Personal notes on~\cite{Frey25}.
 \section{$(E,F)$-categories and the biadjunction}
 For any clan $\cT$, we can equip $\Mod(\cT)$ with a weak factorization system.
 To make this association functorial, we define $(E,F)$-categories and their morphisms.
+We would like to think of a morphism of clans $F : \cT \to \cQ$ as an interpretation of $\cT$ in $\cQ$.
+Since the functor $F$ is a morphism of clans, the precomposition functor $- \circ F : \funCat{\cQ}{\Set} \to \funCat{\cT}{\Set}$ restricts along the inclusion to a functor $- \circ F : \Mod(\cQ) \to \Mod(\cT)$.
+
+\begin{remark}
+  A map $f : A \to B$ in $\Mod(\cT)$ is full if and only if the naturality square
+  \begin{center}
+    \DiagramSquare{
+      nw = {A(\Delta)},
+      ne = {A(\Gamma)},
+      se = {B(\Gamma)},
+      sw = {B(\Delta)},
+      north = {A(p)},
+      east = {f_{\Delta}},
+      south = {B(p)},
+      west = {f_{\Gamma}},
+    }
+  \end{center}
+  is a weak pullback in $\Set$ for all display maps $p : \Delta \display \Gamma$.
+\end{remark}
+
+\begin{lemma}
+  The (restricted) precomposition functor $- \circ F : \Mod(\cQ) \to \Mod(\cT)$ preserves small limits, filtered colimits, and all full maps.
+\end{lemma}
+\begin{proof}
+  Since the precomposition functor $- \circ F : \funCat{\cQ}{\Set} \to \funCat{\cT}{\Set}$ preserves both limits and colimits, the restricted precomposition preserves those limits and colimits that are computed pointwise, \ie all small limits and filtered colimits.
+  Now, let $f : A \to B$ be full in $\Mod(\cQ)$.
+  The component of $f \circ F$ at an arbitrary display map $p$ is precisely $f_{F(p)}$.
+  Since $F$ preserves display maps, the naturality square of $f \circ F$ at any $p$ is a weak pullback, \ie $f \circ F$ is full.
+\end{proof}
 
 \begin{definition}
   An $(E,F)$-category is a locally finitely presentable category $\cL$ with a weak factorization system $(E,F)$ whose maps are called \emph{extensions} and \emph{full maps}.
@@ -147,8 +176,7 @@ To make this association functorial, we define $(E,F)$-categories and their morp
 \end{lemma}
 
 \begin{lemma}
-  For any morphism $F : \cT \to \cQ$ of clans, the precomposition $- \circ F : \Mod(\cQ) \to \Mod(\cT)$ is a morphisms of $(E,F)$-categories.
-  Hence the assignment $\cT \mapsto \Mod(\cT)$ extends to a 2-functor $\Mod : \Clan\op \to \EFCat$.
+  The assignment $\cT \mapsto \Mod(\cT)$ extends to a 2-functor $\Mod : \Clan\op \to \EFCat$.
 \end{lemma}
 
 \begin{definition}
