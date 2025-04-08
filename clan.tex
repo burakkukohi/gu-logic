@@ -76,10 +76,6 @@ Personal notes on~\cite{Frey25}.
   A \emph{model} of $\cT$ is a morphism of clans $\cT \to \Set$, where $\Set$ is equipped with the finite limit clan structure, \ie every morphism is a display map.
 \end{definition}
 
-\begin{definition}
-  A \emph{comodel} of a clan $\cT$ in a cocomplete category $\fX$ is a functor $F : \cT\op \to \fX$ sending $\initObj{\cT\op}$ to $\initObj{\fX}$ and display-pushouts in $\cT\op$ to pushouts in $\fX$.
-\end{definition}
-
 \begin{remark}
   For any two models $F, G : \cT \to \Set$, we consider any natural transformation as a homomorphism of models; hence the category of models $\Mod(\cT)$ is the full subcategory of the functor category $\funCat{\cT}{\Set}$ spanned by models.
 \end{remark}
@@ -115,6 +111,28 @@ Personal notes on~\cite{Frey25}.
   Since filtered colimits in $\Mod(\cT)$ are computed pointwise, this functor preserves filtered colimits.
 \end{proof}
 
+\begin{definition} 
+  A \emph{comodel} of a clan $\cT$ in a cocomplete category $\fX$ is a functor $F : \cT\op \to \fX$ sending $\initObj{\cT\op}$ to $\initObj{\fX}$ and display-pushouts in $\cT\op$ to pushouts in $\fX$.
+  We write $\CoMod_{\fX}(\cT)$ for the 2-category of comodels in $\fX$.
+\end{definition}
+
+\begin{proposition}
+  Let $\cT$ be a clan.
+  For any cocomplete category $\fX$, precomposition with $H$ gives rise to an equivalence
+  \[
+    \CoCont(\Mod(\cT),\fX) \eqv \CoMod_{\fX}(\cT).
+  \]
+\end{proposition}
+\begin{proof}
+  The precomposition functor $- \circ H : \CoCont(\Mod(\cT),\fX) \to \CoMod_{\fX}(\cT)$ is fully faithful because $H$ is.
+  For any comodel $F : \cT\op \to \fX$, we show that there is a continuous functor $G : \Mod(\cT) \to \fX$ such that $G \circ H \iso F$.
+  We take $G$ to be the Yoneda extension of $F$ along $H$; then clearly $G \circ H \iso F$.
+  It remains to show that $G$ is cocontinuous.
+  To this end, we show that $G$ is a left adjoint.
+  Since $F$ is a comodel, the functor $\fX(F(-),X) : \cT \to \Set$ is a model for all $X \in \fX$.
+  Hence the nerve functor lands in $\Mod(\cT)$ and the usual realization-nerve adjunction restricts to the desired adjunction.
+\end{proof}
+
 \subsection{A weak factorization system}
 \begin{definition}
   Let $\cT$ be a clan.
@@ -134,6 +152,12 @@ Personal notes on~\cite{Frey25}.
 \begin{notation}
   We use the notation $\extension$ for extensions.
 \end{notation}
+
+\begin{remark}
+  Let $\cT$ be a clan.
+  For every display map $p : \Delta \display \Gamma$, $H(p) : H(\Gamma) \extension H(\Delta)$ is an extension.
+  In particular, $H(\Gamma)$ is a $0$-extension for all $\Gamma \in \cT$ since $\Gamma \display \termObj{\cT}$ is always a display map.
+\end{remark}
 
 \section{$(E,F)$-categories and the biadjunction}
 For any clan $\cT$, we can equip $\Mod(\cT)$ with a weak factorization system.
@@ -228,8 +252,26 @@ The problem is that we do not know how to equip this category with a class of di
   It admits a left adjoint $L : \cQ \to \cL$ preserving finitely presentable objects and extensions; hence $L$ restricts to a morphism of clans $\fC(\cQ)\op \to \fC(\cL)\op$, extending the object assignment $\fC(-) : \EFCat \to \Clan\op$ to a pseudofunctor.
 \end{construction}
 
+\begin{lemma}
+  Let $\cL$ be an $(E,F)$-category.
+  The inclusion functor $\fC(\cL) \into \cL$ is a comodel.
+\end{lemma}
+
+\begin{construction}
+  For any $(E,F)$-category $\cL$, since the inclusion $j : \fC(\cL) \into \cL$ is a comodel, the nerve of $j$ is a functor $\eta_{\cL} : \cL \to \Mod(\fC(\cL)\op)$.
+\end{construction}
+
+\begin{construction}
+  For any clan $\cT$, the restricted Yoneda embedding $H : \cT\op \to \Mod(\cT)$ further restricts to $H' : \cT\op \to \fC(\Mod(\cT))$ since $H(\Gamma)$ is a finitely presentable 0-extension for all $\Gamma \in \cT$.
+  Taking the opposite categories yields $\varepsilon_{\cT} : \cT \to \fC(\Mod(\cT))\op$.
+\end{construction}
+
 \begin{theorem}
   $\fC(-)$ is left biadjoint to $\Mod(-)$.
+  Hence there is an equivalence between hom-categories.
+  \[
+    \Clan(\cT,\fC(\cL)\op) \eqv \EFCat(\cL,\Mod(\cT))
+  \]
 \end{theorem}
 
 \section{Cauchy complete clans and the fat small object argument}
