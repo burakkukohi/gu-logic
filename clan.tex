@@ -76,6 +76,10 @@ Personal notes on~\cite{Frey25}.
   A \emph{model} of $\cT$ is a morphism of clans $\cT \to \Set$, where $\Set$ is equipped with the finite limit clan structure, \ie every morphism is a display map.
 \end{definition}
 
+\begin{definition}
+  A \emph{comodel} of a clan $\cT$ in a cocomplete category $\fX$ is a functor $F : \cT\op \to \fX$ sending $\initObj{\cT\op}$ to $\initObj{\fX}$ and display-pushouts in $\cT\op$ to pushouts in $\fX$.
+\end{definition}
+
 \begin{remark}
   For any two models $F, G : \cT \to \Set$, we consider any natural transformation as a homomorphism of models; hence the category of models $\Mod(\cT)$ is the full subcategory of the functor category $\funCat{\cT}{\Set}$ spanned by models.
 \end{remark}
@@ -207,10 +211,26 @@ Since the functor $F$ is a morphism of clans, the precomposition functor $- \cir
 \end{proof}
 
 In the opposite direction, we would like to associate each $(E,F)$-category $\cT$ with a clan.
+An evident guess is to send each $(E,F)$-category $\cT$ to the category of left adjoints from $\Set$ to $\cT$ preserving finitely presentable objects and extensions.
+The problem is that we do not know how to equip this category with a class of display maps, but observe that the category described above is equivalent to the full subcategory of $\cT$ spanned by finitely presentable $0$-extensions.
 
 \begin{definition}
   Given an $(E,F)$-category $\cL$, we write $\fC(\cL) \subseteq \cL$ for the full subcategory spanned by finitely presentable $0$-extensions.
 \end{definition}
+
+\begin{lemma}
+  Let $\cL$ be an $(E,F)$-category.
+  $\fC(\cL)\op$ equipped with extensions as display maps is a clan.
+\end{lemma}
+
+\begin{construction}
+  Let $f : \cL \to \cQ$ be a morphism of $(E,F)$-categories.
+  It admits a left adjoint $L : \cQ \to \cL$ preserving finitely presentable objects and extensions; hence $L$ restricts to a morphism of clans $\fC(\cQ)\op \to \fC(\cL)\op$, extending the object assignment $\fC(-) : \EFCat \to \Clan\op$ to a pseudofunctor.
+\end{construction}
+
+\begin{theorem}
+  $\fC(-)$ is left biadjoint to $\Mod(-)$.
+\end{theorem}
 
 \section{Cauchy complete clans and the fat small object argument}
 
