@@ -1,0 +1,36 @@
+* What the tortoise said to Achilles
+** Overview
+To use a reasoning principle, we demand a justification of that reasoning principle.
+But to use said justifcation to draw conclusion, we demand even more justification for the use of that justification ad infinitum.
+
+*** Eg
+MP: Suppose A and A implies B, conclude B.
+To use MP, we need to justify it.
+Ok, so we provide a justification C.
+But to use the justification C to justify the use of MP, we need to justify the use of C.
+This repeats ad infinitum.
+
+** Moral of the story
+At some point, we need to take something as self-evident (primitive, requiring no justification).
+
+** Question 1
+Is taking something as self-evident philosophically problematic?
+
+*** Relativized PoV
+Even if I build my arguments based on a collection of things that I consider self-evident, I can come back and demand justifications for those self-evident things.
+That is, we have stratified reasoning.
+
+** Question 2
+When should we consider something self-evident?
+
+*** Our perspective
+The answer depends on what we want to describe with the language.
+
+Is LEM self-evident?
+"either p or not p is true"
+"there is either a piece of evidence of p or a refutation of p"
+
+Is DNE self-evident?
+"Turn the computer off and on"
+"I don't dislike chocolate"
+
