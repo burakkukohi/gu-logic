@@ -21,7 +21,7 @@ Even if I build my arguments based on a collection of things that I consider sel
 That is, we have stratified reasoning.
 
 ** Question 2
-When should we consider something self-evident?
+What should be considered self-evident?
 
 *** Our perspective
 The answer depends on what we want to describe with the language.
@@ -34,3 +34,5 @@ Is DNE self-evident?
 "Turn the computer off and on"
 "I don't dislike chocolate"
 
+** Question 3
+When should we consider something self-evident?
