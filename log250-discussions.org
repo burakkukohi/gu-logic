@@ -49,3 +49,29 @@ This brings us back to the first question.
 
 * The justification of deduction
 
+** Question 4
+Looking at the justifications for MMP and MM, why are we more inclined to accept the one for MMP than the one for MM?
+What does Haack mean? Choosing between MMP or MM, or both?
+
+*** Opinion
+1. When we say A -> B is true, the metal image we have is when I can observe A then I can also observe B.
+Eg. If the sun shines, I go for a walk. This gives me two pieces of information: When I observe that the sun is shining, then I go for a walk.
+2. Now consider MM. If we observe that I'm going for a walk, then MM says the sun is shining. What if we take the contrapositive?
+If I don't go for a walk, then the sun is not shining. Consider the scenario where the sun is not shining, MM says I don't go for a walk.
+
+Haack argues that if the meaning of -> is partially given by it inference rules, then MM can be justified.
+We think Haack is making the implicit assumption that -> is the "if ... then ..." construct, but we should not make this assumption at this point because -> could very well mean "... if ..." In this case, MM is not problematic at all.
+In fact, if we choose both then -> just means <-> in the ususal sense.
+We use A -> B because we often phrase sentences in this structure, and this syntax reflect this tendency.
+Do we need justification for this? Both seem reasonable, we just happen to choose MMP.
+In contrast, if we define (at least classically) A -> B := (A and B) or (not A and not B), then we can introduce simplication /-> := not A or B, which corresponds to the usual implication.
+In this case, we have successfully done nothing. More specifically, we have not got any steps closer to justifying implication/simplication.
+
+** Question 5
+Do you think logic is revisable?
+
+*** Opinion
+Yes.
+
+*** PL opinion
+Yes. Programming languages evolve.
