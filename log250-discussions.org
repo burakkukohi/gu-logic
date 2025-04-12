@@ -14,25 +14,38 @@ This repeats ad infinitum.
 At some point, we need to take something as self-evident (primitive, requiring no justification).
 
 ** Question 1
-Is taking something as self-evident philosophically problematic?
+Is taking something as self-evident problematic?
 
 *** Relativized PoV
 Even if I build my arguments based on a collection of things that I consider self-evident, I can come back and demand justifications for those self-evident things.
 That is, we have stratified reasoning.
 
 ** Question 2
+Can something be "objectively" self-evident?
+
+*** Our perspective
+We believe that identity is self-evident.
+"Given A, derive A."
+
+
+** Question 3
 What should be considered self-evident?
 
 *** Our perspective
 The answer depends on what we want to describe with the language.
 
 Is LEM self-evident?
-"either p or not p is true"
+"either p or not p is true."
 "there is either a piece of evidence of p or a refutation of p"
 
 Is DNE self-evident?
-"Turn the computer off and on"
-"I don't dislike chocolate"
+"The complement of the complement of A."
+"I don't dislike chocolate."
 
-** Question 3
-When should we consider something self-evident?
+*** Programming language example
+In the design of programming languages, we often need to choose a sensible set of primitives.
+Of course, we implement high-level primitives with lower level-primitives.
+This brings us back to the first question.
+
+* The justification of deduction
+
