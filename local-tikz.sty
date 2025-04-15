@@ -16,12 +16,20 @@
 
 
 \tikzset{
-  desc/.style={sloped, fill=white,inner sep=2pt},
-  upright desc/.style={fill=white,inner sep=2pt},
   phantom/.style = {
     commutative diagrams/phantom,
-    node font=\scriptsize,
     sloped,
+  },
+  desc/.style = {anchor=center,fill=white,inner sep=2pt},
+  offset/.style args = {#1} {commutative diagrams/shift right={#1}},
+  cross over/.style = {
+    commutative diagrams/crossing over
+  },
+  adjoint/.style = {
+    phantom,
+    every to/.append style = {
+      edge node = {node [sloped,allow upside down,auto=false] {$\dashv$}}
+    }
   },
   pullback/.style = {
     append after command={
