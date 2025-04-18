@@ -246,6 +246,27 @@ The problem is that we do not know how to equip this category with a class of di
   Let $\cL$ be an $(E,F)$-category.
   $\fC(\cL)\op$ equipped with extensions as display maps is a clan.
 \end{lemma}
+\begin{proof}
+  We show that $\fC(\cL)\op$ has pullbacks against any display map and that display maps are stable under pullback; all other conditions are trivial.
+  To this end, suppose that $\Gamma, \Gamma'$, and $\Delta$ are finitely-presentable 0-extensions, and that $p : \Gamma \extension \Gamma'$ is an extension and $s : \Gamma \to \Delta$ is an arbitrary morphism in $\cL$.
+  We consider the following pushout:
+  \begin{center}
+    \DiagramSquare{
+      nw = {\Gamma},
+      ne = {\Gamma'},
+      se = {\Delta'},
+      se/style = {pushout},
+      sw = {\Delta},
+      north = {p},
+      north/style = {extension},
+      west = {s},
+      south/style = {extension},
+    }
+  \end{center}
+  Note that extensions are stable under pushout; hence it remains to show that $\Delta'$ is a finitely-presentable 0-extension.
+  It is finitely presentable because $\Gamma'$ and $\Delta$ are and filtered colimits commute with finite limits.
+  It is a 0-extension because the unique map $\initObj{\cL} \to \Delta'$ can be factorized as $\initObj{\cL} \extension \Delta \extension \Delta'$, and extensions are stable under composition.
+\end{proof}
 
 \begin{construction}
   Let $f : \cL \to \cQ$ be a morphism of $(E,F)$-categories.
@@ -274,7 +295,19 @@ The problem is that we do not know how to equip this category with a class of di
   \]
 \end{theorem}
 
-\section{Cauchy complete clans and the fat small object argument}
+\section{Cauchy complete clans}
+
+\begin{definition}
+  A clan $\cT$ is \emph{Cauchy complete} if the underlying category is Cauchy complete and retracts of display maps are display maps.
+\end{definition}
+
+\begin{remark}
+  If $\cC$ is Cauchy complete, then retracts of representable functors in $\funCat{\cC\op}{\Set}$ are representable.
+\end{remark}
+
+\begin{remark}
+  For every $(E,F)$-category $\cL$, the clan $\fC(\cL)\op$ is Cauchy complete.
+\end{remark}
 
 \begin{definition}
   A model $A : \cT \to \Set$ is \emph{flat} if $\El(A)$ is filtered.
@@ -287,8 +320,12 @@ The problem is that we do not know how to equip this category with a class of di
 \begin{theorem}
   If $\cT$ is a Cauchy complete clan, then $\eta_{\cT} : \cT \to \fC(\Mod(\cT))\op$ is an equivalence of clans.
 \end{theorem}
-
-There is an idempotent pseudomonad on $\EFCat$.
+\begin{proof}
+  For all intents and purposes, $\eta_{\cT}$ is the (restricted) Yoneda embedding.
+  Hence it is fully faithful.
+  We show that it is essentially surjective on objects.
+  \todo
+\end{proof}
 
 \section{Clan-algebraic categories}
 
@@ -301,21 +338,16 @@ There is an idempotent pseudomonad on $\EFCat$.
   \end{enumerate}
 \end{definition}
 
+\begin{lemma}
+  Full maps in clan-algebraic categories are regular epimorphisms.
+\end{lemma}
+
 \begin{theorem}
-  If $\cL$ is clan-algebraic, then $J_N : \cL \to \Mod(\fC(\cL)\op)$ is an equivalence.
+  If $\cL$ is clan-algebraic, then $j_N : \cL \to \Mod(\fC(\cL)\op)$ is an equivalence.
 \end{theorem}
 
 \begin{theorem}
   The contravariant biadjunction between clans and $(E,F)$-categories restricts to a contravariant biequivalence between Cauchy-complete clans and clan-algebraic categories.
-\end{theorem}
-
-\section{Quillen's small object argument}
-
-Let $(L,R)$ be a weak factorization system.
-One can show that $L$ is closed under isomorphisms, composition, and pushouts; and $R$ is closed under isomorphisms, composition, and pullbacks.
-
-\begin{theorem}
-  Let $E$ be a set of morphisms in a locally finitely presentable category $\cC$; then $(...,...)$ is a weak factorization system on $\cC$.
 \end{theorem}
 
 \printbibliography
