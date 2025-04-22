@@ -1,0 +1,652 @@
+\documentclass[a4paper]{article}
+\usepackage[margin=1in]{geometry}
+
+\usepackage{preamble}
+\usepackage{log221-paper-macros}
+\usepackage[final]{showkeys}
+
+\title{Curry-Howard correspondence and detour elimination}
+\author{Frank Tsai}
+
+\begin{document}
+ 
+\maketitle
+
+\begin{abstract}
+  The Curry-Howard correspondence is the observation that intuitionistic logic and typed computational calculi are closely related.
+  This correspondence enables us to apply programming-language-theory techniques to study proof systems and \viceversa.
+  We introduce \emph{Tait's method of computability}, also known as \emph{logical relations}, to show that every intuitionistic natural deduction derivation has a detour-free derivation.
+\end{abstract}
+
+\section{Introduction}
+\label{sec:0000}
+
+The $\lambda$-calculus was proposed by Church \cite{Church32,Church36} as a negative answer to Hilbert's \emph{Entscheidungsproblem}.
+A $\lambda$-term is a syntactic representation of a function.
+In its simplest form, there are exactly three ways to construct a $\lambda$-term, defined by the following BNF grammar:
+\[
+  s, t ::= x \mathrel{|} \tmLam{x}{t} \mathrel{|} \tmApp{s}{t}
+\]
+These three generating rules correspond to variable, $\lambda$-abstraction, and application respectively.
+
+Kleene and Rosser showed that the original (untyped) lambda calculus was inconsistent as a logical system \cite{Kleene35}.
+This motivated Church to augment the original calculus with types, resulting in a calculus known as \emph{simply typed $\lambda$-calculus} \cite{Church40}.
+
+The Curry-Howard correspondence was first observed by Curry in the context of combinatory logic \cite{Curry58}: combinators are representations of proofs.
+This correspondence retained its folklore status until the general correspondence between propositions and types was explicated by Howard \cite{Howard80}.
+
+In this paper, we consider a typed $\lambda$-calculus equipped with a natural notion of computational dynamic, which we will discuss in \cref{sec:0005}.
+Computational dynamics are traditionally presented as a \emph{term rewriting system} \cite{Klop92}, which comes with a set of rewriting rules specifying when a complex term can be rewritten to a simpler term; hence a rewriting rule is also commonly called a \emph{reduction rule}.
+For example, the rules of arithmetic permit the reduction from $1 + 2$ to $3$.
+
+A term $t$ is said to be \emph{normalizing} if there is a sequence of reductions starting at $t$ and ending in an irreducible term.
+A desired property of a computational dynamic is that every term is normalizing, \ie every term can be computed to a value (\ie normal form).
+This property is called \emph{normalization}.
+In \cref{sec:0005}, we will explain how reductions correspond with detour conversions; and as a consequence, normalization corresponds with \emph{detour elimination}.
+We will see in \cref{sec:0004} that a na\"ive induction argument cannot establish normalization.
+
+In this paper, we extend the simply typed $\lambda$-calculus with additional types corresponding to intuitionistic logical connectives, and we extend the Curry-Howard correspondence accordingly.
+Then, in \cref{sec:0006}, we will introduce \emph{Tait's method of computability} \cite{Tait67,Plotkin73}, also known as \emph{logical relations}, to address the deficiencies in the na\"ive proof-by-induction attempt.
+
+% The Curry-Howard correspondence establishes a translation between derivations and typed $\lambda$-terms.
+% Under such a correspondence proof identifications become equational axioms in the $\lambda$-calculus; moreover, detour conversions give the $\lambda$-calculus computational meaning.
+
+% It is almost a given that we can convert every derivation to a detour-free derivation; in fact, the reader probably already has an algorithm in mind, yet the standard proof-by-induction argument fails.
+% The induction hypothesis is too weak to handle the elimination rules.
+
+% Tait's method of computability strengthens the induction hypothesis by attaching additional semantic information to the syntax.
+
+\section{Curry-Howard correspondence}
+\label{sec:0001}
+
+The \emph{Brouwer-Heyting-Kolmogorov interpretation} (BHK interpretation) of intuitionistic logic is an informal semantics of intuitionistic (propositional) logic in which propositions are assigned informal semantic objects.
+These semantic objects informally correspond the types in a typed $\lambda$-calculus.
+Hence we can regard the BHK interpretation as a flavor of the Curry-Howard correspondence.
+
+Let us briefly review the BHK interpretation.
+Under the BHK interpretation, a proof of a conjunction $A \wedge B$ consists of a proof of $A$ and a proof of $B$; a proof of a disjunction $A \vee B$ consists of either a proof of $A$ or a proof of $B$; and finally, a proof of an implication $A \to B$ is a function mapping a proof of $A$ to a proof of $B$.
+These informal descriptions yield a natural translation, summarized in \cref{0000}, between formulas and types in a typed $\lambda$-calculus.
+We will keep the translation implicit.
+
+\begin{figure}
+  \centering
+  \begin{tabular}{l|l}
+    \hline
+    Formula & Type\\
+    \hline
+    propositional variables & base types\\
+    conjunctions $\wedge$ & product types $\times$\\
+    disjunctions $\vee$ & sum types $+$\\
+    implications $\to$ & function types $\to$\\
+    \hline
+  \end{tabular}
+  \caption{BHK interpretation of intuitionistic logic}
+  \label{0000}
+\end{figure}
+
+\subsection{From proofs to programs (and back)}
+\label{sec:0002}
+
+To make the correspondence in the foregoing section formal, we describe a $\lambda$-calculus in this section.
+The typing rules are given in \cref{fig:0000}; every typing rule except \rVar{} is obtained by attaching a term to the corresponding natural deduction rule.
+The additional typing rule \rVar{} renders the use of assumptions explicit.
+We assume that variables occurring in $\Gamma$ are all distinct.
+
+Terms associated with introduction rules are called \emph{constructors}, and terms associated with elimination rules are called \emph{eliminators}.
+We highlight the major argument of each eliminator in \textcolor{olive}{olive}; major arguments correspond to the major premises of elimination rules.
+
+An eliminator whose major argument is a constructor for the same type is called a \emph{redex}.
+For example, $\tmPrl{\tmPair{a}{b}}$ and $\tmApp{\tmLam{x:A}{b}}{a}$ are redexes.
+These two terms intuitively mean ``project out the first element of a pair containing $a$ and $b$,'' and ``apply the function whose body is $b$ to the argument $a$'' respectively.
+Hence a natural computational dynamic would reduce the former term to $a$, and the latter term to $b[a/x]$.
+We formulate a computational dynamic based on this intuition in \cref{fig:0001}.
+These rewriting rules are traditionally called \emph{$\beta$-reductions}.
+The computational dynamic will not be relevant until the next section (\cref{sec:0005}).
+
+In this paper, we refrain from delving into the technical issues of $\alpha$-equivalence, variable binding, and capture-avoiding substitution.
+The interested reader can consult the extensive literature on this matter \cite{Bruijn72,Chargueraud12}.
+
+\begin{figure}
+  \centering
+  \begin{mathpar}
+    \ebrule[\rVar]{
+      \hypo{x : A \in \Gamma}
+      \infer1{\Gamma \vdash x : A}
+    }\and
+    \ebrule[\rEmpE]{
+      \hypo{\Gamma \vdash e : \tpEmp}
+      \infer1{\Gamma \vdash \tmAbort{e} : A}
+    }\and
+    \ebrule[\rProdI]{
+      \hypo{\Gamma \vdash a : A}
+      \hypo{\Gamma \vdash b : B}
+      \infer2{\Gamma \vdash \tmPair{a}{b} : A \times B}
+    }\and
+    \ebrule[\rProdEl]{
+      \hypo{\Gamma \vdash p : A \times B}
+      \infer1{\Gamma \vdash \tmPrl{p} : A}
+    }\and
+    \ebrule[\rProdEr]{
+      \hypo{\Gamma \vdash p : A \times B}
+      \infer1{\Gamma \vdash \tmPrr{p} : B}
+    }\and
+    \ebrule[\rSumIl]{
+      \hypo{\Gamma \vdash a : A}
+      \infer1{\Gamma \vdash \tmInl{a} : A + B}
+    }\and
+    \ebrule[\rSumIr]{
+      \hypo{\Gamma \vdash b : B}
+      \infer1{\Gamma \vdash \tmInr{b} : A + B}
+    }\and
+    \ebrule[\rSumE]{
+      \hypo{\Gamma \vdash s : A + B}
+      \hypo{\Gamma, x : A \vdash c : C}
+      \hypo{\Gamma, y : B \vdash c' : C}
+      \infer3{\Gamma \vdash \tmCase{s}{c}{c'} : C}
+    }\and
+    \ebrule[\rFunI]{
+      \hypo{\Gamma, x : A \vdash b : B}
+      \infer1{\Gamma \vdash \tmLam{x : A}{b} : A \to B}
+    }\and
+    \ebrule[\rFunE]{
+      \hypo{\Gamma \vdash f : A \to B}
+      \hypo{\Gamma \vdash a : A}
+      \infer2{\Gamma \vdash \tmApp{f}{a} : B}
+    }
+  \end{mathpar}
+  \caption{Typing rules}
+  \label{fig:0000}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \begin{mathpar}
+    \tmPrl{\tmPair{a}{b}} \bRed a\and
+    \tmPrr{\tmPair{a}{b}} \bRed b\and
+    \tmCase{\tmInl{a}}{c}{c'} \bRed c[a/x]\and
+    \tmCase{\tmInr{b}}{c}{c'} \bRed c'[b/y]\and
+    \tmApp{\tmLam{x : A}{b}}{a} \bRed b[a/x]
+    % \tmPrl{\tmAbort{e}} = \tmAbort{e}\and
+    % \tmPrr{\tmAbort{e}} = \tmAbort{e}\and
+    % \tmCase{\tmAbort{e}}{c}{c'} = \tmAbort{e}\and
+    % \tmApp{\tmAbort{e}}{a} = \tmAbort{e}
+  \end{mathpar}
+  \caption{$\beta$-reduction relations}
+  \label{fig:0001}
+\end{figure}
+
+We finish this section with the following two theorems, formalizing the correspondence observed in \cref{sec:0001}.
+
+\begin{theorem}
+  If $\Gamma \vdash A$, then there is a term $t$ such that $\Gamma \vdash t : A$.
+\end{theorem}
+\begin{proof}
+  By induction on the height of $\Gamma \vdash A$.
+  If the derivation has height 0, then $A$ must be an assumption; hence $\Gamma \vdash x : A$ by \rVar.
+  In the induction step, we do a case analysis on the last applied rule.
+  In all cases, we apply the induction hypothesis on the premise(s) and then apply the corresponding typing rule.
+\end{proof}
+
+% \subsection{From programs to proofs}
+% \label{sec:0003}
+
+\begin{theorem}\label{0001}
+  If $\Gamma \vdash t : A$, then $\Gamma \vdash A$.
+\end{theorem}
+\begin{proof}
+  Intuitively, if we are given a typing derivation, then we can obtain a natural deduction derivation by erasing every term in the typing derivation.
+  
+  We proceed by induction on the typing derivation $\Gamma \vdash t : A$.
+  The rule \rVar{} corresponds to the use of an assumption.
+  In all other cases, we apply the induction hypothesis to the premise(s) and then apply the corresponding inference rule.
+\end{proof}
+
+\subsection{Detour conversion and $\beta$-reduction}
+\label{sec:0005}
+
+In the $\lambda$-calculus, if the major argument of an eliminator is a constructor for the same type, then the entire term is a redex.
+Correspondingly, if the major premise of an elimination rule is an introduction rule for the same connective, then the derivation is a \emph{detour}.
+For example, if we combine a derivation of $A$ and a derivation of $B$ by $\wedge$I to obtain $A \wedge B$, and then immediately apply $\wedge$E$_1$ to derive $A$, we have produced a detour in the derivation: $\wedge$I and $\wedge$E$_1$ are redundant since we already have a derivation of $A$ to begin with.
+Similarly, if we have a derivation $\cD_2$ of $B$ under the assumption $A$ and a derivation $\cD_1$ of $A$, then we can plug $\cD_1$ into every leaf of $\cD_2$ where the formula is $A$.
+Contrast this with the more verbose derivation of $B$ using $\rFunI$ and $\rFunE$.
+
+\emph{Detour conversions} are a set of rewriting rules that eliminates detours; \cref{0002} lists all detour conversions.
+By inspection, there is a one-to-one correspondence between $\beta$-reductions and detour conversions.
+
+\begin{figure}
+  \centering
+  \begin{mathpar}
+    \ebrule{
+      \hypo{}
+      \ellipsis{$\cD_1$}{A}
+      \hypo{}
+      \ellipsis{$\cD_2$}{B}
+      \infer2[$\wedge$I]{A \wedge B}
+      \infer1[$\wedge$E$_1$]{A}
+    }\qquad\Rightarrow_{\beta}\qquad
+    \ebrule{
+      \hypo{}
+      \ellipsis{$\cD_1$}{A}
+    }\and
+    \ebrule{
+      \hypo{}
+      \ellipsis{$\cD_1$}{A}
+      \hypo{}
+      \ellipsis{$\cD_2$}{B}
+      \infer2[$\wedge$I]{A \wedge B}
+      \infer1[$\wedge$E$_2$]{B}
+    }\qquad\Rightarrow_{\beta}\qquad
+    \ebrule{
+      \hypo{}
+      \ellipsis{$\cD_2$}{B}
+    }\and
+    \ebrule{
+      \hypo{}
+      \ellipsis{$\cD_1$}{A}
+      \infer1[$\vee$I$_1$]{A \vee B}
+      \hypo{[A]}
+      \ellipsis{$\cD_2$}{C}
+      \hypo{[B]}
+      \ellipsis{$\cD_3$}{C}
+      \infer3[$\vee$E]{C}
+    }\qquad\Rightarrow_{\beta}\qquad\ebrule{
+      \hypo{}
+      \ellipsis{$\cD_1$}{A}
+      \ellipsis{$\cD_2$}{C}
+    }\and\qquad
+    \ebrule{
+      \hypo{}
+      \ellipsis{$\cD_1$}{B}
+      \infer1[$\vee$I$_2$]{A \vee B}
+      \hypo{[A]}
+      \ellipsis{$\cD_2$}{C}
+      \hypo{[B]}
+      \ellipsis{$\cD_3$}{C}
+      \infer3[$\vee$E]{C}
+    }\qquad\Rightarrow_{\beta}\qquad\ebrule{
+      \hypo{}
+      \ellipsis{$\cD_1$}{B}
+      \ellipsis{$\cD_2$}{C}
+    }\and
+    \ebrule{
+      \hypo{[A]}
+      \ellipsis{$\cD_2$}{B}
+      \infer1[\rFunI]{A \to B}
+      \hypo{}
+      \ellipsis{$\cD_1$}{A}
+      \infer2[\rFunE]{B}
+    }\qquad\Rightarrow_{\beta}\qquad
+    \ebrule{
+      \hypo{}
+      \ellipsis{$\cD_1$}{A}
+      \ellipsis{$\cD_2$}{B}
+    }
+  \end{mathpar}
+  \caption{Detour conversions}
+  \label{0002}
+\end{figure}
+
+\begin{theorem}
+  Let $\cD$ and $\cD'$ be two derivations of $\Gamma \vdash A$, and $t$ and $t'$ be two terms corresponding to $\cD$ and $\cD'$ respectively.
+  Then, $\cD \Rightarrow_{\beta} \cD'$ if and only if $t \bRed t'$.
+\end{theorem}
+
+\subsection{Normalization}
+\label{sec:0004}
+
+The property that every provable formula has a detour-free derivation is called \emph{detour elimination}.
+Since $\beta$-reductions and detour conversions are two sides of the same coin, we can show detour elimination by showing normalization.
+Experience has taught us to consider doing induction on the typing derivation.
+
+\begin{theorem}\label{0003}
+  If $\Gamma \vdash t : D$, then $t$ is normalizing.
+\end{theorem}
+\begin{proof}
+  We proceed by induction on the typing derivation $\Gamma \vdash t : D$.
+  \begin{itemize}
+  \item[\rVar:] Variables are irreducible.
+  \item[\rProdI:] We must show that $\tmPair{a}{b}\tpAnno{A \times B}$ is normalizing.
+    By the induction hypothesis, $a\tpAnno{A}$ and $b\tpAnno{B}$ are normalizing.
+    Let $a'$ and $b'$ be the normal forms of $a$ and $b$ respectively; then $\tmPair{a}{b} \bRed* \tmPair{a'}{b'}$ and $\tmPair{a'}{b'}$ is irreducible since it is a constructor.
+    All other introduction rules follow analogously.
+  \item[\rSumE:] By the induction hypothesis, $s\tpAnno{A + B}$, $c\tpAnno{C}$, and $c'\tpAnno{C}$ are normalizing.
+    However, $\tmCase{s}{c}{c'}$ is not \apriori normalizing.
+    For example, if $\tmInl{a}$ is the normal form of $s$, then $\tmCase{s}{c}{c'} \bRed* c[a/x]$, which we know nothing about.
+    Let us see one more case.
+  \item[\rFunE:] By the induction hypothesis, $f\tpAnno{A \to B}$ and $a\tpAnno{A}$ are normalizing.
+    Again, if $\tmLam{x : A}{b}$ is the normal form of $f$, then $\tmApp{f}{a} \bRed* b[a/x]$, which we know nothing about.
+  \end{itemize}
+\end{proof}
+
+Our proof attempt has failed; we are stuck in the elimination cases.
+
+\begin{remark}
+  The reader may attempt to show by induction that if $t$ and $t'$ are in normal form, then $t[t'/x]$ is normalizing.
+  This attempt is bound to fail.
+\end{remark}
+
+\section{Tait's method of computability}
+\label{sec:0006}
+
+The proof presented in the foregoing section (\cref{sec:0004}) failed because the induction hypothesis lacks structural information about the normal forms.
+This prevents the proof from going through because normal forms are not stable under eliminators.
+For example, while both $\tmLam{x : A}{x}$ and $y\tpAnno{A}$ are in normal form, the application $\tmApp{\tmLam{x : A}{x}}{y}$ is not.
+To address this deficiency, Tait introduced Tait computability.
+
+Girard and Reynolds later refined Tait computability to prove normalization for System F \cite{Girard89} and Reynolds' parametricity theorem \cite{Reynolds83} respectively.
+Recently, Sterling developed a \emph{synthetic} approach to Tait computability by exploiting topos-theoretic techniques \cite{Sterling22}.
+Sterling \etal have successfully shown normalization for Cubical Type Theory in \opcit.
+
+The standard presentation of Tait computability in Computer Science pedagogy often proceeds by directly constructing a two relations, and then proving the so-called \emph{Fundamental Theorem}.
+In this paper, we adopt a synthetic approach.
+We assume two \emph{unsubstantiated} relations in \cref{sec:0108} and axiomatize their properties; then we substantiate the axioms in \cref{sec:0008}.
+The author hopes that the synthetic approach developed herein clarifies the roles played by these relations.
+
+\subsection{Synthetic Tait computability}
+\label{sec:0108}
+
+To strengthen the induction hypothesis, we glue additional semantic data onto each type in context.
+For our purpose, it suffices to glue a set of \emph{computable} terms onto each type.
+Roughly, a computable term is an \emph{evidently} normalizing term such as $\tmPair{a}{b}$, provided that $a$ and $b$ are evidently normalizing; this gives us additional information to work with.
+We assume a set $\comp{\Gamma}{A}$ for each context $\Gamma$ and type $A$.
+Elements of this set are traditionally called \emph{computable elements}.
+
+In a constructor (\eg $\tmPair{a}{b}$), all redexes are contained within its argument(s), and it is impossible to have a top-level redex.
+This is not the case for eliminators: an eliminator becomes a top-level redex when its major argument is a constructor for the same type.
+Indeed, this is the difficulty we faced in the proof attempt of \cref{0003}.
+
+Since normalization is concerned with \emph{open} terms, eliminators stuck on a variables are unstable normal forms.
+For example, suppose that $s$ is a variable and $c, c'$ are in normal form; the term $\tmCase{s}{c}{c'}$ is evidently normalizing.
+This term is unstable in the sense that if we are given $\tmInl{a}$ in normal form, the term $\tmCase{s}{c}{c'}[\tmInl{a}/s] \equiv \tmCase{\tmInl{a}}{c}{c'}$ is a top-level redex that $\beta$-reduces to $c[a/x]$, which is not \apriori normalizing.
+To single out ``problematic'' computable elements, we assume a subset $\neu{\Gamma}{A} \subseteq \comp{\Gamma}{A}$ for each context $\Gamma$ and type $A$.
+An element of $\neu{\Gamma}{A}$ is called a \emph{neutral element}.
+
+We may equivalently treat these sets as unary relations, writing $\neu{\Gamma}{A}(t)$ to mean $t \in \neu{\Gamma}{A}$ and $\comp{\Gamma}{A}(t)$ the same.
+We axiomatize their properties to ensure that elements of $\neu{\Gamma}{A}$ and $\comp{\Gamma}{A}$ behave like neutral elements and computable terms.
+
+First, every variable $x$ is clearly a problematic normal form because we can substitute any problematic term for $x$.
+Hence we require $x$ to be a neutral element.
+\begin{axiom}\label{ax:0002}
+  If $x : A \in \Gamma$, then $\neu{\Gamma}{A}(x)$.
+\end{axiom}
+
+% Second, as a direct consequence of transitivity of the reduction relation, any \emph{$\beta$-expansion} of a term $t$ inherits normalizability from $t$.
+% Hence we require $\comp{\Gamma}{A}$ to be stable under $\beta$-expansion.
+% \begin{axiom}\label{ax:0003}
+%   If $\comp{\Gamma}{A}(t)$ and $s \bRed t$, then $\comp{\Gamma}{A}(s)$.
+% \end{axiom}
+
+\begin{notation}
+  We write $\norm(t)$ to mean that $t$ is normalizing.
+\end{notation}
+
+Second, since $\neu{\Gamma}{A}$ is supposed to be a subset of $\comp{\Gamma}{A}$, we require every neutral element to be computable; and since $\comp{\Gamma}{A}$ is a set of ``evidently normalizing terms,'' we require computable elements to be normalizing.
+\begin{axiom}\label{ax:0000}
+  If $\neu{\Gamma}{A}(t)$, then $\comp{\Gamma}{A}(t)$, and if $\comp{\Gamma}{A}(t)$, then $\norm(t)$.
+\end{axiom}
+
+When we substantiate $\comp{\Gamma}{A}$, the goal is to find a condition that is restrictive enough to be useful, but general enough to validate all axioms.
+
+\begin{definition}
+  We extend the relation $\comp{\Delta}{A}$ to a relation on tuples of terms in the evident way.
+  Let $\gamma = (t_1,\ldots,t_n)$ be a tuple of terms and $\Gamma = x_1 : A_1,\ldots,x_n : A_n$.
+  We define $\comp{\Delta}{\Gamma}(\gamma)$ to hold if and only if $\comp{\Delta}{A_i}(t_i)$ for all $1 \leq i \leq n$.
+  Given a term $\Gamma \vdash t : A$, the term $\Delta \vdash t[\gamma] : A$ is given by the simultaneous substitution $t[t_1/x_1,\ldots,t_n/x_n]$.
+\end{definition}
+
+Lastly, we axiomatize the so-called Fundamental Theorem: every well-typed term is computable if for each variable $x$ in $t$, we substitute a computable term for $x$.
+
+\begin{axiom}\label{ax:0001}
+  If $\Gamma \vdash t : A$ and $\comp{\Delta}{\Gamma}(\gamma)$, then $\comp{\Delta}{A}(t[\gamma])$.
+\end{axiom}
+
+Now, we can easily show that every term is computable, hence normalizing.
+
+\begin{lemma}\label{thm:0010}
+  For any context $\Gamma$, the identity substitution $\id{\Gamma}$ is computable.
+\end{lemma}
+\begin{proof}
+  We proceed by induction on the length of $\Gamma$; the base case is trivial.
+  In the induction case, suppose that $\Gamma = \Gamma',x : A$.
+  We must show $\comp{\Gamma',x : A}{\Gamma',x : A}(\id{\Gamma',x : A})$.
+  By the induction hypothesis, we have $\comp{\Gamma'}{\Gamma'}(\id{\Gamma'})$; hence it suffices to show that $\comp{\Gamma',x : A}{A}(x)$.
+  This follows immediately from \cref{ax:0002,ax:0000}.
+\end{proof}
+
+\begin{theorem}[Normalization]\label{thm:0000}
+  If $\Gamma \vdash t : A$, then $t$ is normalizing.
+\end{theorem}
+\begin{proof}
+  The identity substitution $\id{\Gamma}$ is computable by \cref{thm:0010}; hence $t[\id{\Gamma}] \equiv t$ is computable by \cref{ax:0001}.
+  Then by \cref{ax:0000}, $t$ is normalizing.
+\end{proof}
+
+\section{Conclusion}
+\label{sec:0007}
+
+Detour elimination is not a particularly interesting problem; however, it serves as an example in which the na\"ive induction argument fails.
+In this paper, we presented a method to show detour elimination.
+
+While we have equipped the $\lambda$-calculus with a term rewriting system, it is also common in the literature to equip $\lambda$-calculi with a set of equations instead.
+That is, we replace every $\bRed$ in \cref{fig:0001} with $=_{\beta}$.
+However, we can no longer define normal forms in terms of irreducible terms since we no longer have a notion of reductions.
+Instead, we have to make an explicit choice of a normal form for each equivalence class of terms.
+Usually, this choice is made based on the problem we have at hand; for instance, the usual $\beta$-normal forms are sufficient for detour elimination.
+Indeed, the pervasiveness of various normal forms (\eg disjunction normal forms, conjunction normal forms, and negation normal forms) in the logic literature suggests that we need not artificially constrain ourselves to term rewriting systems.
+% In fact, to the author's knowledge, a simple normalizing term rewriting system with \emph{$\eta$-expansion} does not exist; a na\"ive treatment of the $\eta$-expansion rule easily leads to a nonterminating rewriting sequence such as the following:
+% \[
+%   f \eExp \tmLam{x}{\tmApp{f}{x}} \eExp \tmLam{x}{\tmApp{\tmLam{x}{\tmApp{f}{x}}}{x}} \eExp \cdots
+% \]
+
+While $\beta$-equalities are sufficient for detour elimination, they are not sufficient for proof normalization in the sense of \cite{Negri01}.
+To see this, consider the following two non-$\beta$-equivalent terms:
+
+\begin{mathpar}
+  a_1 := \tmPrl{\tmCase{x}{c\tpAnno{A \times B}}{c'\tpAnno{A \times B}}}\and
+  a_2 := \tmCase{x}{\tmPrl{c\tpAnno{A \times B}}}{\tmPrl{c'\tpAnno{A \times B}}}
+\end{mathpar}
+
+Under the Curry-Howard correspondence, these two terms correspond to the following derivations of the same formula $A$:
+
+\begin{mathpar}
+  \ebrule{
+    \hypo{C \vee D}
+    \hypo{[C]}
+    \ellipsis{}{A \wedge B}
+    \hypo{[D]}
+    \ellipsis{}{A \wedge B}
+    \infer3[$\vee$E]{A \wedge B}
+    \infer1[$\wedge$E$_1$]{A}
+  }\and
+  \ebrule{
+    \hypo{C \vee D}
+    \hypo{[C]}
+    \ellipsis{}{A \wedge B}
+    \infer1[$\wedge$E$_1$]{A}
+    \hypo{[D]}
+    \ellipsis{}{A \wedge B}
+    \infer1[$\wedge$E$_1$]{A}
+    \infer3[$\vee$E]{A}
+  }
+\end{mathpar}
+
+The derivation on the left is not in normal form, while the derivation on the right is.
+Hence we need to introduce \emph{commuting conversions} so that $a_1$ and $a_2$ live in the same equivalence class, which ultimately enables us to choose $a_2$ as the normal form for $a_1$.
+Commuting conversions are a set of equations that allows us to push an eliminator under another.
+In the foregoing example, we had to push $\tmPrlB$ under $\tmCaseB$.
+We can apply a general technique called \emph{normalization by evaluation} \cite{Berger91,Abel07,Gratzer19} to show that every term has a normal form.
+
+In conclusion, we presented Tait's method of computability to establish normalization.
+Besides normalization, this technique has been refined and adapted in various directions.
+For example, \cite{Derakhshan21} shows a safety property called \emph{noninterference}, and \cite{Spies21} examines a notion of ordinal-indexed Tait computability to establish a liveness property called \emph{termination}.
+
+% Given an equational theory and a specification of normal forms, normalization by evaluation proceeds in two steps: first, we construct a sound and complete (with respect to the equational theory) evaluation function mapping $\lambda$-terms to objects in a fixed semantic domain (\eg sets and functions); then we construct a function that reifies semantic objects into normal forms.
+
+\appendix
+\section{Substantiating the computability structure}
+\label{sec:0008}
+
+\begin{definition}
+  A \emph{neutral element} is either a variable or an eliminator whose major argument is a neutral element.
+\end{definition}
+
+\begin{construction}
+  Normalizing neutral elements are defined by the following rules where $u$ ranges over neutral elements:
+  \begin{mathpar}
+    \ebrule{
+      \hypo{x : A \in \Gamma}
+      \infer1{\neu{\Gamma}{A}(x)}
+    }\and
+    \ebrule{
+      \hypo{\norm(u\tpAnno{\tpEmp})}
+      \infer1{\neu{\Gamma}{A}(\tmAbort{u})}
+    }\and
+    \ebrule{
+      \hypo{\neu{\Gamma}{A \times B}(u)}
+      \infer1{\neu{\Gamma}{A}(\tmPrl{u})}
+    }\and
+    \ebrule{
+      \hypo{\neu{\Gamma}{A \times B}(u)}
+      \infer1{\neu{\Gamma}{B}(\tmPrr{u})}
+    }\and
+    \ebrule{
+      \hypo{\neu{\Gamma}{A + B}(u)}
+      \hypo{\norm(c\tpAnno{C})}
+      \hypo{\norm(c'\tpAnno{C})}
+      \infer3{\neu{\Gamma}{C}(\tmCase{u}{c}{c'})}
+    }\and
+    \ebrule{
+      \hypo{\neu{\Gamma}{A \to B}(u)}
+      \hypo{\norm(a)}
+      \infer2{\neu{\Gamma}{B}(\tmApp{u}{a})}
+    }
+  \end{mathpar}
+\end{construction}
+
+\begin{notation}
+  We write $\bRed*$ for the reflexive, transitive closure of $\bRed$.
+  That is, $t \bRed* t'$ if there is a sequence of $\beta$-reductions starting at $t$ and ending in $t'$.
+\end{notation}
+
+\begin{construction}
+  Computable elements are defined by induction on types:
+  \begin{itemize}
+  \item[$\tpEmp$:] $\comp{\Gamma}{\tpEmp}(t)$ iff $\norm(t)$.
+  \item[$A \times B$:] $\comp{\Gamma}{A \times B}(t)$ iff (1) $\comp{\Gamma}{A}(\tmPrl{t})$ and $\comp{\Gamma}{B}(\tmPrr{t})$, or (2) $t \bRed* \tmAbort{e}$ for some $e$ such that $\comp{\Gamma}{\tpEmp}(e)$.
+  \item[$A + B$:] $\comp{\Gamma}{A + B}(t)$ iff (1) $t \bRed* \tmInl{a}$ for some $a$ such that $\comp{\Gamma}{A}(a)$, (2) $t \bRed* \tmInr{b}$ for some $b$ such that $\comp{\Gamma}{B}(b)$, (3) $t \bRed* t'$ for some $t'$ such that $\neu{\Gamma}{A + B}(t')$, or (4) $t \bRed* \tmAbort{e}$ for some $e$ such that $\comp{\Gamma}{\tpEmp}(e)$.
+  \item[$A \to B$:] $\comp{\Gamma}{A \to B}(t)$ iff (1) for all $\Gamma \subseteq \Delta$, if $\comp{\Delta}{A}(a)$, then $\comp{\Delta}{B}(\tmApp{t}{a})$, or (2) $t \bRed* \tmAbort{e}$ for some $e$ such that $\comp{\Gamma}{\tpEmp}(e)$.
+  \end{itemize}
+\end{construction}
+
+\begin{observation}\label{thm:0005}
+  If $e\tpAnno{\tpEmp}$ is computable, then $\tmAbort{e}\tpAnno{A}$ is computable.
+\end{observation}
+
+\subsection{Verifying the axioms}
+\label{sec:0009}
+
+\begin{lemma}\label{thm:0002}
+  If $\neu{\Gamma}{A}(t)$, then $\norm(t)$.
+\end{lemma}
+\begin{proof}
+  Straightforward induction on the derivation of $\neu{\Gamma}{A}(t)$, noting that a neutral element is never a constructor.
+\end{proof}
+
+\begin{lemma}\label{thm:1001}
+  Let $\Gamma \subseteq \Delta$.
+  If $\comp{\Gamma}{A}(t)$, then $\comp{\Delta}{A}(t)$.
+  By extension, if $\comp{\Gamma}{\Pi}(\pi)$, then $\comp{\Delta}{\Pi}(\pi)$.
+\end{lemma}
+\begin{proof}
+  Typing and $\beta$-reduction are stable under context weakening.
+\end{proof}
+
+\begin{theorem}[\cref{ax:0002}]\label{thm:0003}
+  If $x : A \in \Gamma$, then $\neu{\Gamma}{A}(x)$.
+\end{theorem}
+\begin{proof}
+  Immediate by definition.
+\end{proof}
+
+\begin{lemma}\label{thm:1010}
+  If $\comp{\Gamma}{A}(t)$ and $s \bRed t$, then $\comp{\Gamma}{A}(s)$.
+  Moreover, this lemma holds for $\bRed*$.
+\end{lemma}
+\begin{proof}
+  By induction on $A$, noting that if $s \bRed t$ and $t \bRed* t'$, then $s \bRed* t'$.
+\end{proof}
+
+\begin{theorem}[\cref{ax:0000}]\label{thm:0006}
+  If $\neu{\Gamma}{A}(t)$, then $\comp{\Gamma}{A}(t)$, and if $\comp{\Gamma}{A}(t)$, then $\norm(t)$.
+\end{theorem}
+\begin{proof}
+  We proceed by induction on $A$.
+  \begin{itemize}
+  \item[$\tpEmp$:] Suppose that $\neu{\Gamma}{\tpEmp}(t)$; then $t$ is normalizing by \cref{thm:0002}.
+    Hence $\comp{\Gamma}{\tpEmp}(t)$ by definition.
+    The other claim is immediate by definition.
+  \item[$B \times C$:] Suppose that $\neu{\Gamma}{B \times C}(t)$; then we have $\neu{\Gamma}{B}(\tmPrl{t})$ and $\neu{\Gamma}{C}(\tmPrr{t})$ by definition.
+    The induction hypothesis yields $\comp{\Gamma}{B}(\tmPrl{t})$ and $\comp{\Gamma}{C}(\tmPrr{t})$; hence $\comp{\Gamma}{B \times C}(t)$ by definition.
+    
+    Now suppose that $\comp{\Gamma}{B \times C}(t)$.
+    There are two cases to consider: (1) $\comp{\Gamma}{B}(\tmPrl{t})$ and $\comp{\Gamma}{C}(\tmPrr{t})$, or (2) $t \bRed* \tmAbort{e}$ for some $e$ such that $\comp{\Gamma}{\tpEmp}(e)$.
+    
+    In the former case, we have $\norm(\tmPrl{t})$ and $\norm(\tmPrr{t})$ by the induction hypothesis; hence by a case analysis on the structure of $t$, we see that $t$ must be normalizing.
+    In the latter case, since $\comp{\Gamma}{\tpEmp}(e)$, $e$ is normalizing by definition; hence $\tmAbort{e}$ is normalizing.
+    Then it follows by the transitivity of $\bRed*$ that $t$ is normalizing.
+    Note that this case is always trivial; hence we suppress it hereafter.
+  \item[$B + C$:] Suppose that $\neu{\Gamma}{B + C}(t)$; then since $\bRed*$ is reflexive, $\comp{\Gamma}{B + C}(t)$ by definition.
+    Now suppose that $\comp{\Gamma}{B + C}(t)$.
+    There are three cases to consider; two of which are analogous to each other, so we show just one of them: (1) $t \bRed* \tmInl{a}$ for some $a$ such that $\comp{\Gamma}{A}(a)$, or (2) $t \bRed* t'$ for some $t'$ such that $\neu{\Gamma}{A + B}(t')$.
+
+    In the former case, since $a$ is normalizing by the induction hypothesis, $\tmInl{a}$ is clearly normalizing.
+    In the latter case, $t$ reduces to some normalizing neutral element $t'$, which is normalizing by \cref{thm:0002}; hence $t$ is normalizing by transitivity.
+  \item[$B \to C$:] Suppose that $\neu{\Gamma}{B \to C}(t)$.
+    Fix $\Gamma \subseteq \Delta$ and $\comp{\Delta}{B}(b)$; we must show that $\comp{\Delta}{C}(\tmApp{t}{b})$.
+    By the induction hypothesis, $b$ is normalizing; hence $\neu{\Delta}{C}(\tmApp{t}{b})$ by definition, and the induction hypothesis gives $\comp{\Delta}{C}(\tmApp{t}{b})$.
+
+    Now suppose that $\comp{\Gamma}{B \to C}(t)$.
+    Choose $\Gamma \subseteq \Gamma,x : B$; note that since $\neu{\Gamma,x : B}{B}(x)$, $x$ is computable by the induction hypothesis.
+    Then $\comp{\Gamma,x : B}{C}(\tmApp{t}{x})$ by definition.
+    By the induction hypothesis, $\tmApp{t}{x}$ is normalizing.
+    By a case analysis on the structure of $t$, we see that $t$ must be normalizing.
+  \end{itemize}
+\end{proof}
+
+\begin{theorem}[\cref{ax:0001}]\label{thm:0302}
+  If $\Gamma \vdash t : A$ and $\comp{\Delta}{\Gamma}(\gamma)$, then $\comp{\Delta}{A}(t[\gamma])$.
+\end{theorem}
+\begin{proof}
+  We proceed by induction on the typing derivation $\Gamma \vdash t : A$.
+  \begin{itemize}
+  \item[\rVar:] Since $x[\gamma] \equiv \gamma(x)$, this is immediate by definition.
+  \item[\rEmpE:] By the induction hypothesis, $\comp{\Delta}{\tpEmp}(e[\gamma])$; then $\tmAbort{e[\gamma]}$ is computable by \cref{thm:0005}.
+  \item[\rProdI:] By the induction hypothesis, we have $\comp{\Delta}{B}(b[\gamma])$ and $\comp{\Delta}{C}(c[\gamma])$; hence $\tmPair{b[\gamma]}{c[\gamma]}$ is computable by definition and \cref{thm:1010}.
+  \item[\rProdEl:] By the induction hypothesis, $p[\gamma]$ is computable.
+    There are two cases to consider: (1) $\comp{\Delta}{B}(\tmPrl{p[\gamma]})$ and $\comp{\Delta}{C}(\tmPrr{p[\gamma]})$, or (2) $p[\gamma] \bRed* \tmAbort{e}$ for some $e$ such that $\comp{\Delta}{\tpEmp}(e)$.
+
+    In the former case, $\tmPrl{p[\gamma]}$ is computable trivially.
+    In the latter case, it suffices to show that $\tmPrl{\tmAbort{e}}$ is computable.
+    Note that $e$ is normalizing by \cref{thm:0006}; hence $\tmAbort{e}$ is a normalizing neutral element by definition.
+    Then $\tmPrl{\tmAbort{e}}$ is a normalizing neutral element by definition.
+    Now apply \cref{thm:0006} again.
+    Since this case is analogous for all other rules, we will omit it hereafter.
+    \rProdEr{} is completely analogous.
+  \item[\rSumIl:] By the induction hypothesis, $a[\gamma]$ is computable; hence $\tmInl{a[\gamma]}$ is computable by definition.
+    \rSumIr{} is analogous.
+  \item[\rSumE:] By the induction hypothesis, we have $\comp{\Delta}{D + E}(s[\gamma])$; there are three cases to consider, and two of which are analogous: (1) $s[\gamma] \bRed* \tmInl{d}$ for some computable $d$, or (2) $s[\gamma] \bRed* t'$ for some normalizing neutral element $t'$.
+
+    In the former case, it suffices to show $\comp{\Delta}{C}(c[\gamma,d/x])$; this is immediate by the induction hypothesis since $\comp{\Delta}{\Gamma,x : D}(\gamma, d/x)$.
+    In the latter case, note that variables are computable; then by the induction hypothesis, $c[\gamma,x/x]$ and $c'[\gamma,y/y]$ are computable and thus normalizing by \cref{thm:0006}.
+    Then by definition, $\tmCase{s[\gamma]}{c[\gamma,x/x]}{c'[\gamma,y/y]}$ is a normalizing neutral element; hence it is computable by \cref{thm:0006}.
+  \item[\rFunI:] Fix $\Delta \subseteq \Delta'$ and $b$ such that $\comp{\Delta'}{B}(b)$.
+    It suffices to show $\comp{\Delta'}{C}(c[\gamma,b/y])$.
+    By \cref{thm:1001}, $\comp{\Delta'}{\Gamma}(\gamma)$; hence $c[\gamma,b/y]$ is computable by the induction hypothesis.
+  \item[\rFunE:] By the induction hypothesis, $f[\gamma]$ and $b[\gamma]$ are computable; hence $\tmApp{f[\gamma]}{b[\gamma]}$ is computable by definition.
+  \end{itemize}
+\end{proof}
+
+\bibliography{bib}
+\bibliographystyle{alpha}
+
+\end{document}

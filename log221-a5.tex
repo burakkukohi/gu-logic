@@ -1,0 +1,129 @@
+\documentclass[a4paper]{article}
+\usepackage[margin=1in]{geometry}
+
+\usepackage{preamble}
+\usepackage{log221-a5-macros}
+\usepackage[final]{showkeys}
+
+\title{LOG 221 - A5}
+\author{Frank Tsai}
+
+\begin{document}
+
+\maketitle
+
+% \begin{lemma}\label{0000}
+%   Every basic axiom of arithmetic is derivable in $\PAo$ with height $< \omega$.
+% \end{lemma}
+% \begin{proof}
+%   \begin{mathpar}
+%     \ebrule[A1]{
+%       \hypo{0' = 0 \Rightarrow \bot}
+%       \infer1[\rRImp]{\Rightarrow \lnot(0' = 0)}
+%       \hypo{\ldots}
+%       \hypo{n' = 0 \Rightarrow \bot}
+%       \infer1[\rRImp]{\Rightarrow \lnot(n' = 0)}
+%       \hypo{\ldots}
+%       \infer4[\rRo]{\Rightarrow \forall x.\lnot(x' = 0)}
+%     }
+%   \end{mathpar}
+% \end{proof}
+
+\section*{Problem 1}\label{0001}
+
+\begin{notation}
+  Given a substitution $\Theta$, we write $\Theta_{x}$ for the value of $\Theta$ at $x$, and write $\Theta_{a/x}$ for the following substitution:
+  \[
+    \Theta_y =
+    \begin{cases}
+      a & \text{if $x = y$},\\
+      \Theta_y & \text{otherwise.}
+    \end{cases}
+  \]
+\end{notation}
+
+We show that if $\PAd \Gamma \Rightarrow \Delta$, then there are $k, n < \omega$ such that for any closing substitution $\Theta$, there is an ordinal $\alpha < \omega \cdot n$ such that $\PAod{\alpha}{k} \Gamma[\Theta] \Rightarrow \Delta[\Theta]$.
+
+\begin{proof}[Solution]
+  We proceed by induction on the height of the derivation; we do a case analysis on the last applied rule.
+
+  If $\Gamma \Rightarrow \Delta$ is an initial sequent, then there are three cases to consider: (1) the initial sequent is an instance of \rLBot, (2) the initial sequent is an instance of id, and (3) the initial sequent is a basic axiom.
+  In all of these cases, we choose $n = 2$ and $k = 0$; and for any closing substitution $\Theta$, choose $\alpha = \omega < \omega \cdot n = \omega \cdot 2$.
+
+  In the first case, since $\bot$ is a closed formula, substitution has no effect on it; hence $\PAod{\alpha}{k} \Gamma[\Theta] \Rightarrow \Delta[\Theta]$ is an instance of \rLBot.
+  In the second case, there is an atom $R(x) \in \Gamma$ and $\Delta$; hence we have $R(\Theta_x) \in \Gamma[\Theta]$ and $\Delta[\Theta]$.
+  Clearly, $\NN \vDash \Theta_x = \Theta_x$, so $\PAod{\alpha}{k} \Gamma[\Theta] \Rightarrow \Delta[\Theta]$ by id.
+  In the last case, note that every basic axiom $A$ is a closed formula, so substitution has no effect, \ie $A \in \Delta[\Theta]$.
+  All basic axioms are derivable in $\PAo$ with finite height using no \rCut{}s.
+
+  Every inference rule of $\PA$ and $\PAo$ except \rLo{} and \rRo{} has the following general form.
+  \begin{mathpar}
+    \ebrule[*]{
+      \hypo{\Gamma_1 \Rightarrow \Delta_1}
+      \hypo{\Gamma_2 \Rightarrow \Delta_2}
+      \infer2{\Gamma \Rightarrow \Delta}
+    }
+  \end{mathpar}
+  We analyze every inference rule except \rLEx, \rRAll, and \rCut{} at once.
+  \begin{itemize}
+  \item[*] We must show that there are $k, n < \omega$ such that for any closing substitution $\Theta$, there is an ordinal $\alpha < \omega \cdot n$ with $\PAod{\alpha}{k} \Gamma[\Theta] \Rightarrow \Delta[\Theta]$.
+    By the induction hypothesis, there are $k_1,n_1 < \omega$ such that for any closing substitution $\Theta_1$, there is an ordinal $\alpha_1 < \omega \cdot n_1$ with $\PAod{\alpha_1}{k_1} \Gamma_1[\Theta_1] \Rightarrow \Delta_1[\Theta_1]$; and there are $k_2,n_2 < \omega$ such that for any closing substitution $\Theta_2$, there is an ordinal $\alpha_2 < \omega \cdot n_2$ with $\PAod{\alpha_2}{k_2} \Gamma_2[\Theta_2] \Rightarrow \Delta_1[\Theta_2]$.
+
+    Choose $k = \max(k_1, k_2)$ and $n = n_1 + n_2 + 2$.
+    Fix a closing substitution $\Theta$; then choose $\alpha = \omega \cdot (n_1 + n_2 + 1)$.
+    Applying * to the two sequents given by the induction hypothesis yields $\Gamma[\Theta] \Rightarrow \Delta[\Theta]$; it remains to verify the bounds.
+    The cut rank is easy because we did not use any additional \rCut.
+    As for the height bound, it is easy to see that $\alpha < \omega \cdot n = \omega \cdot (n_1 + n_2 + 2)$.
+    It remains to show that $\alpha$ is strictly larger than $\alpha_1$ and $\alpha_2$, but this is also easy since $\alpha_1 < \omega \cdot n_1 < \omega \cdot (n_1 + 1) \leq \alpha$ and $\alpha_2 < \omega \cdot n_2 < \omega \cdot (n_2 + 1) \leq \alpha$.
+  \item[\rCut] This is the only rule where we need to fiddle with the cut rank.
+    The argument is essentially the same as the previous case.
+    The only required modification is that we choose $k = \max(k_1,k_2,|C|+1)$, where $C$ is the cut formula.
+  \item[\rLEx] We must show that there are $k,n < \omega$ such that for any closing substitution $\Theta$, there is an ordinal $\alpha < \omega \cdot n$ with $\PAod{\alpha}{k} \Gamma[\Theta], \exists x.A(x)[\Theta] \Rightarrow \Delta[\Theta]$.
+    By the induction hypothesis, there are $k',n' < \omega$ such that for any closing substitution $\Theta'$, there is an ordinal $\alpha' < \omega \cdot n'$ with $\PAod{\alpha'}{k'} \Gamma[\Theta'], A(a)[\Theta'] \Rightarrow \Delta[\Theta']$.
+
+    Choose $k = k'$ and $n = n' + 1$.
+    Fix any closing substitution $\Theta$; then choose $\alpha = \omega \cdot n'$.
+    Note that $A(a)[\Theta_{\bar{n}/a}] = A(\bar{n})[\Theta]$ for all $n \in \NN$.
+    Moreover, the eigenvariable condition on $a$ implies that $\Gamma[\Theta_{\bar{n}/a}] = \Gamma[\Theta]$ and $\Delta[\Theta_{\bar{n}/a}] = \Delta[\Theta]$ for all $n \in \NN$.
+    Hence we obtain $\Gamma[\Theta],\exists x.A(x)[\Theta] \Rightarrow \Delta[\Theta]$ by \rLo.
+    \begin{mathpar}
+      \ebrule{
+        \hypo{\ldots}
+        \hypo{\Gamma[\Theta],A(\bar{n})[\Theta] \Rightarrow \Delta[\Theta]}
+        \hypo{\ldots}
+        \infer3[\rLo]{\Gamma[\Theta],\exists x.A(x)[\Theta] \Rightarrow \Delta[\Theta]}
+      }
+    \end{mathpar}
+    It remains to verify the bounds.
+    The cut rank is easy because we did not use any additional \rCut.
+    Since the height of every premise is strictly bounded by $\omega \cdot n' = \alpha$, $\alpha$ is a valid height bound for the conclusion.
+    It remains to verify $\alpha < \omega \cdot n$, but this is evident since $n = n' + 1$.
+  \item[\rRAll] Analogous to the previous case.
+  \item[\textsc{Ind}] By the induction hypothesis, there are $k', n' < \omega$ such that for any closing substitution $\Theta$, there is an ordinal $\alpha' < \omega \cdot n'$ with $\PAod{\alpha}{k} A(\bar{k})[\Theta],\Gamma[\Theta] \Rightarrow \Delta[\Theta], A(\text{succ}(\bar{k}))[\Theta]$ for any $k \in \NN$.
+    This is justified by the eigenvariable condition.
+
+    By inversion, it suffices to derive $A(\bar{0})[\Theta], \Gamma[\Theta] \Rightarrow \Delta[\Theta], \forall x.A(x)[\Theta]$.
+    Choose $k = \max(k', |A(a)| + 1)$ and $n = n' + 3$.
+    Fix any closing substitution $\Theta$; we choose $\alpha = \omega \cdot (n' + 2)$.
+    We apply \rRo; the first premise is an initial sequent, while all remaining premises can be obtained by cutting the induction hypothesis against the previous premise.
+    \begin{mathpar}
+      \ebrule{
+        \hypo{A(\bar{0}), \Gamma[\Theta] \Rightarrow \Delta[\Theta], A(\bar{0})[\Theta]}
+        \hypo{A(\bar{0}), \Gamma[\Theta] \Rightarrow \Delta[\Theta], A(\bar{0})[\Theta]}
+        \hypo{A(\bar{0})[\Theta],\Gamma[\Theta] \Rightarrow \Delta[\Theta], A(\bar{1})[\Theta]}
+        \infer2[\rCut]{A(\bar{0}), \Gamma[\Theta] \Rightarrow \Delta[\Theta], A(\bar{1})[\Theta]}
+        \hypo{\cdots}
+        \infer3[\rRo]{A(\bar{0}[\Theta]), \Gamma[\Theta] \Rightarrow \Delta[\Theta], \forall x.A(x)[\Theta]}
+      }
+    \end{mathpar}
+    Since the cut rank of every newly added \rCut{}s is $|A(a)|$, $k$ is sufficient for this derivation.
+    Since we add an additional \rCut{} in each premise, the height of this derivation is bounded by $\omega \cdot n' + \omega + 1 = \omega \cdot (n' + 1) + 1 < \omega \cdot (n' + 1) + \omega = \omega \cdot (n' + 2) = \alpha$.
+    Clearly, $\alpha < \omega \cdot n = \omega \cdot (n' + 3)$.
+  \end{itemize}
+  The embedding lemma follows by replacing $\alpha$ with $\omega \cdot n$; this is a valid height bound since $\alpha < \omega \cdot n$.
+\end{proof}
+
+% \bibliography{bib}
+% \bibliographystyle{alpha}
+
+\end{document}

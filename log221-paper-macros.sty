@@ -1,0 +1,50 @@
+\RequirePackage{xparse}
+
+\NewDocumentCommand\tpAnno{m}{~\textcolor{gray}{\mathrel{:}#1}}
+\NewDocumentCommand\tpEmp{}{\mathbf{0}}
+
+\NewDocumentCommand\major{m}{\textcolor{olive}{#1}}
+\NewDocumentCommand\tm{m}{\operatorname{\mathbf{#1}}}
+\NewDocumentCommand\tmAbort{m}{\tm{abort}\prn{#1}}
+\NewDocumentCommand\tmPair{mm}{\tm{pair}\prn{#1,#2}}
+\NewDocumentCommand\tmPrl{m}{\tm{pr}_1\prn{\major{#1}}}
+\NewDocumentCommand\tmPrlB{}{\tm{pr}_1}
+\NewDocumentCommand\tmPrr{m}{\tm{pr}_2\prn{\major{#1}}}
+\NewDocumentCommand\tmInl{m}{\tm{inl}\prn{#1}}
+\NewDocumentCommand\tmInr{m}{\tm{inr}\prn{#1}}
+\NewDocumentCommand\tmCase{mmm}{\tm{case}\prn{\major{#1};#2;#3}}
+\NewDocumentCommand\tmCaseB{}{\tm{case}}
+\NewDocumentCommand\tmLam{mm}{\tm{lam}_{#1}\prn{#2}}
+\NewDocumentCommand\tmApp{mm}{\tm{app}\prn{\major{#1},#2}}
+
+\NewDocumentCommand\rName{m}{\textsc{#1}}
+\NewDocumentCommand\rVar{}{\rName{Var}}
+\NewDocumentCommand\rEmpE{}{\rName{$\tpEmp$E}}
+\NewDocumentCommand\rProdI{}{\rName{$\times$I}}
+\NewDocumentCommand\rProdEl{}{\rName{$\times$E${}_1$}}
+\NewDocumentCommand\rProdEr{}{\rName{$\times$E${}_2$}}
+\NewDocumentCommand\rSumIl{}{\rName{$+$I${}_1$}}
+\NewDocumentCommand\rSumIr{}{\rName{$+$I${}_2$}}
+\NewDocumentCommand\rSumE{}{\rName{$+$E}}
+\NewDocumentCommand\rFunI{}{\rName{$\mathord{\to}$I}}
+\NewDocumentCommand\rFunE{}{\rName{$\mathord{\to}$E}}
+
+\NewDocumentCommand\pred{mmm}{\operatorname{\mathbf{#1}}^{#2}_{#3}}
+\NewDocumentCommand\comp{mm}{\pred{comp}{#1}{#2}}
+\NewDocumentCommand\norm{}{\pred{norm}{}{\beta}}
+\NewDocumentCommand\neu{mm}{\pred{nne}{#1}{#2}}
+
+\NewDocumentCommand\bRed{s}{
+  \IfBooleanTF{#1}
+  {\mathrel{\mapsto^*_{\beta}}}
+  {\mathrel{\mapsto_{\beta}}}
+}
+
+\NewDocumentCommand\eExp{s}{
+  \IfBooleanTF{#1}
+  {\mathrel{\mapsto^*_{\eta}}}
+  {\mathrel{\mapsto_{\eta}}}
+}
+
+\newcommand{\eval}{\operatorname{eval}}
+\newcommand{\reify}{\operatorname{reify}}
