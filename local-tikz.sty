@@ -20,7 +20,7 @@
     commutative diagrams/phantom,
     sloped,
   },
-  desc/.style = {anchor=center,fill=white,inner sep=2pt},
+  desc/.style = {anchor=center,fill=white,inner sep=5pt},
   offset/.style args = {#1} {commutative diagrams/shift right={#1}},
   cross over/.style = {
     commutative diagrams/crossing over
@@ -328,6 +328,11 @@
   \end{tikzpicture}
 }
 
+\NewDocumentCommand\TikzDiagram{O{}m}{
+    \begin{tikzpicture}[diagram,#1]
+      #2
+    \end{tikzpicture}
+}
 
 \ExplSyntaxOff
 

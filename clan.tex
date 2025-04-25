@@ -22,6 +22,12 @@
 
 Personal notes on~\cite{Frey25}.
 
+\section{Introduction}
+The Gabriel-Ulmer duality is a contravariant biequivalence between the $2$-category of finite limit categories and lex functors; and the $2$-category of finitely presentable categories and finitary right adjoints.
+The theory of graphs have two different GAT presentations with nonequivalent syntactic categories due to sort dependencies.
+Hence the Gabriel-Ulmer duality implies that it is impossible to reflect such sort dependencies in a lex category.
+This paper introduces a gadget to restore the missing data.
+
 \section{Clans, models of clans, and a weak factorization system on models}
 
 \subsection{The definition of clans}
@@ -48,10 +54,6 @@ Personal notes on~\cite{Frey25}.
   \item display maps are stable under composition;
   \item $\cT$ has a terminal object, and the unique morphism $\Gamma \to \termObj{\cT}$ is a display map for all $\Gamma \in \cT$.
   \end{enumerate}
-\end{definition}
-
-\begin{definition}
-  Let $\cT$ and $\cQ$ be clans.
   A \emph{morphism of clans} $F : \cT \to \cQ$ is a functor $F : \cT \to \cQ$ from the underlying category of $\cT$ to the underlying category of $\cQ$ preserving display maps, pullbacks of display maps, and the terminal object.
   Clans, clan morphisms, and natural transformations between them assemble into a 2-category $\Clan$.
 \end{definition}
@@ -74,16 +76,13 @@ Personal notes on~\cite{Frey25}.
 \begin{definition}
   Let $\cT$ be a clan.
   A \emph{model} of $\cT$ is a morphism of clans $\cT \to \Set$, where $\Set$ is equipped with the finite limit clan structure.
+  For any two models $F, G : \cT \to \Set$, we consider any natural transformation as a homomorphism of models; hence the category of models $\Mod(\cT)$ is the full subcategory of the functor category $\funCat{\cT}{\Set}$ spanned by models.
 \end{definition}
 
 \begin{remark}
-  For any two models $F, G : \cT \to \Set$, we consider any natural transformation as a homomorphism of models; hence the category of models $\Mod(\cT)$ is the full subcategory of the functor category $\funCat{\cT}{\Set}$ spanned by models.
-\end{remark}
-
-\begin{remark}
   Let $\cT$ be a clan.
-  The category $\cT$ has a canonical limit sketch structure.
-  Hence, as a category of models of a limit sketch, $\Mod(\cT)$ is locally finitely presentable, and the inclusion functor $\Mod(\cT) \into \funCat{\cT}{\Set}$ creates filtered colimits.
+  The category $\cT$ can be equipped with a canonical limit sketch structure such that $\Mod(\cT)$ is the category of models of such a sketch.
+  Hence $\Mod(\cT)$ is locally finitely presentable, and the inclusion functor $\Mod(\cT) \into \funCat{\cT}{\Set}$ preserves filtered colimits.
 \end{remark}
 
 \begin{remark}
@@ -107,8 +106,13 @@ Personal notes on~\cite{Frey25}.
   For any object $\Gamma \in \cT$, the representable model $H(\Gamma)$ is finitely presentable.
 \end{lemma}
 \begin{proof}
-  By the Yoneda lemma, the functor $\Hom{\Mod(\cT)}(H(\Gamma),-) : \Mod(\cT) \to \Set$ is isomorphic to the evaluation functor at $\Gamma$.
-  Since filtered colimits in $\Mod(\cT)$ are computed pointwise, this functor preserves filtered colimits.
+  Write $i$ for the inclusion functor, and let $\colim D$ be a filtered colimit in $\Mod(\cT)$.
+  \begin{align*}
+    \Hom{\Mod(\cT)}(H(\Gamma), \colim D) &\iso \Hom{\funCat{\cT}{\Set}}(\yon(\Gamma), i\colim D) && \text{$i$ is fully faithful}\\
+                                    &\iso \Hom{\funCat{\cT}{\Set}}(\yon(\Gamma), \colim iD) && \text{$i$ preserves filtered colimits}\\
+                                    &\iso \colim\Hom{\funCat{\cT}{\Set}}(\yon(\Gamma), iD) && \text{tininess of representable}\\
+                                    &\iso \colim\Hom{\Mod(\cT)}(H(\Gamma), D) && \text{$i$ is fully faithful}
+  \end{align*}
 \end{proof}
 
 \begin{definition} 
