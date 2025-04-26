@@ -24,9 +24,8 @@ Personal notes on~\cite{Frey25}.
 
 \section{Introduction}
 The Gabriel-Ulmer duality is a contravariant biequivalence between the $2$-category of finite limit categories and lex functors; and the $2$-category of finitely presentable categories and finitary right adjoints.
-The theory of graphs have two different GAT presentations with nonequivalent syntactic categories due to sort dependencies.
-Hence the Gabriel-Ulmer duality implies that it is impossible to reflect such sort dependencies in a lex category.
-This paper introduces a gadget to restore the missing data.
+The category of graphs is finitely presentable, yet there exist two nonequivalent GAT presentations.
+The mismatch stems from sort dependencies; this paper introduces a mathematical gadget to reflect this data in the semantics.
 
 \section{Clans, models of clans, and a weak factorization system on models}
 
@@ -69,7 +68,7 @@ This paper introduces a gadget to restore the missing data.
 \end{example}
 
 \begin{remark}
-  Although a clan is \emph{defined} to be a small category, we consider some \emph{large} clans to simplify some definitions.
+  Although a clan is \emph{defined} to be a small category, we consider certain \emph{large} clans to simplify some definitions.
 \end{remark}
 
 \subsection{Models and representable models}
@@ -80,9 +79,8 @@ This paper introduces a gadget to restore the missing data.
 \end{definition}
 
 \begin{remark}
-  Let $\cT$ be a clan.
-  The category $\cT$ can be equipped with a canonical limit sketch structure such that $\Mod(\cT)$ is the category of models of such a sketch.
-  Hence $\Mod(\cT)$ is locally finitely presentable, and the inclusion functor $\Mod(\cT) \into \funCat{\cT}{\Set}$ preserves filtered colimits.
+  The category of models $\Mod(\cT)$ of a clan $\cT$ has a canonical limit sketch structure.
+  Hence $\Mod(\cT)$ is locally finitely presentable, and the inclusion functor $\Mod(\cT) \into \funCat{\cT}{\Set}$ creates filtered colimits.
 \end{remark}
 
 \begin{remark}
@@ -115,12 +113,15 @@ This paper introduces a gadget to restore the missing data.
   \end{align*}
 \end{proof}
 
-\begin{definition} 
-  A \emph{comodel} of a clan $\cT$ in a cocomplete category $\fX$ is a functor $F : \cT\op \to \fX$ sending $\initObj{\cT\op}$ to $\initObj{\fX}$ and display-pushouts in $\cT\op$ to pushouts in $\fX$.
+The category $\funCat{\cT}{\Set}$ is the free cocompletion of $\cT\op$; hence for any cocomplete category $\fX$, every functor $f : \cT\op \to \fX$ corresponds bijectively to a cocontinuous functor $f_{\otimes} : \funCat{\cT}{\Set} \to \fX$.
+When $\fX\op$ is equipped with the maximal clan structure, we show a similar correspondence between morphism of clans $f\op : \cT \to \fX\op$ and cocontinuous functor out of $\Mod(\cT)$.
+
+\begin{definition}
+  A \emph{comodel} of a clan $\cT$ in a cocomplete category $\fX$ is a functor $f : \cT\op \to \fX$ such that $f\op : \cT \to \fX\op$ is a morphism of clans.
   We write $\CoMod_{\fX}(\cT)$ for the 2-category of comodels in $\fX$.
 \end{definition}
 
-\begin{proposition}
+\begin{proposition}\label{0000}
   Let $\cT$ be a clan.
   For any cocomplete category $\fX$, precomposition with $H$ gives rise to an equivalence
   \[
@@ -129,15 +130,23 @@ This paper introduces a gadget to restore the missing data.
 \end{proposition}
 \begin{proof}
   The precomposition functor $- \circ H : \CoCont(\Mod(\cT),\fX) \to \CoMod_{\fX}(\cT)$ is fully faithful because $H$ is.
-  For any comodel $F : \cT\op \to \fX$, we show that there is a continuous functor $G : \Mod(\cT) \to \fX$ such that $G \circ H \iso F$.
-  We take $G$ to be the Yoneda extension of $F$ along $H$; then clearly $G \circ H \iso F$.
-  It remains to show that $G$ is cocontinuous.
-  To this end, we show that $G$ is a left adjoint.
-  Since $F$ is a comodel, the functor $\fX(F(-),X) : \cT \to \Set$ is a model for all $X \in \fX$.
-  Hence the nerve functor lands in $\Mod(\cT)$ and the usual realization-nerve adjunction restricts to the desired adjunction.
+  For any comodel $f : \cT\op \to \fX$, we take $g : \Mod(\cT) \to \fX$ to be the left Kan extension of $f$ along $H$; then clearly $g \circ H \iso f$ since $H$ is fully faithful.
+
+  Observe that $g$ is the Yoneda extension of $f$ restricted to $\Mod(\cT)$.
+  Since $f$ is a comodel, the functor $\fX(f(-),X) : \cT \to \Set$ is a model for all $X \in \fX$.
+  Hence the nerve functor lands in $\Mod(\cT)$, and the usual realization-nerve adjunction restricts.
+  Then $g$, as a left adjoint, is cocontinuous.
 \end{proof}
 
+\section{$(E,F)$-categories and the biadjunction}
+
+On the syntactic side, display maps allow us to have fine-grain control over which limits are preserved.
+On the semantic side, the category of models of any clan is a finitely presentable category, but this data alone cannot recover the underlying clan since there are nonequivalent clans with equivalent models.
+To correct this, we place a weak factorization system on finitely presentable categories.
+
 \subsection{A weak factorization system}
+
+Given a display map $\Delta \display \Gamma$ in a clan $\cT$, we can intuitively think of the morphism $H(\Gamma) \to H(\Delta)$ as an embedding of models.
 \begin{definition}
   Let $\cT$ be a clan.
   \begin{enumerate}
@@ -148,107 +157,69 @@ This paper introduces a gadget to restore the missing data.
 \end{definition}
 
 \begin{remark}
-  Essentially, full maps are regular epimorphisms and $0$-extensions are projective objects.
+  Let $G = \{H(p) \mid p \in \cT_{\dag}\}$.
+  The class of full maps is $F = \rLift{G}$, and the class of extensions is $E = \lLift{(\rLift{G})}$.
+  By Quillen's small object argument, $(E,F)$ forms a weak factorization system.
 \end{remark}
-
-\begin{remark}
-  Let $\cT$ be a clan, and let $G = \{H(p) \mid p \in \cT_{\dag}\}$.
-  The class of full maps is precisely $\rLift{G}$, and the class of extensions is precisely $\lLift{(\rLift{G})}$.
-  By Quillen's small object argument, $(\lLift{(\rLift{G})},\rLift{G})$ is a weak factorization system on $\Mod(\cT)$.
-\end{remark}
-
-\begin{notation}
-  We use the notation $\extension$ for extensions.
-\end{notation}
 
 \begin{remark}
   Let $\cT$ be a clan.
-  For every display map $p : \Delta \display \Gamma$, $H(p) : H(\Gamma) \extension H(\Delta)$ is an extension.
+  For every display map $p : \Delta \display \Gamma$, $H(p) : H(\Gamma) \to H(\Delta)$ is an extension.
   In particular, $H(\Gamma)$ is a $0$-extension for all $\Gamma \in \cT$ since $\Gamma \display \termObj{\cT}$ is always a display map.
+
+  In a finite product clan, full maps are precisely the regular epimorphisms, and $0$-extensions are precisely the projective objects.
+  Hence finitely presentable $0$-extensions are precisely the sifted tiny objects, \ie finitely generated free algebras.
 \end{remark}
 
-\section{$(E,F)$-categories and the biadjunction}
-For any clan $\cT$, we can equip $\Mod(\cT)$ with a weak factorization system.
-To make this association functorial, we define $(E,F)$-categories and their morphisms.
-We would like to think of a morphism of clans $F : \cT \to \cQ$ as an interpretation of $\cT$ in $\cQ$.
-Since the functor $F$ is a morphism of clans, the precomposition functor $- \circ F : \funCat{\cQ}{\Set} \to \funCat{\cT}{\Set}$ restricts along the inclusion to a functor $- \circ F : \Mod(\cQ) \to \Mod(\cT)$.
+\subsection{$(E,F)$-categories}
 
-\begin{remark}
-  A map $f : A \to B$ in $\Mod(\cT)$ is full if and only if the naturality square
-  \begin{center}
-    \DiagramSquare{
-      nw = {A(\Delta)},
-      ne = {A(\Gamma)},
-      se = {B(\Gamma)},
-      sw = {B(\Delta)},
-      north = {A(p)},
-      east = {f_{\Delta}},
-      south = {B(p)},
-      west = {f_{\Gamma}},
-    }
-  \end{center}
-  is a weak pullback in $\Set$ for all display maps $p : \Delta \display \Gamma$.
-\end{remark}
-
-\begin{remark}
-  In a finite product clan, full maps are regular epimorphisms and $0$-extensions are regular projective objects.
-\end{remark}
-
-\begin{lemma}
-  The (restricted) precomposition functor $- \circ F : \Mod(\cQ) \to \Mod(\cT)$ preserves small limits, filtered colimits, and all full maps.
-\end{lemma}
-\begin{proof}
-  Since the precomposition functor $- \circ F : \funCat{\cQ}{\Set} \to \funCat{\cT}{\Set}$ preserves both limits and colimits, the restricted precomposition preserves those limits and colimits that are computed pointwise, \ie all small limits and filtered colimits.
-  Now, let $f : A \to B$ be full in $\Mod(\cQ)$.
-  The component of $f \circ F$ at an arbitrary display map $p$ is precisely $f_{F(p)}$.
-  Since $F$ preserves display maps, the naturality square of $f \circ F$ at any $p$ is a weak pullback, \ie $f \circ F$ is full.
-\end{proof}
+Every category of models $\Mod(\cT)$ of a clan $\cT$ is locally finitely presentable, and it comes equipped with a natural weak factorization system.
+Hence a sensible domain for semantics is the class of finitely presentable categories equipped with a weak factorization system.
+Taking finite product clans as a reference, a suitable notion of a morphism between $(E,F)$-categories is a finitary right adjoint preserving full maps.
 
 \begin{definition}
-  An $(E,F)$-category is a locally finitely presentable category $\cL$ with a weak factorization system $(E,F)$ whose maps are called \emph{extensions} and \emph{full maps}.
-  A morphism of $(E,F)$-categories is a functor $F : \cL \to \cQ$ preserving small limits, filtered colimits, and full maps.
+  An $(E,F)$-category is a locally finitely presentable category $\cL$ equipped with a weak factorization system $(E,F)$, whose maps are called \emph{extensions} and \emph{full maps} respectively.
+  A morphism of $(E,F)$-categories $\cL \to \cT$ is a finitary right adjoint $\cL \to \cT$ preserving full maps.
   We write $\EFCat$ for the 2-category of $(E,F)$-categories, morphisms, and natural transformations.
 \end{definition}
+
+\begin{lemma}
+  If $\ell : \cT \to \cL$ is a cocontinuous functor between $(E,F)$-categories that additionally preserves extensions and finitely presentable objects, then its right adjoint $r : \cL \to \cT$ is a morphism of $(E,F)$-categories.
+\end{lemma}
+\begin{proof}
+  Existence of right adjoint is given by the Adjoint Functor Theorem.
+  The rest follows by standard abstract nonsense.
+\end{proof}
+
+Every morphism of clans $f : \cT \to \cQ$ induces a functor $- \circ f : \Mod(\cQ) \to \Mod(\cT)$ by precomposition.
+We think of $f$ as interpreting $\cT$ in $\cQ$, and the functor $- \circ f$ as ``forgetting'' irrelevant structures.
+
+\begin{lemma}
+  The precomposition functor $- \circ f : \Mod(\cQ) \to \Mod(\cT)$ is a morphism of $(E,F)$-categories.
+\end{lemma}
+\begin{proof}
+  The (unrestricted) precomposition functor $- \circ f : \funCat{\cQ}{\Set} \to \funCat{\cT}{\Set}$ admits left and adjoints given by Kan extensions; moreover $- \circ f$ and its left adjoint restrict to an adjunction along the inclusion $\Mod(\cT) \into \funCat{\cT}{\Set}$.
+  Since the inclusions create filtered colimits, $- \circ f : \Mod(\cQ) \to \Mod(\cT)$ preserves filtered colimits.
+  To see that full maps are preserved, note that full maps are regular epimorphisms; hence they are preserved by left adjoints.
+\end{proof}
+
+\begin{remark}
+  In an arbitrary $(E,F)$-category, full maps are not necessarily regular epimorphisms; however, they are always regular epimorphic in the category of models of a clan (equipped with the canonical weak factorization system.)
+\end{remark}
+
+
 
 \begin{construction}
   The assignment $\cT \mapsto \Mod(\cT)$ extends to a 2-functor $\Mod : \Clan\op \to \EFCat$ as follows:
   \begin{itemize}
-  \item $\cT \mapsto \Mod(\cT)$ equipped with the canonical weak factorization system cofibrantly generated by $\{H(p) \mid p \in \cT_{\dag}\}$;
-  \item $F : \cT \to \cQ \mapsto - \circ F : \Mod(\cQ) \to \Mod(\cT)$.
+  \item $\cT \mapsto \Mod(\cT)$ equipped with the weak factorization system cofibrantly generated by $\{H(p) \mid p \in \cT_{\dag}\}$;
+  \item $f : \cT \to \cQ \mapsto - \circ f : \Mod(\cQ) \to \Mod(\cT)$.
   \end{itemize}
 \end{construction}
 
-\begin{lemma}
-  If $F : \cL \to \cQ$ is a morphism of $(E,F)$-categories, then it has a left adjoint $L : \cQ \to \cL$ which preserves finitely presentable objects and extensions.
-  Conversely, if $L : \cQ \to \cL$ is a cocontinuous functor preserving extensions and finitely presentable objects, then $L$ admits a left adjoint $F : \cQ \to \cL$ which is a morphism of $(E,F)$-categories.
-\end{lemma}
-\begin{proof}
-  Since $F$ preserves limits and filtered colimits, it has a left adjoint by the Adjoint Functor Theorem for locally presentable categories.
-  If $q \in \cQ$ is a finitely presentable object, then since $\Hom{\cL}(Lq,-) \iso \Hom{\cQ}(q,F-)$ and $F$ preserves filtered colimits, $Lq$ is finitely presentable.
-  Finally, suppose that $f : A \extension B$ in $\cQ$ and let the following square be an arbitrary commuting square:
-  \begin{center}
-    \DiagramSquare{
-      nw = {LA},
-      ne = {C},
-      se = {D},
-      sw = {LB},
-      west = {Lf},
-      east/style = {->>},
-    }
-  \end{center}
-  Since $F$ preserves full maps, transporting this square along the adjunction yields a commuting square of an extension against a full map.
-  Then the left lifting property gives a map $B \to FC$ making the two triangles commute; hence the desired lifting $LB \to C$ is given by transposition.
-
-  Conversely, if $L : \cQ \to \cL$ is cocontinuous and preserves extensions and finitely presentable objects, then it admits a right adjoint by the usual Adjoint Functor Theorem.
-  By the Yoneda lemma, to show that $F$ preserves filtered colimits, it suffices to show that $\Hom{\cQ}(q, F(\colim\cD)) \iso \Hom{\cQ}(q, \colim F\cD)$ naturally in $q$.
-  Since locally finitely presentable categories admit a dense set of generators comprised of finitely presentable objects, it suffices to assume that $q$ is finitely presentable.
-  Then the rest of the argument follows by standard abstract nonsense.
-  Finally, since $L$ preserves extensions, $F$ preserves full maps by abstract nonsense.
-\end{proof}
-
-In the opposite direction, we would like to associate each $(E,F)$-category $\cT$ with a clan.
-An evident guess is to send each $(E,F)$-category $\cT$ to the category of left adjoints from $\Set$ to $\cT$ preserving finitely presentable objects and extensions.
-The problem is that we do not know how to equip this category with a class of display maps, but observe that the category described above is equivalent to the full subcategory of $\cT$ spanned by finitely presentable $0$-extensions.
+As a completeness theorem, we would like to associate each $(E,F)$-category with a clan.
+In a finite product theory $\cT$, we take the dual of the full subcategory of $\Mod(\cT)$ spanned by sifted tiny objects.
+In the clanic language, these are finitely presentable $0$-extensions.
 
 \begin{definition}
   Given an $(E,F)$-category $\cL$, we write $\fC(\cL) \subseteq \cL$ for the full subcategory spanned by finitely presentable $0$-extensions.
@@ -256,11 +227,11 @@ The problem is that we do not know how to equip this category with a class of di
 
 \begin{lemma}
   Let $\cL$ be an $(E,F)$-category.
-  $\fC(\cL)\op$ equipped with extensions as display maps is a clan.
+  $\fC(\cL)\op$ equipped with $\fC(\cL)_{\dag} = \{\Delta \to \Gamma \mid \Gamma \to \Delta~\text{is an extension}\}$ is a clan.
 \end{lemma}
 \begin{proof}
   We show that $\fC(\cL)\op$ has pullbacks against any display map and that display maps are stable under pullback; all other conditions are trivial.
-  To this end, suppose that $\Gamma, \Gamma'$, and $\Delta$ are finitely-presentable 0-extensions, and that $p : \Gamma \extension \Gamma'$ is an extension and $s : \Gamma \to \Delta$ is an arbitrary morphism in $\cL$.
+  To this end, suppose that $\Gamma, \Gamma'$, and $\Delta$ are finitely-presentable 0-extensions, and that $p : \Gamma \to \Gamma'$ is an extension and $s : \Gamma \to \Delta$ is an arbitrary morphism in $\cL$.
   We consider the following pushout:
   \begin{center}
     \DiagramSquare{
@@ -275,27 +246,27 @@ The problem is that we do not know how to equip this category with a class of di
       south/style = {extension},
     }
   \end{center}
-  Note that extensions are stable under pushout; hence it remains to show that $\Delta'$ is a finitely-presentable 0-extension.
+  Note that extensions are stable under pushout; hence it remains to show that $\Delta'$ is a finitely presentable 0-extension.
   It is finitely presentable because $\Gamma'$ and $\Delta$ are and filtered colimits commute with finite limits.
-  It is a 0-extension because the unique map $\initObj{\cL} \to \Delta'$ can be factorized as $\initObj{\cL} \extension \Delta \extension \Delta'$, and extensions are stable under composition.
+  It is a 0-extension because the unique map $\initObj{\cL} \to \Delta'$ can be factorized as a composite of extensions $\initObj{\cL} \to \Delta \to \Delta'$, and extensions are stable under composition.
 \end{proof}
 
 \begin{construction}
-  Let $f : \cL \to \cQ$ be a morphism of $(E,F)$-categories.
-  It admits a left adjoint $L : \cQ \to \cL$ preserving finitely presentable objects and extensions; hence $L$ restricts to a morphism of clans $\fC(\cQ)\op \to \fC(\cL)\op$, extending the object assignment $\fC(-) : \EFCat \to \Clan\op$ to a pseudofunctor.
+  Every morphism of $(E,F)$-categories $f : \cL \to \cQ$ admits a left adjoint $\ell : \cQ \to \cL$ preserving finitely presentable $0$-extensions.
+  Hence $\ell$ restricts to a morphism of clans $\fC(\cQ)\op \to \fC(\cL)\op$, extending the object assignment $\fC(-)\op : \cL \to \fC(\cL)\op$ to a pseudofunctor.
 \end{construction}
 
-\begin{lemma}
+\begin{remark}
   Let $\cL$ be an $(E,F)$-category.
   The inclusion functor $\fC(\cL) \into \cL$ is a comodel.
-\end{lemma}
+\end{remark}
 
 \begin{construction}
-  For any $(E,F)$-category $\cL$, since the inclusion $j : \fC(\cL) \into \cL$ is a comodel, the nerve of $j$ is a functor $\eta_{\cL} : \cL \to \Mod(\fC(\cL)\op)$.
+  For any $(E,F)$-category $\cL$, since the inclusion $j : \fC(\cL) \into \cL$ is a comodel, the nerve of $j$ is a cocontinuous functor $\eta_{\cL} : \cL \to \Mod(\fC(\cL)\op)$ by \cref{0000}.
 \end{construction}
 
 \begin{construction}
-  For any clan $\cT$, the restricted Yoneda embedding $H : \cT\op \to \Mod(\cT)$ further restricts to $H' : \cT\op \to \fC(\Mod(\cT))$ since $H(\Gamma)$ is a finitely presentable 0-extension for all $\Gamma \in \cT$.
+  For any clan $\cT$, the restricted Yoneda embedding $H : \cT\op \to \Mod(\cT)$ further restricts to $\varepsilon_{\cT}\op : \cT\op \to \fC(\Mod(\cT))$, since $H(\Gamma)$ is a finitely presentable 0-extension for all $\Gamma \in \cT$.
   Taking the opposite categories yields $\varepsilon_{\cT} : \cT \to \fC(\Mod(\cT))\op$.
 \end{construction}
 
@@ -306,8 +277,15 @@ The problem is that we do not know how to equip this category with a class of di
     \Clan(\cT,\fC(\cL)\op) \eqv \EFCat(\cL,\Mod(\cT))
   \]
 \end{theorem}
+\begin{proof}
+  $\eta$ and $\varepsilon$ in the two constructions above are the unit and counit respectively.
+\end{proof}
 
 \section{Cauchy complete clans}
+
+The syntax is broken in the sense that the counit $\varepsilon$ is not an equivalence at every component.
+The problem stems from the fact that a retract of a finitely generated free model is not necessarily free.
+To correct this, we restrict to \emph{Cauchy complete} clans.
 
 \begin{definition}
   A clan $\cT$ is \emph{Cauchy complete} if the underlying category is Cauchy complete and retracts of display maps are display maps.
@@ -334,26 +312,22 @@ The problem is that we do not know how to equip this category with a class of di
   The other direction follows from the fact that representable functors are flat and flat functors are closed under filtered colimits.
 \end{proof}
 
-\begin{corollary}
+\begin{corollary}\label{0001}
   For any clan $\cT$, the 0-extensions in $\Mod(\cT)$ are flat.
 \end{corollary}
 \begin{proof}
-  \todo Look up the \emph{fat small object argument}.
+  By the \emph{fat small object argument}.
 \end{proof}
 
 \begin{theorem}
   If $\cT$ is a Cauchy complete clan, then $\varepsilon_{\cT} : \cT \to \fC(\Mod(\cT))\op$ is an equivalence of clans.
 \end{theorem}
 \begin{proof}
-  \todo Redo this proof.
-  For all intents and purposes, $\varepsilon_{\cT}$ is the (restricted) Yoneda embedding.
-  Hence it is fully faithful.
+  The component $\varepsilon_{\cT}$ is fully faithful because it is the Yoneda embedding.
   We show that it is essentially surjective on objects.
   Let $C \in \Mod(\cT)$ be a finitely-presentable 0-extension.
-  Then $C$ is a filtered colimit of representables; hence finite presentability implies that $C$ is a retract of some representable functor.
+  Then $C$ is a filtered colimit of representables by \cref{0001}; hence finite presentability implies that $C$ is a retract of some representable functor.
   Since $\cT$ is Cauchy complete, $C$ is representable; hence the equivalence.
-
-  To show that the inverse is a morphism of clans, we show that $\varepsilon_{\cT}$ reflects extensions to display maps.
 \end{proof}
 
 \section{Clan-algebraic categories}
