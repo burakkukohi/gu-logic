@@ -1,7 +1,7 @@
 \documentclass[a4paper]{article}
 \usepackage[margin=1in]{geometry}
 
-\usepackage{showkeys}
+\usepackage[final]{showkeys}
 \usepackage{clan-macros}
 \usepackage{preamble}
 
@@ -27,7 +27,7 @@ The Gabriel-Ulmer duality is a contravariant biequivalence between the $2$-categ
 The category of graphs is finitely presentable, yet there exist two nonequivalent GAT presentations.
 The mismatch stems from sort dependencies; this paper introduces a mathematical gadget to reflect this data in the semantics.
 
-\section{Clans, models of clans, and a weak factorization system on models}
+\section{Clans and their models}
 
 \subsection{The definition of clans}
 \begin{definition}
@@ -59,7 +59,7 @@ The mismatch stems from sort dependencies; this paper introduces a mathematical 
 
 \begin{example}
   Let $\cT$ be a small finitely complete category.
-  There is a canonical clan structure, called the finite limit clan structure, on $\cT$: every morphism is a display map.
+  The finite limit clan structure has every morphism in $\cT$ as a display map.
 \end{example}
 
 \begin{example}
@@ -140,8 +140,8 @@ When $\fX\op$ is equipped with the maximal clan structure, we show a similar cor
 
 \section{$(E,F)$-categories and the biadjunction}
 
-On the syntactic side, display maps allow us to have fine-grain control over which limits are preserved.
-On the semantic side, the category of models of any clan is a finitely presentable category, but this data alone cannot recover the underlying clan since there are nonequivalent clans with equivalent models.
+On the syntactic side, display maps allow us to have fine-grained control over which limits are preserved.
+On the semantic side, the category of models of any clan is a locally finitely presentable category, but this data alone cannot recover the underlying clan since there are nonequivalent clans with equivalent models.
 To correct this, we place a weak factorization system on finitely presentable categories.
 
 \subsection{A weak factorization system}
@@ -341,10 +341,6 @@ To correct this, we restrict to \emph{Cauchy complete} clans.
   \end{enumerate}
 \end{definition}
 
-\begin{remark}
-  Condition (FQ) restores some ``Barr exactness.''
-\end{remark}
-
 \begin{lemma}
   Full maps in clan-algebraic categories are regular epimorphisms.
 \end{lemma}
@@ -366,15 +362,68 @@ To correct this, we restrict to \emph{Cauchy complete} clans.
   Since left adjoints preserve regular epimorphism, $j_{\otimes}(j_N(f))$ is a regular epimorphism, but $j_{\otimes}j_N \iso \id{\cL}$ by density.
 \end{proof}
 
+\begin{lemma}
+  For any flat model $A \in \Mod(\fC(\cL)\op)$, the unit $\eta_A : A \to j_N(j_{\otimes}(A))$ is an isomorphism; hence $j_{\otimes}$ is fully faithful on flat models.
+\end{lemma}
+
+\begin{fact}\label{0002}
+  Every object $A$ in an $(E,F)$-category has a \emph{nice diagram} whose colimit is the coequalizer of a pair of full maps, and the coequalizer is $A$.
+  Moreover, $j_{\otimes}$ preserves nice diagrams and $j_N$ preserves quotients of nice diagrams.
+\end{fact}
+
+\begin{remark}
+  By construction every object in a nice diagram is a $0$-extension; hence by \cref{0001}, every $0$-extension in $\Mod(\fC(\cL)\op)$ is flat.
+\end{remark}
+
 \begin{theorem}
   If $\cL$ is clan-algebraic, then $\eta_{\cL} : \cL \to \Mod(\fC(\cL)\op)$ is an equivalence.
 \end{theorem}
 \begin{proof}
   By density, $\eta_{\cL}$ is fully faithful; it remains to show that it is essentially surjective.
-  To this end, it suffices to show that the unit of the adjunction $j_{\otimes} \adj j_{N}$ at component $A \in \Mod(\fC(\cL)\op)$ is an isomorphism.
-  Every $A$ is the colimit of a nice diagram, and $j_{\otimes}$ and $j_N$ preserve colimits of nice diagrams; hence the result.
-  \todo Define \emph{nice diagrams}.
+  To this end, it suffices to show that the unit of the adjunction $j_{\otimes} \adj j_{N}$ at every component $A \in \Mod(\fC(\cL)\op)$ is an isomorphism.
+  By \cref{0002}, every $A$ is a coequalizer determined by a nice diagram $A_{\bullet}$; hence we can prove the result by direct computation:
+  \begin{align*}
+    j_N(j_{\otimes}(A)) &\iso \colim(j_Nj_{\otimes}(A_{\bullet})) && \text{\cref{0002}}\\
+                  &\iso \colim(A_{\bullet}) && \text{fully faithful functors reflect colimits}\\
+                  &\iso A
+  \end{align*}
 \end{proof}
+
+\subsection{Clan-algebraic weak factorization systems on $\Cat$}
+
+\begin{align*}
+  F &= \rLift{\{0 \to 1, 2 \to \mathbb{2}\}}\\
+  F_O &= \rLift{\{0 \to 1, 2 \to \mathbb{2}, 2 \to 1\}}\\
+  F_A &= \rLift{\{0 \to 1, 2 \to \mathbb{2}, \PP \to \mathbb{2}\}}\\
+  F_{OA} &= \rLift{\{0 \to 1, 2 \to \mathbb{2}, 2 \to 1, \PP \to \mathbb{2}\}}
+\end{align*}
+
+\begin{observation}
+  \begin{enumerate}
+  \item $F$ consists of full and surjective-on-object functors.
+  \item $F_O$ consists of full and bijective-on-object functors.
+  \item $F_A$ consists of fully faithful and surjective-on-object functors.
+  \item $F_{OA}$ consists of fully faithful and bijective-on-object functors.
+  \end{enumerate}
+\end{observation}
+
+\begin{construction}
+  In $F_O$, the generator $2 \to 1$ corresponds to a display map $(x : O) \to (x,y : O)$.
+  We postulate a new type $E_O(x,y)$ so that $(x : O)$ is isomorphic to an extension of $(x,y : O)$.
+  To satisfy this requirement, we require that $x = y$ whenever $E_O(x,y)$ is inhabited, and $E_O(x,y)$ must be contractible.
+  This is precisely the extensional identity type on objects; we obtain the required display map as the following composite:
+  \[
+    (x : O) \iso (x,y : O, p : E_O(x,y)) \xto{p} (x, y : O)
+  \]
+\end{construction}
+
+\begin{construction}
+  In $F_A$, the generator $\mathbb{P} \to \mathbb{2}$ corresponds to a display map $(f : A(x,y)) \to (f, g : A(x,y))$.
+  We postulate the extensional identity type on morphisms, and obtain the required display map as the following composite:
+  \[
+    (f : A(x,y)) \iso (f, g : A(x,y), p : E_A(f,g)) \xto{p} (f,g : A(x,y))
+  \]
+\end{construction}
 
 \printbibliography
 \end{document}
