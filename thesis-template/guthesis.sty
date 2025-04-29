@@ -3,6 +3,7 @@
 
 \RequirePackage{graphicx}
 \RequirePackage{textcomp}
+\RequirePackage{xparse}
 
 % Enforce the memoir class
 \@ifclassloaded{memoir}{\let\endguthesis\relax}{%
@@ -19,29 +20,19 @@
 %%%%%%%%%%%%
 % Paper size
 %%%%%%%%%%%%
-% With trims (extra 3 mm on each size)
-% \setstocksize{248mm}{171mm}
-% \settrimmedsize{242mm}{165mm}{*}
-% \settrims{3mm}{3mm} % {top}{foredge}
-
-% Without trims
-\setstocksize{242mm}{165mm}
-\settrimmedsize{242mm}{165mm}{*}
-\settrims{0pt}{0pt}
-
-\setlrmarginsandblock{20mm}{17.5mm}{*} % left right margins
-\setulmarginsandblock{24mm}{27mm}{*} % top bottom margins
-\setheadfoot{\onelineskip}{2\onelineskip}
-\setheaderspaces{15mm}{*}{*}
+\setlrmarginsandblock{1in}{1in}{*} % left right margins
+\setulmarginsandblock{1in}{1in}{*} % top bottom margins
+%\setheadfoot{\onelineskip}{2\onelineskip}
+%\setheaderspaces{1.5in}{*}{*}
 
 
 %%%%%%%%%
 % Spacing
 %%%%%%%%%
-% Paragraph Indent
-\setlength{\parindent}{2em} % indentation for new paragraphs
-% Line spacing
-\setSingleSpace{1.1}
+% % Paragraph Indent
+% \setlength{\parindent}{2em} % indentation for new paragraphs
+% % Line spacing
+% \setSingleSpace{1.1}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -115,7 +106,7 @@
 \makepsmarks{guthesis}{%
   \nouppercaseheads
   % \createmark      {chapter}  {left} {nonumber} {\@chapapp\ }     {. \ }
-  \createmark      {section}  {both}{shownumber}   {}                {. \ }
+  \createmark      {chapter}  {both}{shownumber}   {}                {. \ }
   \createplainmark {toc}      {both}              {\contentsname}
   \createplainmark {lof}      {both}              {\listfigurename}
   \createplainmark {lot}      {both}              {\listtablename}
@@ -131,57 +122,59 @@
 %%%%%%%%%%%%
 \newcommand{\settitle}[1]{\def\gutitle{#1}}
 \newcommand{\setsubtitle}[1]{\def\gusubtitle{#1}}
-\newcommand{\setauthor}[1]{\def\guauthor{#1}}
-\newcommand{\setdepartment}[1]{\def\gudepartment{#1}}
-\newcommand{\setschool}[1]{\def\guschool{#1}}
-\newcommand{\setplace}[1]{\def\guplace{#1}}
-\newcommand{\setchair}[1]{\def\guchair{#1, Chair}}
-\newcommand{\setmembers}[1]{\def\gumembers{#1}}
+\NewDocumentCommand\setauthor{om}{
+  \IfNoValueTF{#1}
+  {\def\guauthor{#2}\def\gushortauthor{#2}}
+  {\def\guauthor{#2}\def\gushortauthor{#1}}
+}
+\newcommand{\setsupervisor}[1]{\def\gusupervisor{#1}}
+\newcommand{\setdefensedate}[1]{\def\gudefensedate{#1}}
 \newcommand{\setdegree}[1]{\def\gudegree{#1}}
-\newcommand{\setlogo}[1]{\def\gulogo{%
-    \begin{center}
-      \includegraphics[width=2.88cm]{#1}
-    \end{center}
-  }}
 
-\newcommand\thetitlepage{{%
-    \clearpage
-    \thispagestyle{empty}
-    \begin{center}
-      \begin{vplace}
-        {\Huge\bfseries\gutitle}\par\vspace*{1\onelineskip}
-        \ifdefined\gusubtitle
-          {\Large\gusubtitle}\par
-        \fi
-      \end{vplace}
-      \begin{vplace}
-        {\small\gudepartment}\par
-        {\small\guschool}\par
-        {\small\guplace}
-      \end{vplace}
-      \begin{vplace}[1]
-        {\Large\bfseries\guauthor}\par\vspace*{1\onelineskip}
-        {\small\today}
-      \end{vplace}
-      \begin{vplace}
-        {\small\bfseries Thesis Committee:}\par
-        {\small\guchair}\par
-        {\small\gumembers}
-      \end{vplace}
-      \begin{vplace}
-        {\small\itshape
-          Submitted in partial fulfillment of the requirements \\
-          for the degree of \gudegree.}
-      \end{vplace}
-      \vfill
-      {\footnotesize
-        Copyright~\textcopyright~\the\year{}~\guauthor}\par
-      \gulogo
-    \end{center}
-    \clearpage
-  }}
+\newcommand\thetitlepage{
+  \clearpage
+  \thispagestyle{titlingpage}
+  \begin{center}
+    %% Title and author block
+    \begin{vplace}
+      {\huge\bfseries\gutitle}\par
+      \ifdefined\gusubtitle
+        \vspace*{0.5\onelineskip}
+        {\Large\gusubtitle}\par
+      \fi
+      \vspace*{1\onelineskip}
+      {\Large\guauthor}
+    \end{vplace}
+    %% Department information block
+    \begin{vplace}
+      {Department of Philosophy, Linguistics, and Theory of Science}\par
+      {University of Gothenburg}\par
+      {Gothenburg, Sweden}\par
+      \begin{center}
+        \includegraphics[width=2.88cm]{logo.pdf}
+      \end{center}
+    \end{vplace}
+    %% Thesis supervisor block
+    \begin{vplace}
+      {\bfseries Thesis Supervisor}\par
+      {\gusupervisor}\par\vspace*{1\onelineskip}
+      {\bfseries Defense Date}\par
+      {\gudefensedate}
+    \end{vplace}
+    %% Purpose block
+    \begin{vplace}
+      {\itshape
+        Submitted in partial fulfillment of the requirements\\
+        for the degree of Master of Arts.}
+    \end{vplace}
+    \vfill
+    %% Copyright
+    {\footnotesize Copyright~\textcopyright~\the\year{}~\guauthor}
+  \end{center}
+  \clearpage
+}
 
 
 %%%%%%%%%%%% 
 \endinput
-%%%%%%%%%%%%
+%%%%%%%%%%%% 
