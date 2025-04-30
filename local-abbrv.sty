@@ -4,8 +4,10 @@
 
 % Add a period to the end of an abbreviation unless there's one
 % already, then \xspace.
+\makeatletter
 \DeclareRobustCommand\onedot{\futurelet\@let@token\@onedot}
 \def\@onedot{\ifx\@let@token.\else.\null\fi\xspace}
+\makeatother
 
 \def\eg{\emph{e.g}.,\xspace}
 \def\vs{\emph{versus}\xspace}
